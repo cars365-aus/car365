@@ -1,0 +1,4 @@
+Make,Model,Year,Vin,License Plate,Category,Color,Fuel Type,Transmission,Seats,Daily Rate,Hourly Rate,Weekly Rate,Monthly Rate,Weekend Rate,Extra Mileage Charge,Miles Per Day,Notes
+Toyota,Corolla,2023,1T1A1111111111111,ABC-123,Sedan,White,Petrol,Automatic,5,45,10,250,900,55,0.25,200,Very clean and reliable
+Ford,Ranger,2022,,XYZ-987,Ute,,Diesel,Automatic,5,85,,,,,,,Great for moving things
+Tesla,Model 3,2024,,,Luxury,Black,Electric,Automatic,5,120,,700,,,0.50,150,Premium interior

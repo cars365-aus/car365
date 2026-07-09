@@ -1,0 +1,413 @@
+import { notFound } from "next/navigation";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+
+type PolicySection = {
+  heading: string;
+  body: string[];
+  bullets?: string[];
+};
+
+type Policy = {
+  title: string;
+  summary: string;
+  sections: PolicySection[];
+};
+
+const updatedAt = "5 June 2026";
+
+const policies: Record<string, Policy> = {
+  terms: {
+    title: "Terms of Service",
+    summary:
+      "These terms govern use of Hire Car, a marketplace that helps customers discover and contact independent rental vendors.",
+    sections: [
+      {
+        heading: "Platform role",
+        body: [
+          "Hire Car provides listing, search, lead, messaging, review, and subscription tools. Hire Car is not the rental operator, vehicle owner, insurer, finance provider, broker, or travel agent for any customer rental unless expressly stated in writing.",
+          "Vendors set their own availability, rental prices, deposits, identification requirements, insurance conditions, cancellation rules, and rental agreements. Customers must review and accept the vendor's direct rental terms before hiring a vehicle.",
+        ],
+      },
+      {
+        heading: "Accounts and eligibility",
+        body: [
+          "You must provide accurate account, contact, billing, and business information. You are responsible for activity under your account and for keeping login credentials secure.",
+          "Vendor accounts may be approved, rejected, suspended, or removed where Hire Car reasonably considers this necessary for fraud prevention, marketplace quality, legal compliance, payment risk, or customer safety.",
+        ],
+      },
+      {
+        heading: "Customer enquiries",
+        body: [
+          "Submitting an enquiry does not guarantee a booking. A booking is formed only when the customer and vendor agree the rental terms directly.",
+          "Customers must provide accurate contact details, pickup information, dates, and messages. Vendors must handle enquiries promptly and must not use customer contact details for unrelated marketing without a lawful basis.",
+        ],
+      },
+      {
+        heading: "Australian Consumer Law",
+        body: [
+          "Nothing in these terms excludes, restricts, or modifies rights, guarantees, remedies, or protections that cannot lawfully be excluded under the Australian Consumer Law or other applicable law.",
+          "Where a vendor supplies rental services to a customer, the vendor remains responsible for consumer guarantees and other obligations that apply to that supply.",
+        ],
+      },
+      {
+        heading: "Reviews and marketplace content",
+        body: [
+          "Reviews must reflect genuine customer experiences. Hire Car may moderate, reject, remove, or investigate reviews and listings that appear fake, misleading, abusive, incentivised without disclosure, or unrelated to an actual marketplace interaction.",
+          "Users must not post content that is unlawful, misleading, defamatory, discriminatory, abusive, sexually explicit, spam, malware, or designed to interfere with the platform.",
+        ],
+      },
+      {
+        heading: "Service changes and availability",
+        body: [
+          "Hire Car may change, suspend, or discontinue platform features where reasonably required for maintenance, security, performance, legal compliance, commercial viability, or product improvement.",
+          "Hire Car aims to provide a reliable service but does not guarantee uninterrupted availability. Planned or emergency maintenance may affect access.",
+        ],
+      },
+      {
+        heading: "Liability",
+        body: [
+          "To the maximum extent permitted by law, Hire Car is not responsible for vehicle condition, vendor conduct, customer conduct, rental disputes, accidents, fines, tolls, deposits, insurance decisions, or losses arising from rental agreements between customers and vendors.",
+          "Hire Car's liability is limited to the remedies required by applicable law and, where lawful, to resupplying the affected platform service or refunding the fees paid to Hire Car for that affected service.",
+        ],
+      },
+      {
+        heading: "Contact",
+        body: [
+          "Questions about these terms can be sent through the contact page. Legal notices should include your full name, contact details, account email, and enough information for Hire Car to identify the relevant listing, vendor, enquiry, or transaction.",
+        ],
+      },
+    ],
+  },
+  privacy: {
+    title: "Privacy Policy",
+    summary:
+      "This policy explains how Hire Car collects, uses, discloses, stores, and protects personal information in connection with the marketplace.",
+    sections: [
+      {
+        heading: "Personal information we collect",
+        body: [
+          "Hire Car collects information you provide directly, information generated by your use of the platform, and information received from service providers that help operate the platform.",
+        ],
+        bullets: [
+          "Account details, including name, email, phone number, authentication identifiers, and role.",
+          "Vendor business details, including business name, ABN, branch information, billing email, website, phone, address, and membership roles.",
+          "Listing and enquiry information, including vehicle details, pickup city, requested dates, messages, lead events, reviews, and moderation notes.",
+          "Technical and security data, including IP-derived identifiers, device and browser metadata, rate-limit events, audit logs, fraud flags, and payment/webhook references.",
+        ],
+      },
+      {
+        heading: "How we use information",
+        body: [
+          "Hire Car uses personal information to provide and secure the marketplace, route customer enquiries, manage vendor accounts, process subscriptions, moderate content, prevent fraud, provide support, and comply with legal obligations.",
+          "Hire Car may use aggregated or de-identified information to measure marketplace performance, improve search quality, and understand demand patterns.",
+        ],
+      },
+      {
+        heading: "Disclosure",
+        body: [
+          "Customer enquiry details are shared with the relevant vendor so the vendor can respond to the rental request. Vendor listing and branch details are displayed publicly when approved.",
+          "Hire Car uses service providers for hosting, database, authentication, email, payments, search, bot protection, monitoring, and analytics. These providers may process information only as needed to supply their services to Hire Car.",
+        ],
+      },
+      {
+        heading: "Security and retention",
+        body: [
+          "Hire Car uses technical and organisational controls such as role-based access, row-level security, audit logging, rate limiting, webhook verification, bot protection, and encrypted transport to protect personal information.",
+          "Hire Car keeps personal information for as long as needed to provide the platform, meet legal and accounting obligations, resolve disputes, prevent fraud, and maintain audit records. Data may be deleted, anonymised, or archived when no longer required.",
+        ],
+      },
+      {
+        heading: "Access and correction",
+        body: [
+          "You may request access to or correction of personal information held by Hire Car. Hire Car may need to verify your identity before acting on a request.",
+          "If you believe Hire Car has mishandled personal information, contact Hire Car first so the issue can be investigated. If unresolved, you may contact the Office of the Australian Information Commissioner.",
+        ],
+      },
+      {
+        heading: "International processing",
+        body: [
+          "Some infrastructure and service providers may process information outside Australia. Hire Car takes reasonable steps to use reputable providers and contractual controls appropriate to the service being supplied.",
+        ],
+      },
+    ],
+  },
+  "vendor-agreement": {
+    title: "Vendor Agreement",
+    summary:
+      "This agreement sets baseline obligations for vendors that list vehicles and receive customer leads through Hire Car.",
+    sections: [
+      {
+        heading: "Vendor responsibilities",
+        body: [
+          "Vendors must provide accurate business, branch, vehicle, pricing, availability, insurance, rental-condition, and contact information. Listings must be kept current and must not mislead customers.",
+          "Vendors are responsible for rental agreements, customer identity checks, driver eligibility, vehicle handover, deposits, tolls, fines, damage handling, insurance disclosures, refunds, support, and dispute resolution.",
+        ],
+      },
+      {
+        heading: "Approvals and moderation",
+        body: [
+          "Hire Car may review vendor profiles, branches, vehicles, images, prices, reviews, and lead behaviour. Approval to list does not transfer rental responsibility to Hire Car.",
+          "Hire Car may suspend or remove vendors that provide inaccurate listings, mishandle customer data, avoid platform controls, fail to pay subscription fees, receive serious complaints, or create legal, safety, fraud, or reputation risk.",
+        ],
+      },
+      {
+        heading: "Lead handling",
+        body: [
+          "Customer lead details must be used only to respond to the relevant rental enquiry unless the customer has provided a separate lawful consent for another use.",
+          "Vendors must not resell, scrape, export, or misuse lead data. Vendors must respond professionally and must not pressure customers with misleading scarcity, hidden fees, or bait pricing.",
+        ],
+      },
+      {
+        heading: "Subscriptions and billing",
+        body: [
+          "Vendor access to listing features may depend on an active subscription plan. Fees, plan limits, billing cycles, and included features are shown at checkout or in the billing dashboard.",
+          "Hire Car may restrict listing creation or visibility if payment fails, the subscription is cancelled, or the account breaches marketplace rules.",
+        ],
+      },
+      {
+        heading: "Compliance",
+        body: [
+          "Vendors must comply with Australian Consumer Law, privacy obligations, spam rules, road safety requirements, insurance obligations, vehicle registration requirements, tax obligations, and all other laws that apply to their rental business.",
+        ],
+      },
+    ],
+  },
+  "billing-refunds": {
+    title: "Billing and Refund Policy",
+    summary:
+      "This policy explains subscription billing for vendors and how Hire Car handles refund requests for platform fees.",
+    sections: [
+      {
+        heading: "Subscription billing",
+        body: [
+          "Vendor subscriptions are billed through Hire Car's payment provider. The billing amount, billing interval, plan limits, and taxes are shown before checkout.",
+          "The billing portal can be used to update payment methods, view invoices, and cancel eligible subscriptions. Access may require the vendor account owner or an authorised administrator.",
+        ],
+      },
+      {
+        heading: "Platform fees",
+        body: [
+          "Hire Car platform fees pay for marketplace access, listing tools, lead capture, vendor dashboards, moderation, and related software services. They do not include customer rental charges, deposits, insurance, tolls, fines, or vendor-imposed fees.",
+        ],
+      },
+      {
+        heading: "Refunds",
+        body: [
+          "Refund requests for Hire Car subscription fees are assessed case by case, including whether the fee was charged in error, whether the service was unavailable due to Hire Car's fault, and whether applicable law requires a remedy.",
+          "A vendor's dissatisfaction with lead volume, customer conversion, or business outcomes does not automatically create a refund entitlement. Nothing in this policy limits non-excludable rights under Australian Consumer Law.",
+        ],
+      },
+      {
+        heading: "Failed payments and cancellation",
+        body: [
+          "If a payment fails, Hire Car may retry payment, notify the vendor, mark the account as past due, restrict feature access, or suspend public listing visibility.",
+          "Cancellation stops future billing at the end of the current billing period unless otherwise stated. Historical audit, invoice, moderation, and legal records may be retained.",
+        ],
+      },
+    ],
+  },
+  "listing-accuracy": {
+    title: "Listing Accuracy Policy",
+    summary:
+      "This policy defines the standards for vehicle listings, prices, availability, images, and review content.",
+    sections: [
+      {
+        heading: "Accurate listings",
+        body: [
+          "Listings must accurately describe the vehicle, make, model, year, category, seat count, fuel type, transmission, branch location, price, and material rental conditions.",
+          "Vendors must promptly update or remove listings where a vehicle is unavailable, materially different from the description, no longer roadworthy, no longer insured for rental use, or no longer available from the stated branch.",
+        ],
+      },
+      {
+        heading: "Pricing and fees",
+        body: [
+          "Daily prices and promotional claims must be genuine and must not hide unavoidable fees. If deposits, insurance excesses, delivery fees, airport fees, mileage limits, cleaning fees, or surcharges apply, vendors must disclose them before booking.",
+        ],
+      },
+      {
+        heading: "Images",
+        body: [
+          "Vehicle images should show the actual vehicle or a materially representative vehicle from the same class where this is clearly disclosed. Images must not misrepresent condition, size, age, trim, or availability.",
+        ],
+      },
+      {
+        heading: "Reviews",
+        body: [
+          "Reviews must be genuine and based on real customer experiences. Vendors must not create fake reviews, pressure customers to leave positive-only feedback, suppress genuine negative reviews, or offer incentives unless the incentive is disclosed and available regardless of sentiment.",
+        ],
+      },
+    ],
+  },
+  "acceptable-use": {
+    title: "Acceptable Use Policy",
+    summary:
+      "This policy sets minimum conduct, security, and content standards for everyone using Hire Car.",
+    sections: [
+      {
+        heading: "Prohibited conduct",
+        body: [
+          "You must not use Hire Car to break the law, mislead users, infringe rights, harass others, distribute malware, scrape data, bypass security controls, interfere with service availability, or access accounts or data without permission.",
+        ],
+      },
+      {
+        heading: "Marketplace abuse",
+        body: [
+          "You must not submit spam enquiries, fake leads, fake reviews, fraudulent vendor details, misleading listings, manipulated ratings, abusive messages, or content that impersonates another person or business.",
+          "Automated traffic, bulk account creation, credential stuffing, rate-limit evasion, and attempts to probe private APIs are prohibited unless Hire Car has provided written authorisation for security testing.",
+        ],
+      },
+      {
+        heading: "Enforcement",
+        body: [
+          "Hire Car may throttle, block, suspend, remove content, close accounts, preserve evidence, notify affected users, or report activity to service providers or authorities where reasonably necessary to protect users and the platform.",
+        ],
+      },
+    ],
+  },
+  rules: {
+    title: "Rules and Guidelines",
+    summary:
+      "These rules and guidelines help ensure a safe, legal, and respectful experience for both customers and vendors across the Hire Car marketplace, in accordance with Australian law.",
+    sections: [
+      {
+        heading: "Driver Eligibility & Licensing",
+        body: [
+          "Customers must hold a valid, unexpired, and unrestricted driver's license suitable for the class of vehicle they intend to hire.",
+          "Learner permits and provisional licenses (P-plates) may be accepted by some vendors at their sole discretion, subject to additional conditions, fees, or higher insurance excesses. Customers must disclose their license status prior to booking.",
+          "International renters must hold a valid driver's license in English or an International Driving Permit (IDP) accompanied by their original license.",
+        ],
+      },
+      {
+        heading: "Road Safety & Compliance",
+        body: [
+          "All vehicles must be driven on the left side of the road, in strict compliance with Australian road rules and speed limits.",
+          "Seatbelts must be worn by the driver and all passengers at all times. Drivers must ensure children are seated in approved, correctly fitted child restraints according to age and size regulations.",
+          "It is strictly prohibited to drive under the influence of drugs or alcohol. The legal Blood Alcohol Concentration (BAC) limit in Australia is 0.05% for fully licensed drivers, and 0.00% for provisional or commercial drivers.",
+        ],
+      },
+      {
+        heading: "Tolls, Fines, and Infringements",
+        body: [
+          "Customers are personally responsible for all tolls, parking fines, speeding tickets, and traffic infringements incurred during the rental period.",
+          "Vendors reserve the right to pass on the cost of any infringements to the customer, often accompanied by an administration fee as outlined in the vendor's specific rental agreement.",
+        ],
+      },
+      {
+        heading: "Vehicle Use and Care",
+        body: [
+          "Vehicles must be used only for their intended purpose. Off-roading, driving on unsealed roads, or beach driving is prohibited unless explicitly authorised by the vendor in writing (e.g., for specific 4WD rentals).",
+          "Smoking or vaping inside rental vehicles is strictly prohibited. Vendors may charge professional cleaning fees if evidence of smoking, excessive dirt, or pet hair (where pets are not approved) is found.",
+        ],
+      },
+      {
+        heading: "Accidents and Reporting",
+        body: [
+          "In the event of an accident, customers must stop, assist anyone injured, and report the incident to the police if required by state law (e.g., if there are injuries or significant property damage).",
+          "Customers must promptly report any accidents, theft, or mechanical issues to the vendor and must not abandon the vehicle or arrange independent repairs without the vendor's consent.",
+        ],
+      },
+    ],
+  },
+  disclaimer: {
+    title: "Customer Disclaimer",
+    summary:
+      "This disclaimer explains what customers should understand before relying on listings or contacting vendors.",
+    sections: [
+      {
+        heading: "Independent vendors",
+        body: [
+          "Hire Car helps customers discover and contact independent rental vendors. Hire Car does not own, inspect, maintain, insure, or operate the listed vehicles.",
+          "Before booking, customers should confirm price, availability, deposit, insurance cover, excess, kilometre limits, driver requirements, pickup and return rules, cancellation rules, and any extra fees directly with the vendor.",
+        ],
+      },
+      {
+        heading: "No booking guarantee",
+        body: [
+          "A listing or enquiry response does not guarantee that a vehicle is available or that a vendor will accept a booking. Availability can change quickly and is controlled by the vendor.",
+        ],
+      },
+      {
+        heading: "Customer responsibility",
+        body: [
+          "Customers are responsible for checking the vehicle, reading the vendor rental agreement, confirming insurance arrangements, complying with road rules, and resolving rental disputes directly with the vendor where the dispute concerns the rental service.",
+        ],
+      },
+      {
+        heading: "Consumer rights",
+        body: [
+          "This disclaimer does not limit customer rights under Australian Consumer Law or other laws that cannot be excluded. If a rental service is supplied by a vendor, the vendor remains responsible for legal obligations that apply to that supply.",
+        ],
+      },
+    ],
+  },
+};
+
+export async function generateStaticParams() {
+  return Object.keys(policies).map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const policy = policies[slug];
+
+  if (!policy) {
+    return {};
+  }
+
+  return {
+    title: policy.title,
+    description: policy.summary,
+  };
+}
+
+export default async function LegalPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const policy = policies[slug];
+
+  if (!policy) {
+    notFound();
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <SiteHeader />
+      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+        <p className="text-sm font-semibold uppercase tracking-wide text-amber-600">
+          Last updated {updatedAt}
+        </p>
+        <h1 className="mt-3 text-3xl font-semibold text-slate-950">{policy.title}</h1>
+        <p className="mt-3 text-base leading-7 text-slate-600">{policy.summary}</p>
+
+        <div className="mt-8 space-y-5">
+          {policy.sections.map((section) => (
+            <section key={section.heading} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 className="text-lg font-semibold text-slate-950">{section.heading}</h2>
+              <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+                {section.body.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+                {section.bullets && (
+                  <ul className="list-disc space-y-2 pl-5">
+                    {section.bullets.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
+          ))}
+        </div>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}

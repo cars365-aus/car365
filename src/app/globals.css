@@ -1,0 +1,466 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Original Clean Theme */
+  --primary: #ea580c;          /* Original Orange */
+  --primary-foreground: #ffffff;
+
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+
+  /* Neutral Scale */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --slate-950: #020617;
+
+  --background: #ffffff;
+  --foreground: #020617;
+  --card: #ffffff;
+  --card-foreground: #020617;
+  --popover: #ffffff;
+  --popover-foreground: #020617;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --accent: #ea580c;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: var(--primary);
+
+  --font-heading: var(--font-sans, "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif);
+
+  /* Border Radius - Premium & Soft */
+  --radius: 0.5rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+
+  /* Premium Shadow Elevation Scale (Softer, deeper) */
+  --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.02), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.05), 0 2px 6px -2px rgb(0 0 0 / 0.03);
+  --shadow-lg: 0 12px 24px -4px rgb(0 0 0 / 0.06), 0 8px 12px -6px rgb(0 0 0 / 0.04);
+  --shadow-xl: 0 24px 48px -12px rgb(0 0 0 / 0.08), 0 12px 24px -8px rgb(0 0 0 / 0.04);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+  --tracking-heading-sm: -0.01em;
+  --tracking-heading-md: -0.02em;
+  --tracking-heading-lg: -0.03em;
+
+  /* Z-Index Scale */
+  --z-header: 40;
+  --z-sticky-cta: 50;
+  --z-whatsapp: 50;
+  --z-mobile-nav: 60;
+  --z-modal: 70;
+
+  /* Header Height (dynamically set by JS, fallback value) */
+  --header-height: 116px;
+
+  /* Touch Target */
+  --touch-min: 44px;
+  --touch-gap: 8px;
+
+  /* Fluid Type Scale */
+  --fluid-h1: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+  --fluid-h2: clamp(1.5rem, 1.25rem + 1.5vw, 2.5rem);
+  --fluid-h3: clamp(1.25rem, 1.1rem + 1vw, 2rem);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-heading), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --animate-fade-in: fade-in 0.4s cubic-bezier(0, 0, 0.2, 1);
+  --animate-slide-up: slide-up 0.5s cubic-bezier(0, 0, 0.2, 1);
+  --animate-scale-in: scale-in 0.4s cubic-bezier(0, 0, 0.2, 1);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-3xl: var(--radius-3xl);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-glass: var(--shadow-glass);
+}
+
+.dark {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
+  --popover: #0f172a;
+  --popover-foreground: #f8fafc;
+  --primary: #ea580c;
+  --primary-foreground: #ffffff;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #ea580c;
+  --accent-foreground: #ffffff;
+  --border: #334155;
+  --input: #334155;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 1rem; /* 16px minimum */
+}
+
+/* Friendly, clean typography (no extreme uppercase forcing) */
+h1, .h1 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading-lg);
+  font-size: var(--fluid-h1);
+}
+
+h2, .h2 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: var(--tracking-heading-md);
+  font-size: var(--fluid-h2);
+}
+
+h3, .h3 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: var(--tracking-heading-md);
+  font-size: var(--fluid-h3);
+}
+
+h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: var(--tracking-heading-sm);
+}
+
+::selection {
+  background: var(--primary);
+  color: white;
+}
+
+*:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 0px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* Hide scrollbar for horizontal scroll strips (breadcrumbs, tab bars, galleries).
+   Referenced across the app but previously undefined in Tailwind v4. */
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scale-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes slide-in-left { from { opacity: 0; transform: translateX(-100%); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pulse-skeleton { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.9; } }
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-fade-in { animation: fade-in 0.4s cubic-bezier(0, 0, 0.2, 1); }
+.animate-slide-up { animation: slide-up 0.5s cubic-bezier(0, 0, 0.2, 1); }
+.animate-scale-in { animation: scale-in 0.4s cubic-bezier(0, 0, 0.2, 1); }
+.animate-slide-in-left { animation: slide-in-left 0.2s cubic-bezier(0, 0, 0.2, 1); }
+.animate-pulse-skeleton { animation: pulse-skeleton 1.5s ease-in-out infinite; }
+.animate-blob { animation: blob 7s infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+
+/*
+ * Reduced motion (Req 11.2): when the user has enabled reduced-motion in their
+ * OS settings, disable all non-essential animations and transitions. Durations
+ * are collapsed to ~0 rather than removed outright so that animation/transition
+ * completion callbacks still fire and final states are applied immediately.
+ * Smooth scrolling is also disabled.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.img-zoom { overflow: hidden; }
+.img-zoom img { transition: transform 0.4s cubic-bezier(0, 0, 0.2, 1); }
+.img-zoom:hover img { transform: scale(1.03); }
+
+/* Clean style cards - premium lift */
+.card-lift {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.card-lift:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-xl);
+  border-color: rgba(234, 88, 12, 0.3); /* Primary color opacity */
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-glass);
+}
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Glow Badges */
+.badge-glow-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 0 0 12px 0 rgba(16, 185, 129, 0.2);
+}
+.badge-glow-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 12px 0 rgba(245, 158, 11, 0.2);
+}
+.badge-glow-destructive {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  box-shadow: 0 0 12px 0 rgba(239, 68, 68, 0.2);
+}
+
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(135deg, var(--primary) 0%, #fb923c 100%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ===== Mobile Optimisation Utilities ===== */
+
+/* Touch Target Utility */
+.touch-target {
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Safe Area Utilities */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.safe-area-left {
+  padding-left: env(safe-area-inset-left);
+}
+.safe-area-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Paragraph readability */
+p {
+  max-width: 75ch;
+}
+
+/* Mobile overflow prevention */
+@media (max-width: 767px) {
+  body,
+  main {
+    overflow-x: hidden;
+  }
+
+  /*
+   * Input zoom prevention (Req 4.1): iOS Safari zooms the viewport when a
+   * focused form control has a computed font-size below 16px. Enforce a
+   * 16px minimum on all text-entry controls across every form on mobile.
+   * Excludes non-text controls (checkbox/radio/range) which never zoom.
+   */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root {
+    --header-height: 64px;
+  }
+
+  /* Reduce the site header's rendered height in landscape so the
+     ResizeObserver-driven spacer follows automatically (Req 15.2). */
+  .site-header-root .site-header-navbar {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+
+  h1, .h1 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h2, .h2,
+  h3, .h3 {
+    margin-top: 0.375rem;
+    margin-bottom: 0.375rem;
+  }
+
+  section {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  /* Vehicle detail gallery: cap to 50vh in mobile landscape (Req 15.3) */
+  .vehicle-gallery-frame,
+  .vehicle-gallery-frame .gallery-main-frame {
+    max-height: 50vh;
+  }
+}
+
+/* Blog article body (AI-generated HTML) */
+.blog-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.blog-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.blog-content p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+  color: #475569;
+}
+
+.blog-content ul,
+.blog-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  color: #475569;
+}
+
+.blog-content ul {
+  list-style-type: disc;
+}
+
+.blog-content ol {
+  list-style-type: decimal;
+}
+
+.blog-content li {
+  margin-bottom: 0.375rem;
+  line-height: 1.65;
+}
+
+.blog-content blockquote {
+  border-left: 4px solid #ea580c;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: #64748b;
+  font-style: italic;
+}
+
+.blog-content a {
+  color: #ea580c;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.blog-content a:hover {
+  color: #c2410c;
+}
