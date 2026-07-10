@@ -1,2 +1,0 @@
--- Intentionally empty.
--- Local development data should be added here when deterministic seed records are needed.

@@ -1,3 +1,9 @@
+/**
+ * LEGACY (rental marketplace) domain types — pending removal.
+ * Superseded by src/lib/domain.ts for the used-car pivot. Still referenced by a
+ * handful of not-yet-rewritten pages/components; each import is removed as its
+ * consumer migrates to domain.ts (Phase 3+). Do not add new usages.
+ */
 export type ApprovalStatus = "pending" | "approved" | "rejected" | "suspended";
 export type LeadStatus = "new" | "contacted" | "converted" | "lost";
 export type PlanCode = "starter" | "growth" | "pro";
