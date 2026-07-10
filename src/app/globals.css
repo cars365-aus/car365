@@ -5,14 +5,23 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Original Clean Theme */
-  --primary: #ea580c;          /* Original Orange */
+  /* Used-car premium theme (SRS §12) — electric blue on light neutrals.
+     One dominant accent reserved exclusively for CTAs/interactive elements. */
+  --primary: #0b5fff;          /* CTAs, links, active states */
+  --primary-hover: #0a4ed6;    /* hover / pressed */
   --primary-foreground: #ffffff;
 
-  --success: #10b981;
-  --error: #ef4444;
-  --warning: #f59e0b;
-  --info: #3b82f6;
+  /* Deep navy — footer, hero overlays, premium sections.
+     NOT the shadcn --accent hover slot (that stays == primary below). */
+  --accent-dark: #0a1633;
+
+  /* Semantic status — reserved meanings only (green=available, amber=reserved,
+     red=sold/error); never used decoratively (SRS §11.4). */
+  --success: #12b76a;
+  --warning: #f79009;
+  --danger: #e5484d;
+  --error: #e5484d;            /* alias of --danger for back-compat */
+  --info: #0b5fff;
 
   /* Neutral Scale */
   --slate-50: #f8fafc;
@@ -27,21 +36,23 @@
   --slate-900: #0f172a;
   --slate-950: #020617;
 
-  --background: #ffffff;
-  --foreground: #020617;
-  --card: #ffffff;
-  --card-foreground: #020617;
+  /* Surfaces & 3-tier text (SRS §12.1): ink / body / muted. */
+  --background: #f7f8fa;        /* page background */
+  --foreground: #101828;        /* ink — headings, near-black text */
+  --body: #344054;              /* body copy */
+  --card: #ffffff;              /* card / sheet surface */
+  --card-foreground: #101828;
   --popover: #ffffff;
-  --popover-foreground: #020617;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --accent: #ea580c;
+  --popover-foreground: #101828;
+  --secondary: #f2f4f7;
+  --secondary-foreground: #101828;
+  --muted: #f7f8fa;
+  --muted-foreground: #667085;  /* secondary text, captions */
+  --accent: #0b5fff;            /* keep accent == primary (parity w/ prior theme) */
   --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
+  --destructive: #e5484d;
+  --border: #e4e7ec;
+  --input: #e4e7ec;
   --ring: var(--primary);
 
   --font-heading: var(--font-sans, "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif);
@@ -81,9 +92,11 @@
   --touch-gap: 8px;
 
   /* Fluid Type Scale */
-  --fluid-h1: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
-  --fluid-h2: clamp(1.5rem, 1.25rem + 1.5vw, 2.5rem);
-  --fluid-h3: clamp(1.25rem, 1.1rem + 1vw, 2rem);
+  /* Type scale tuned to SRS §12.2 (mobile → desktop endpoints). */
+  --fluid-display: clamp(2rem, 1.5rem + 2.5vw, 3rem);   /* Display 32 → 48 */
+  --fluid-h1: clamp(1.75rem, 1.5rem + 1.25vw, 2.5rem);  /* H1 28 → 40 */
+  --fluid-h2: clamp(1.5rem, 1.375rem + 0.6vw, 2rem);    /* H2 24 → 32 */
+  --fluid-h3: clamp(1.25rem, 1.2rem + 0.25vw, 1.5rem);  /* H3 20 → 24 */
 }
 
 @theme inline {
@@ -108,6 +121,15 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+
+  /* Premium navy + semantic status utilities (bg-accent-dark, text-success, …) */
+  --color-accent-dark: var(--accent-dark);
+  --color-body: var(--body);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -134,13 +156,14 @@
   --card-foreground: #f8fafc;
   --popover: #0f172a;
   --popover-foreground: #f8fafc;
-  --primary: #ea580c;
+  --primary: #3b82f6;          /* lighter blue reads better on dark surfaces */
+  --primary-hover: #2563eb;
   --primary-foreground: #ffffff;
   --secondary: #1e293b;
   --secondary-foreground: #f8fafc;
   --muted: #1e293b;
   --muted-foreground: #94a3b8;
-  --accent: #ea580c;
+  --accent: #3b82f6;
   --accent-foreground: #ffffff;
   --border: #334155;
   --input: #334155;
@@ -158,6 +181,14 @@ body {
 }
 
 /* Friendly, clean typography (no extreme uppercase forcing) */
+.display {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: var(--tracking-heading-lg);
+  font-size: var(--fluid-display);
+  line-height: 1.1;
+}
+
 h1, .h1 {
   font-family: var(--font-heading);
   font-weight: 800;
@@ -265,7 +296,7 @@ h4, h5, h6 {
 .card-lift:hover {
   transform: translateY(-4px) scale(1.01);
   box-shadow: var(--shadow-xl);
-  border-color: rgba(234, 88, 12, 0.3); /* Primary color opacity */
+  border-color: rgba(11, 95, 255, 0.3); /* primary @ 30% */
 }
 
 /* Glassmorphism Utilities */
@@ -305,7 +336,7 @@ h4, h5, h6 {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(135deg, var(--primary) 0%, #fb923c 100%);
+  background-image: linear-gradient(135deg, var(--primary) 0%, var(--accent-dark) 100%);
 }
 
 @layer base {
@@ -447,7 +478,7 @@ p {
 }
 
 .blog-content blockquote {
-  border-left: 4px solid #ea580c;
+  border-left: 4px solid var(--primary);
   padding-left: 1rem;
   margin: 1.5rem 0;
   color: #64748b;
@@ -455,12 +486,12 @@ p {
 }
 
 .blog-content a {
-  color: #ea580c;
+  color: var(--primary);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .blog-content a:hover {
-  color: #c2410c;
+  color: var(--primary-hover);
 }

@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -18,8 +18,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const outfit = Outfit({
+// SRS §12.2: a modern grotesque with automotive character for headings (600–800).
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
   variable: "--font-heading",
   display: "swap",
 });
@@ -28,7 +30,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#ea580c",
+  themeColor: "#0b5fff",
 };
 
 export const metadata: Metadata = {
@@ -118,10 +120,10 @@ export default function RootLayout({
   return (
     <html
       lang="en-AU"
-      className={`${inter.variable} ${outfit.variable} h-full antialiased`}
+      className={`${inter.variable} ${jakarta.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full bg-slate-50 text-slate-950 font-sans tracking-tight">
+      <body className="min-h-full bg-background text-foreground font-sans tracking-tight">
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <>
             <Script
