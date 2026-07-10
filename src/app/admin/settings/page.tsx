@@ -17,7 +17,6 @@ function maskSecret(value: string | undefined, visible = 4) {
 export default async function AdminSettingsPage() {
   await requireAdmin();
 
-  const stripeKey = optionalEnv("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY");
   const mapsKey = optionalEnv("NEXT_PUBLIC_GOOGLE_MAPS_API_KEY");
 
   return (
@@ -51,16 +50,6 @@ export default async function AdminSettingsPage() {
                 .
               </p>
             </div>
-            <div className="rounded-lg border border-border p-4">
-              <p className="font-medium text-foreground">Vendor approval</p>
-              <p className="text-muted-foreground mt-1">
-                Manual review is required for new vendors and listings. Use the{" "}
-                <Link href="/admin/vendors" className="text-primary hover:underline">
-                  vendor queue
-                </Link>
-                .
-              </p>
-            </div>
           </CardContent>
         </Card>
 
@@ -72,15 +61,6 @@ export default async function AdminSettingsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Stripe publishable key</label>
-              <input
-                type="text"
-                value={maskSecret(stripeKey)}
-                disabled
-                className="mt-1 block w-full rounded-lg border border-border bg-muted px-3 py-2 text-foreground sm:text-sm"
-              />
-            </div>
             <div>
               <label className="text-sm font-medium text-muted-foreground">Google Maps API key</label>
               <input

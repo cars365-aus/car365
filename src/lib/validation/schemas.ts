@@ -1,6 +1,19 @@
 import { z } from "zod";
-import { WEEKDAYS } from "@/lib/whatsapp/business-hours";
 import { VEHICLE_FEATURES } from "@/lib/vehicle-badges";
+
+// NOTE: this whole file is superseded in Phase 2 (split into vehicle/lead/content
+// validation modules for the used-car pivot). WEEKDAYS was previously imported from
+// the now-removed WhatsApp bot subsystem; inlined here to keep the tree compiling
+// until the Phase 2 rewrite deletes the WhatsApp-bot schemas below.
+const WEEKDAYS = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const;
 
 /**
  * Validates an Australian Business Number (ABN) using the ATO checksum algorithm.

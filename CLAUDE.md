@@ -2,6 +2,22 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> ## ⚠️ ACTIVE PIVOT — read this first
+> This project is mid-transformation from a **multi-tenant car-RENTAL marketplace SaaS**
+> into a **single-company-owned USED-CAR SALES lead-generation website**. Much of the
+> architecture described below (vendor organizations, `organization_members`/branches
+> tenancy, Stripe subscriptions/billing, rental bookings, the `customer`/`vendor` app
+> boundaries, the WhatsApp auto-responder bot, customer-submitted reviews) is being
+> **removed or replaced** and is stale.
+>
+> - New product spec: `Used-Car-Marketplace-SRS-BRD.docx` (the source of truth).
+> - Transformation plan (phased): `C:\Users\yadav\.claude\plans\hey-so-have-streamed-ladybug.md`.
+> - Target model: two boundaries only — `(public)` buyer site + `admin` staff panel;
+>   no buyer accounts; inventory is vehicles-for-**sale**; leads/enquiries pipeline;
+>   testimonials (admin-entered); brand-new Supabase project (fresh schema).
+> - Work is on branch `used-car-pivot`. Sections below are being rewritten phase by
+>   phase; trust the SRS + plan over anything below until this banner is removed in Phase 8.
+
 @AGENTS.md
 
 ## Commands

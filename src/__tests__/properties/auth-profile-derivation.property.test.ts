@@ -6,19 +6,21 @@ import type { User } from "@supabase/supabase-js";
 // Feature: multi-method-auth, Property 5: Profile derivation is total and null-safe across all user shapes
 
 describe("deriveProfileFromUser (Property 5)", () => {
+  // fast-check v4 removed the `withDeletedKeys` option; `requiredKeys: []`
+  // is the modern equivalent (every key is optional and may be absent).
   const userMetadataArb = fc.record({
     full_name: fc.option(fc.string(), { nil: undefined }),
     name: fc.option(fc.string(), { nil: undefined }),
     avatar_url: fc.option(fc.webUrl(), { nil: undefined }),
     picture: fc.option(fc.webUrl(), { nil: undefined }),
-  }, { withDeletedKeys: true });
+  }, { requiredKeys: [] });
 
   const userArb = fc.record({
     id: fc.uuid(),
     email: fc.option(fc.emailAddress(), { nil: undefined }),
     phone: fc.option(fc.string(), { nil: undefined }),
     user_metadata: fc.option(userMetadataArb, { nil: undefined }),
-  }, { withDeletedKeys: true }).map(u => u as User);
+  }, { requiredKeys: [] }).map(u => u as unknown as User);
 
   it("derives a valid ProfileUpsert payload without throwing for any user shape", () => {
     fc.assert(

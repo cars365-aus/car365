@@ -11,7 +11,6 @@ import { EnquiryWidget } from "@/components/enquiry-widget";
 import { ImageGallery } from "@/components/image-gallery";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { planHasFeature } from "@/lib/plan-features";
-import ReviewSection from "@/components/review-section";
 import { ScrollIndicator } from "@/components/scroll-indicator";
 import { StickyCtaNotifier } from "@/components/sticky-cta-notifier";
 import { Card, CardContent } from "@/components/ui/card";
@@ -393,18 +392,9 @@ export default async function VehicleDetailPage({
               </CardContent>
             </Card>
 
-            {/* Reviews Section */}
-            <Card variant="elevated">
-              <CardContent className="p-6 md:p-8">
-                <ReviewSection
-                  organizationId={vehicle.organization_id}
-                  vehicleId={vehicle.id}
-                  initialReviews={safeReviews}
-                  isLoggedIn={!!user}
-                  userName={userProfile?.name}
-                />
-              </CardContent>
-            </Card>
+            {/* Reviews section removed in the used-car pivot (customer-submitted
+                reviews replaced by admin-managed testimonials). This whole VDP is
+                rewritten against the new schema in Phase 3. */}
           </div>
 
           {/* RIGHT: Sticky sidebar */}
