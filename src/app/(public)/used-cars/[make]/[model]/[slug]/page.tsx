@@ -1,12 +1,12 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Phone, MessageCircle, Mail, ShieldCheck, BadgeCheck, Handshake, CircleDollarSign } from "lucide-react";
+import { ShieldCheck, BadgeCheck, Handshake, CircleDollarSign } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { VehicleGallery } from "@/components/vehicle-gallery";
 import { VehicleCard } from "@/components/vehicle-card";
+import { VdpLeadActions } from "@/components/leads/vdp-lead-actions";
 import { getVehicleBySlug, getSimilarVehicles } from "@/lib/data/inventory";
 import { getFinanceParams, getPhoneNumbers } from "@/lib/data/settings";
 import { estimateRepayments } from "@/lib/finance";
@@ -181,20 +181,17 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
                 ) : null}
 
                 {!isSold ? (
-                  <div className="mt-5 space-y-2">
-                    {phone ? (
-                      <a href={`tel:${phone}`} className="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 font-semibold text-primary-foreground hover:bg-primary-hover">
-                        <Phone className="size-5" /> Call {phone}
-                      </a>
-                    ) : null}
-                    {whatsapp ? (
-                      <a href={buildWhatsAppUrl(whatsapp, waMessage)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-lg bg-success px-4 py-3 font-semibold text-white hover:opacity-90">
-                        <MessageCircle className="size-5" /> WhatsApp
-                      </a>
-                    ) : null}
-                    <Link href="/contact" className="flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-3 font-semibold text-foreground hover:bg-muted">
-                      <Mail className="size-5" /> Enquire
-                    </Link>
+                  <div className="mt-5">
+                    <VdpLeadActions
+                      vehicleId={v.id}
+                      vehicleTitle={title}
+                      phone={phone}
+                      whatsappUrl={whatsapp ? buildWhatsAppUrl(whatsapp, waMessage) : null}
+                      showInspection={v.inspectionAvailable}
+                      showFinance={v.financeAvailable}
+                      showTradeIn={v.tradeInWelcome}
+                      variant="card"
+                    />
                   </div>
                 ) : (
                   <Link href="/used-cars" className="mt-5 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 font-semibold text-primary-foreground hover:bg-primary-hover">
@@ -223,20 +220,14 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
 
       {/* Sticky mobile CTA bar */}
       {!isSold ? (
-        <div className="sticky bottom-0 z-40 flex gap-2 border-t border-border bg-card p-3 lg:hidden">
-          {phone ? (
-            <a href={`tel:${phone}`} className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground">
-              <Phone className="size-4" /> Call
-            </a>
-          ) : null}
-          {whatsapp ? (
-            <a href={buildWhatsAppUrl(whatsapp, waMessage)} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-success px-3 py-2.5 text-sm font-semibold text-white">
-              <MessageCircle className="size-4" /> WhatsApp
-            </a>
-          ) : null}
-          <Link href="/contact" className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border px-3 py-2.5 text-sm font-semibold text-foreground">
-            <Mail className="size-4" /> Enquire
-          </Link>
+        <div className="sticky bottom-0 z-40 border-t border-border bg-card p-3 lg:hidden">
+          <VdpLeadActions
+            vehicleId={v.id}
+            vehicleTitle={title}
+            phone={phone}
+            whatsappUrl={whatsapp ? buildWhatsAppUrl(whatsapp, waMessage) : null}
+            variant="sticky"
+          />
         </div>
       ) : null}
 

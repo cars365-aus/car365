@@ -250,7 +250,7 @@ export const getVehicleBySlug = unstable_cache(
   async (slug: string): Promise<VehicleDetail | null> => {
     const supabase = createAdminClient();
     const supabaseUrl = requireEnv("NEXT_PUBLIC_SUPABASE_URL").trim();
-    const { data: row } = await supabase
+    const { data: row, error } = await supabase
       .from("vehicles")
       .select(`
         id, stock_id, slug, make_id, model_id, variant, year, mileage_km,
@@ -270,6 +270,10 @@ export const getVehicleBySlug = unstable_cache(
       .in("status", PUBLIC_STATUSES)
       .maybeSingle();
 
+    // Throw on a real DB error so unstable_cache does NOT cache a transient
+    // failure as a permanent null (which would 404 the VDP until cache expiry).
+    // A genuine "not found" (no error, no row) still caches null, as intended.
+    if (error) throw new Error(`getVehicleBySlug failed: ${error.message}`);
     if (!row) return null;
     const r = row as RawRow;
     const base = toListItem(r, supabaseUrl);

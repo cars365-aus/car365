@@ -22,9 +22,11 @@ const leadEnvelope = z.object({
   email: optionalEmail,
   message,
   consent: z.boolean().optional(),
-  // Anti-spam (SRS §9.20): honeypot must stay empty; formRenderedAt drives the
-  // minimum time-to-submit check on the server.
-  website: z.string().max(0).optional(), // honeypot
+  // Anti-spam (SRS §9.20): honeypot is accepted (any value) so a bot that fills
+  // it still gets a silent success — the server quarantines it as spam rather
+  // than returning a validation error that teaches the bot what tripped it.
+  // formRenderedAt drives the minimum time-to-submit check.
+  website: z.string().optional(), // honeypot
   formRenderedAt: z.number().int().optional(),
   turnstileToken: z.string().optional(),
   // Attribution captured client-side.
