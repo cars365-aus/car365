@@ -1,163 +1,130 @@
 import Link from "next/link";
-import { MapPin } from "lucide-react";
-import { BrandLogo } from "@/components/brand-logo";
-import { FacebookIcon, InstagramIcon, LinkedinIcon, XIcon } from "@/components/icons";
-import { resolveSocialUrl, SOCIAL_URLS } from "@/lib/social-links";
+import { Phone, Mail, MapPin, Star } from "lucide-react";
+import { getMakes } from "@/lib/data/inventory";
+import { getPhoneNumbers, getCompanyProfile } from "@/lib/data/settings";
+import { NewsletterForm } from "@/components/newsletter-form";
+import {
+  NAV_BODY_TYPES,
+  BODY_TYPE_LABELS,
+  BUDGET_BANDS,
+  bodyTypeHref,
+  budgetHref,
+  makeHref,
+} from "@/lib/nav";
 
-const footerLinks = {
-  product: [
-    { label: "How It Works", href: "/how-it-works" },
-    { label: "Browse Cars", href: "/search" },
-    { label: "Operators Directory", href: "/vendors" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "List Your Fleet", href: "/for-vendors" },
-  ],
-  company: [
-    { label: "About Us", href: "/about" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact Us", href: "/contact" },
-  ],
-  legal: [
-    { label: "Privacy Policy", href: "/legal/privacy" },
-    { label: "Terms of Service", href: "/legal/terms" },
-    { label: "Rules & Guidelines", href: "/legal/rules" },
-  ],
-  support: [
-    { label: "Contact Us", href: "/contact" },
-    { label: "FAQs", href: "/faq" },
-  ],
-};
-
-const popularLocations = [
-  { label: "Sydney", href: "/search?city=Sydney" },
-  { label: "Melbourne", href: "/search?city=Melbourne" },
-  { label: "Brisbane", href: "/search?city=Brisbane" },
-  { label: "Perth", href: "/search?city=Perth" },
-  { label: "Adelaide", href: "/search?city=Adelaide" },
-  { label: "Gold Coast", href: "/search?city=Gold%20Coast" },
+const COMPANY_LINKS = [
+  { href: "/about", label: "About Us" },
+  { href: "/testimonials", label: "Testimonials" },
+  { href: "/blog", label: "Blog" },
+  { href: "/faqs", label: "FAQs" },
+  { href: "/contact", label: "Contact" },
 ];
 
-// Footer nav columns. Rendered with a shared layout so every link keeps a
-// 44x44px touch target on all viewports, including tablet (Req 1.4).
-const footerColumns: { title: string; links: { label: string; href: string }[] }[] = [
-  { title: "Product", links: footerLinks.product },
-  { title: "Company", links: footerLinks.company },
-  { title: "Legal", links: footerLinks.legal },
-  { title: "Support", links: footerLinks.support },
+const LEGAL_LINKS = [
+  { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms & Conditions" },
 ];
 
-// Touch-target friendly link styles for footer nav. min-h-[44px] + flex keeps
-// the tappable area >= 44px tall at every breakpoint (no md:inline collapse).
-const footerLinkClass =
-  "flex items-center py-1 text-sm text-slate-400 hover:text-white transition-colors";
+export async function SiteFooter() {
+  const [makes, phones, company] = await Promise.all([
+    getMakes(),
+    getPhoneNumbers(),
+    getCompanyProfile(),
+  ]);
+  const popularMakes = makes.filter((m) => m.isPopular).slice(0, 8);
+  const phone = phones.primary || null;
+  const email = (company.email as string) || null;
+  const rating = company.google_rating as number | undefined;
+  const reviewCount = company.google_review_count as number | undefined;
+  const tradingName = (company.trading_name as string) || "Car365";
 
-
-
-// Social links are env-driven so we never ship placeholder ("#") links.
-// Configure the optional NEXT_PUBLIC_SOCIAL_* vars to surface each icon; any
-// link left unset falls back to the known brand profile (or is hidden).
-// resolveSocialUrl treats empty/whitespace/"#" env values as unset.
-const socialLinks = [
-  { icon: XIcon, href: resolveSocialUrl(process.env.NEXT_PUBLIC_SOCIAL_X_URL), label: "Twitter / X" },
-  { icon: FacebookIcon, href: resolveSocialUrl(process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK_URL, SOCIAL_URLS.facebook), label: "Facebook" },
-  { icon: InstagramIcon, href: resolveSocialUrl(process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL, SOCIAL_URLS.instagram), label: "Instagram" },
-  { icon: LinkedinIcon, href: resolveSocialUrl(process.env.NEXT_PUBLIC_SOCIAL_LINKEDIN_URL, SOCIAL_URLS.linkedin), label: "LinkedIn" },
-].filter((s): s is { icon: typeof XIcon; href: string; label: string } =>
-  typeof s.href === "string" && s.href.trim().length > 0,
-);
-
-export function SiteFooter() {
   return (
-    <footer className="bg-[#0f172a] text-white">
-      {/* Main Footer Content */}
-      <div className="mx-auto max-w-[1280px] px-4 md:px-6 lg:px-8 py-10 md:py-12">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-6">
-          {/* Brand Column */}
-          <div className="lg:col-span-2">
-            <Link
-              href="/"
-              className="inline-flex items-center rounded-md bg-white px-2 py-1 shadow-sm transition-opacity hover:opacity-95 w-fit"
-            >
-              <BrandLogo
-                className="h-[40px] w-[130px]"
-                imageClassName="rounded-sm"
-              />
-            </Link>
-            <p className="mt-6 max-w-xs text-sm leading-relaxed text-slate-400">
-              Australia's trusted premium marketplace for verified car
-              rental operators. Connect with local fleet owners for your next
-              journey.
+    <footer className="border-t border-border bg-accent-dark text-slate-300">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        {/* Link hubs */}
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-6">
+          <div className="col-span-2 lg:col-span-2">
+            <span className="font-heading text-xl font-extrabold text-white">
+              Car<span className="text-primary">365</span>
+            </span>
+            <p className="mt-3 max-w-xs text-sm text-slate-400">
+              Quality used cars, honestly inspected and backed by a team that answers fast.
             </p>
-
-            {/* Popular Locations */}
-            <div className="mt-8">
-              <h4 className="!text-xs font-bold uppercase tracking-widest text-slate-300 mb-4">
-                Popular Locations
-              </h4>
-              <ul className="grid grid-cols-2 gap-2">
-                {popularLocations.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="flex items-center gap-1.5 py-1 text-sm text-slate-400 hover:text-white transition-colors"
-                    >
-                      <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Link Columns */}
-          {footerColumns.map((column) => (
-            <div key={column.title}>
-              <h4 className="!text-xs font-bold uppercase tracking-widest text-slate-300 mb-4">
-                {column.title}
-              </h4>
-              <ul className="space-y-1">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <Link href={link.href} className={footerLinkClass}>
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="border-t border-slate-800">
-        <div className="mx-auto max-w-[1280px] px-4 md:px-6 lg:px-8 py-6">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            {/* Copyright */}
-            <p className="text-sm text-slate-400">
-              &copy; {new Date().getFullYear()} Hire Car Marketplace. All rights
-              reserved.
-            </p>
-
-            {/* Social Media Links */}
-            {socialLinks.length > 0 && (
-              <div className="flex items-center gap-3">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-11 w-11 items-center justify-center rounded-lg bg-slate-800 text-slate-400 hover:bg-primary hover:text-white transition-colors"
-                    aria-label={social.label}
-                  >
-                    <social.icon className="h-4 w-4" aria-hidden="true" />
-                  </a>
-                ))}
+            {rating ? (
+              <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2 text-sm">
+                <Star className="size-4 fill-warning text-warning" />
+                <span className="font-semibold text-white">{rating}</span>
+                {reviewCount ? <span className="text-slate-400">({reviewCount} Google reviews)</span> : null}
               </div>
-            )}
+            ) : null}
+            <div className="mt-4 space-y-2 text-sm">
+              {phone ? (
+                <a href={`tel:${phone}`} className="flex items-center gap-2 hover:text-white"><Phone className="size-4" />{phone}</a>
+              ) : null}
+              {email ? (
+                <a href={`mailto:${email}`} className="flex items-center gap-2 hover:text-white"><Mail className="size-4" />{email}</a>
+              ) : null}
+            </div>
           </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-white">Browse by make</h3>
+            <ul className="space-y-2 text-sm">
+              {popularMakes.map((m) => (
+                <li key={m.slug}><Link href={makeHref(m.slug)} className="hover:text-white">{m.name}</Link></li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-white">By body type</h3>
+            <ul className="space-y-2 text-sm">
+              {NAV_BODY_TYPES.slice(0, 6).map((b) => (
+                <li key={b}><Link href={bodyTypeHref(b)} className="hover:text-white">{BODY_TYPE_LABELS[b]}</Link></li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-white">By budget</h3>
+            <ul className="space-y-2 text-sm">
+              {BUDGET_BANDS.map((b) => (
+                <li key={b.max}><Link href={budgetHref(b.max)} className="hover:text-white">{b.label}</Link></li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-white">Company</h3>
+            <ul className="space-y-2 text-sm">
+              {COMPANY_LINKS.map((l) => (
+                <li key={l.href}><Link href={l.href} className="hover:text-white">{l.label}</Link></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Newsletter */}
+        <div className="mt-10 rounded-xl border border-white/10 bg-white/5 p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h3 className="font-heading text-lg font-bold text-white">New arrivals in your inbox</h3>
+              <p className="text-sm text-slate-400">Be first to see cars that match what you&apos;re after.</p>
+            </div>
+            <div className="w-full max-w-md"><NewsletterForm /></div>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-sm text-slate-400 md:flex-row">
+          <p className="flex items-center gap-2">
+            <MapPin className="size-4" /> © {tradingName}. All rights reserved.
+          </p>
+          <ul className="flex gap-4">
+            {LEGAL_LINKS.map((l) => (
+              <li key={l.href}><Link href={l.href} className="hover:text-white">{l.label}</Link></li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

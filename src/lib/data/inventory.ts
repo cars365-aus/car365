@@ -36,12 +36,14 @@ const PUBLIC_STATUSES = ["available", "reserved", "sold"] as const;
 const PER_PAGE = 24;
 
 // PostgREST embeds we reuse for card projections.
+// makes/models are !inner so filtering on their columns (e.g. makes.slug) also
+// restricts the parent vehicle rows. locations stays a left join (nullable FK).
 const CARD_SELECT = `
   id, stock_id, slug, variant, year, mileage_km, fuel_type, transmission, body_type,
   price, previous_price, weekly_estimate, status, is_featured, published_at, sold_at,
   roadworthy_included, finance_available, trade_in_welcome,
-  makes:make_id ( name, slug ),
-  models:model_id ( name, slug ),
+  makes:make_id!inner ( name, slug ),
+  models:model_id!inner ( name, slug ),
   locations:location_id ( city ),
   vehicle_images ( alt_text, sort_order, is_cover, media_assets:media_id ( storage_key ) )
 `;
@@ -83,6 +85,7 @@ function toListItem(row: RawRow, supabaseUrl: string): VehicleListItem {
     weeklyEstimate: row.weekly_estimate != null ? Number(row.weekly_estimate) : null,
     status: row.status,
     isFeatured: !!row.is_featured,
+    isNewArrival: row.published_at ? Date.now() - new Date(row.published_at).getTime() < 7 * 864e5 : false,
     coverImageUrl: coverUrl,
     coverImageAlt: cover.alt,
     city: row.locations?.city ?? null,
@@ -111,7 +114,8 @@ function applyFilters<T>(query: T, f: VehicleFilters): T {
   if (f.yearMin != null) q = q.gte("year", f.yearMin);
   if (f.yearMax != null) q = q.lte("year", f.yearMax);
   if (f.kmMax != null) q = q.lte("mileage_km", f.kmMax);
-  if (f.city) q = q.eq("locations.city", f.city);
+  // NOTE: city is resolved to location_ids by the caller (locations is a left
+  // join, so an embedded-column filter wouldn't restrict parent rows here).
   if (f.q) q = q.textSearch("search_tsv", f.q, { type: "websearch" });
   return q as T;
 }
@@ -158,15 +162,27 @@ export async function getVehicleListing(
   const from = (page - 1) * perPage;
   const to = from + perPage - 1;
 
+  // Resolve a city filter to location ids (locations is a left join, so it can't
+  // be filtered as an embedded column on the parent query).
+  let locationIds: string[] | null = null;
+  if (filters.city) {
+    const { data: locs } = await supabase.from("locations").select("id").eq("city", filters.city);
+    locationIds = ((locs ?? []) as RawRow[]).map((l) => l.id);
+    if (locationIds.length === 0) {
+      return { items: [], total: 0, page, perPage, facets: { make: [], bodyType: [], fuelType: [], transmission: [] } };
+    }
+  }
+  const withCity = <T,>(q: T): T => (locationIds ? (q as any).in("location_id", locationIds) : q);
+
   const base = supabase.from("vehicles").select(CARD_SELECT, { count: "exact" }).in("status", PUBLIC_STATUSES);
-  const { data, count } = await applySort(applyFilters(base, filters), sort).range(from, to);
+  const { data, count } = await applySort(withCity(applyFilters(base, filters)), sort).range(from, to);
 
   // Facets over the same filter set (bounded columns; fine at V1 scale).
   const facetBase = supabase
     .from("vehicles")
-    .select("body_type, fuel_type, transmission, makes:make_id ( name, slug )")
+    .select("body_type, fuel_type, transmission, makes:make_id!inner ( name, slug )")
     .in("status", PUBLIC_STATUSES);
-  const { data: facetRows } = await applyFilters(facetBase, filters);
+  const { data: facetRows } = await withCity(applyFilters(facetBase, filters));
   const rows = (facetRows ?? []) as RawRow[];
 
   const makeTally = new Map<string, { label: string; count: number }>();

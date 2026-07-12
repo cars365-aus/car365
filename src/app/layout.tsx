@@ -5,7 +5,6 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { MobileStateProvider } from "@/components/mobile-state-provider";
 import { MobileAnimationProvider } from "@/components/mobile-animation-provider";
 import { ScrollToTop } from "@/components/scroll-to-top";
@@ -35,18 +34,18 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "HireCar Marketplace — Premium car rental. Without the premium price.",
-    template: "%s | HireCar Marketplace",
+    default: "Car365 — Quality Used Cars, Honestly Inspected",
+    template: "%s | Car365",
   },
   description:
-    "Premium car rental. Without the premium price. Australia's trusted marketplace for verified car rental operators. Compare vehicles from independent fleet owners for your next journey.",
-  keywords: ["car rental", "car hire", "Australia", "Sydney", "Melbourne", "Brisbane", "Perth", "rental marketplace"],
-  metadataBase: new URL("https://www.hirecarmarketplace.com.au"),
+    "Browse quality, inspected used cars for sale. Transparent pricing, finance available, trade-ins welcome, and a team that answers fast.",
+  keywords: ["used cars", "cars for sale", "second hand cars", "used SUV", "used ute", "car finance", "trade-in"],
+  metadataBase: new URL("https://www.car365.example"),
   alternates: {
     canonical: "/",
   },
   manifest: "/manifest.json",
-  applicationName: "HireCar",
+  applicationName: "Car365",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -74,27 +73,26 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_AU",
-    url: "https://www.hirecarmarketplace.com.au",
-    siteName: "HireCar Marketplace",
-    title: "HireCar Marketplace — Premium car rental.",
+    url: "https://www.car365.example",
+    siteName: "Car365",
+    title: "Car365 — Quality Used Cars, Honestly Inspected",
     description:
-      "Premium car rental. Without the premium price. Compare vehicles from verified Australian rental operators.",
+      "Quality, inspected used cars for sale with transparent pricing, finance, and trade-ins welcome.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "HireCar Marketplace — Premium Car Rental in Australia",
+        alt: "Car365 — Quality Used Cars for Sale",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "HireCar Marketplace — Premium car rental.",
+    title: "Car365 — Quality Used Cars, Honestly Inspected",
     description:
-      "Premium car rental. Without the premium price. Compare vehicles from verified Australian rental operators.",
+      "Quality, inspected used cars for sale with transparent pricing, finance, and trade-ins welcome.",
     images: ["/og-image.jpg"],
-    creator: "@hirecarau",
   },
   robots: {
     index: true,
@@ -145,7 +143,6 @@ export default function RootLayout({
         <MobileStateProvider>
           <MobileAnimationProvider>
             {children}
-            <WhatsAppFloat phone="61434930437" />
             <ScrollToTop />
             <PwaInstallBanner />
           </MobileAnimationProvider>

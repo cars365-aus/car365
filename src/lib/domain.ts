@@ -96,6 +96,7 @@ export type VehicleListItem = {
   weeklyEstimate: number | null;
   status: VehicleStatus;
   isFeatured: boolean;
+  isNewArrival: boolean; // published within the last 7 days (computed at fetch)
   coverImageUrl: string | null;
   coverImageAlt: string | null;
   city: string | null;
