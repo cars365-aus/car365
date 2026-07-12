@@ -347,6 +347,25 @@ export const getVehicleBySlug = unstable_cache(
   { revalidate: 900, tags: ["vehicles", "public"] },
 );
 
+/** Minimal vehicle context for lead pages reached via ?vehicle={id}. */
+export async function getVehicleLeadContext(
+  id: string,
+): Promise<{ id: string; title: string; price: number } | null> {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("vehicles")
+    .select("id, year, variant, price, makes:make_id ( name ), models:model_id ( name )")
+    .eq("id", id)
+    .maybeSingle();
+  if (!data) return null;
+  const r = data as RawRow;
+  return {
+    id: r.id,
+    title: `${r.year} ${r.makes?.name ?? ""} ${r.models?.name ?? ""}${r.variant ? ` ${r.variant}` : ""}`.trim(),
+    price: Number(r.price),
+  };
+}
+
 export async function getSimilarVehicles(
   vehicle: Pick<VehicleDetail, "id" | "bodyType" | "price">,
   limit = 6,

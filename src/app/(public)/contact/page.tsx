@@ -1,109 +1,94 @@
+import type { Metadata } from "next";
+import { Phone, Mail, MessageCircle, MapPin, Clock } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { ContactForm } from "@/components/contact-form";
-import { MotionScroll } from "@/components/motion-scroll";
-import { Mail, MapPin, Phone, Clock, Headphones } from "lucide-react";
-import { Metadata } from "next";
+import { GeneralContactForm } from "@/components/leads/general-contact-form";
+import { getPhoneNumbers, getCompanyProfile } from "@/lib/data/settings";
+import { getActiveLocations } from "@/lib/data/locations";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "Contact Us | HireCar Marketplace",
-  description: "Get in touch with the HireCar Marketplace team for support or inquiries.",
+  title: "Contact Us",
+  description: "Get in touch — call, WhatsApp, or send us a message. We reply fast during business hours.",
 };
 
-export default function ContactPage() {
+export const revalidate = 3600;
+
+const DAY_LABELS: Record<string, string> = {
+  mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday",
+  fri: "Friday", sat: "Saturday", sun: "Sunday",
+};
+
+export default async function ContactPage() {
+  const [phones, company, locations] = await Promise.all([
+    getPhoneNumbers(),
+    getCompanyProfile(),
+    getActiveLocations(),
+  ]);
+  const phone = phones.primary || null;
+  const email = (company.email as string) || null;
+  const whatsappUrl = phones.whatsapp ? buildWhatsAppUrl(phones.whatsapp, "Hi, I have a question.") : null;
+  const branch = locations[0] ?? null;
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <>
       <SiteHeader />
-      
-      <main className="flex-1 pt-24 pb-20">
-        {/* Elegant Hero Section */}
-        <section className="bg-gradient-to-b from-white to-slate-50 border-b border-slate-200/50 py-16 md:py-24">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-            <MotionScroll variant="fade-up">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-[#ea580c] font-bold text-sm mb-6 border border-orange-100">
-                <Headphones className="w-4 h-4" />
-                We&apos;re here to help
-              </span>
-              <h1 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tight mb-6">
-                Get in <span className="text-[#ea580c]">Touch</span>
-              </h1>
-              <p className="text-xl text-slate-600 max-w-2xl mx-auto font-medium">
-                Whether you&apos;re looking to onboard your fleet, need enterprise solutions, or just have a question, our team is ready to assist.
-              </p>
-            </MotionScroll>
-          </div>
-        </section>
+      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <header className="mb-8 max-w-2xl">
+          <h1 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">Get in touch</h1>
+          <p className="mt-3 text-body">Call, WhatsApp, or send a message — a specialist will reply fast during business hours.</p>
+        </header>
 
-        {/* Contact Content Grid */}
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
-            
-            {/* Left Column: Contact Info */}
-            <MotionScroll variant="fade-up" delay={0.2} className="lg:col-span-5 space-y-6">
-              <div className="bg-white rounded-[2rem] p-8 md:p-10 shadow-xl border border-slate-100/50 h-full">
-                <h3 className="text-2xl font-bold text-slate-900 mb-8">Contact Information</h3>
-                
-                <div className="space-y-8">
-                  <div className="flex gap-5">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-[#ea580c]">
-                      <Mail className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h4 className="text-base font-bold text-slate-900">Email Us</h4>
-                      <p className="mt-1 text-sm text-slate-500 mb-2">Our friendly team is here to help.</p>
-                      <a href="mailto:support@hirecarmarketplace.com.au" className="text-[#ea580c] font-semibold hover:text-[#c2410c] transition-colors">support@hirecarmarketplace.com.au</a>
-                    </div>
-                  </div>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {phone ? (
+                <a href={`tel:${phone}`} className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 hover:shadow-md">
+                  <Phone className="size-5 text-primary" /><div><p className="text-xs text-muted-foreground">Call us</p><p className="font-semibold text-foreground">{phone}</p></div>
+                </a>
+              ) : null}
+              {whatsappUrl ? (
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 hover:shadow-md">
+                  <MessageCircle className="size-5 text-success" /><div><p className="text-xs text-muted-foreground">WhatsApp</p><p className="font-semibold text-foreground">Message us</p></div>
+                </a>
+              ) : null}
+              {email ? (
+                <a href={`mailto:${email}`} className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 hover:shadow-md sm:col-span-2">
+                  <Mail className="size-5 text-primary" /><div><p className="text-xs text-muted-foreground">Email</p><p className="font-semibold text-foreground">{email}</p></div>
+                </a>
+              ) : null}
+            </div>
 
-                  <div className="flex gap-5">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                      <MapPin className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h4 className="text-base font-bold text-slate-900">Office</h4>
-                      <p className="mt-1 text-sm text-slate-500 mb-2">Come say hello at our HQ.</p>
-                      <p className="font-semibold text-slate-700">100 George Street<br/>Sydney NSW 2000<br/>Australia</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-5">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-                      <Phone className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h4 className="text-base font-bold text-slate-900">Phone</h4>
-                      <p className="mt-1 text-sm text-slate-500 mb-2">Mon-Fri from 8am to 5pm.</p>
-                      <a href="tel:0434930437" className="font-semibold text-slate-700 hover:text-emerald-600 transition-colors">0434 930 437</a>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-5">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-purple-50 text-purple-600">
-                      <Clock className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h4 className="text-base font-bold text-slate-900">Support Hours</h4>
-                      <p className="mt-1 text-sm text-slate-500">24/7 support available for active rentals. General inquiries handled during business hours.</p>
-                    </div>
+            {branch ? (
+              <div className="rounded-xl border border-border bg-card p-5">
+                <div className="flex items-start gap-3">
+                  <MapPin className="size-5 flex-none text-primary" />
+                  <div>
+                    <p className="font-semibold text-foreground">{branch.name}</p>
+                    <p className="text-sm text-body">{branch.address}, {branch.city} {branch.state} {branch.postcode}</p>
                   </div>
                 </div>
+                {Object.keys(branch.hours).length > 0 ? (
+                  <div className="mt-4 border-t border-border pt-4">
+                    <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground"><Clock className="size-4" /> Opening hours</p>
+                    <ul className="space-y-1 text-sm text-body">
+                      {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].filter((d) => branch.hours[d]).map((d) => (
+                        <li key={d} className="flex justify-between"><span>{DAY_LABELS[d]}</span><span className="tabular-nums">{branch.hours[d] === "closed" ? "Closed" : branch.hours[d]}</span></li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
               </div>
-            </MotionScroll>
-
-            {/* Right Column: Contact Form */}
-            <MotionScroll variant="fade-up" delay={0.4} className="lg:col-span-7">
-              <div className="bg-white rounded-[2rem] p-8 md:p-12 shadow-xl border border-slate-100/50">
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Send us a message</h3>
-                <p className="text-slate-500 text-sm mb-8">We usually respond within 24 hours.</p>
-                <ContactForm />
-              </div>
-            </MotionScroll>
-
+            ) : null}
           </div>
-        </section>
-      </main>
 
+          <div className="rounded-xl border border-border bg-card p-6">
+            <h2 className="mb-4 font-heading text-lg font-bold text-foreground">Send us a message</h2>
+            <GeneralContactForm phone={phone} whatsappUrl={whatsappUrl} />
+          </div>
+        </div>
+      </main>
       <SiteFooter />
-    </div>
+    </>
   );
 }
