@@ -73,7 +73,7 @@ export function WhatsAppFloat({
           e.preventDefault();
           setIsDismissed(true);
         }}
-        className="absolute -top-2 -right-2 z-10 bg-white hover:bg-slate-50 text-slate-500 hover:text-slate-700 rounded-full h-6 w-6 flex items-center justify-center shadow-md border border-slate-200 transition-colors opacity-0 group-hover:opacity-100 sm:opacity-100"
+        className="absolute -top-2 -right-2 z-10 bg-card hover:bg-muted text-muted-foreground hover:text-muted-foreground rounded-full h-6 w-6 flex items-center justify-center shadow-md border border-border transition-colors opacity-0 group-hover:opacity-100 sm:opacity-100"
         aria-label="Close WhatsApp chat"
       >
         <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">

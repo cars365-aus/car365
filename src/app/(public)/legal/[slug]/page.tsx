@@ -378,7 +378,7 @@ export default async function LegalPage({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-muted">
       <SiteHeader />
       <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
         <p className="text-sm font-semibold uppercase tracking-wide text-amber-600">
@@ -389,9 +389,9 @@ export default async function LegalPage({
 
         <div className="mt-8 space-y-5">
           {policy.sections.map((section) => (
-            <section key={section.heading} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <section key={section.heading} className="rounded-lg border border-border bg-card p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-slate-950">{section.heading}</h2>
-              <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+              <div className="mt-3 space-y-3 text-sm leading-6 text-muted-foreground">
                 {section.body.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}

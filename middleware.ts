@@ -1,6 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { isVendorPreOrgPath } from "@/lib/routing";
 import { isAllowlistedAdminEmail } from "@/lib/security/admin-allowlist";
 
 export async function middleware(request: NextRequest) {
@@ -47,11 +46,8 @@ export async function middleware(request: NextRequest) {
   const isAdminRoute =
     path.startsWith("/admin") && !path.startsWith("/admin-login");
 
-  const isProtectedRoute =
-    path.startsWith("/customer") ||
-    path.startsWith("/vendor") ||
-    path.startsWith("/messages") ||
-    isAdminRoute;
+  // Only the admin panel is authenticated; the public buyer site has no login.
+  const isProtectedRoute = isAdminRoute;
 
   // OPTIMIZATION: Skip expensive auth checks on public pages
   // This drastically improves TTFB for static marketing and SEO pages
@@ -97,25 +93,6 @@ export async function middleware(request: NextRequest) {
     if (!isAuthorizedAdmin) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/"; // Redirect unauthorized users away from admin
-      return NextResponse.redirect(redirectUrl);
-    }
-  }
-
-  // Vendor zone: customers without an org see the upgrade prompt first
-  if (user && path.startsWith("/vendor") && !isVendorPreOrgPath(path)) {
-    const { count } = await supabase
-      .from("organization_members")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id);
-
-    if ((count ?? 0) === 0) {
-      const from = request.nextUrl.pathname + request.nextUrl.search;
-      const plan = request.nextUrl.searchParams.get("plan");
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = "/vendor/upgrade";
-      redirectUrl.search = "";
-      if (plan) redirectUrl.searchParams.set("plan", plan);
-      redirectUrl.searchParams.set("from", from);
       return NextResponse.redirect(redirectUrl);
     }
   }

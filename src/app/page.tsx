@@ -51,25 +51,39 @@ export default async function HomePage() {
       <SiteHeader />
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden bg-accent-dark text-white">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
+        <section className="relative overflow-hidden bg-black text-white min-h-[75vh] flex flex-col justify-center">
+          {/* Full-Width Background Image */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=2000&q=80" 
+              alt="Premium Used Car" 
+              className="h-full w-full object-cover object-center"
+            />
+            {/* Sleek Dark Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40"></div>
+            <div className="absolute inset-0 bg-black/20"></div> {/* Extra dimming for contrast */}
+          </div>
+
+          <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-24 relative z-10">
             <div className="max-w-2xl">
               {rating ? (
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm">
-                  <Star className="size-4 fill-warning text-warning" />
-                  <span className="font-semibold">{rating}</span> rated by our customers
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-4 py-2 text-sm">
+                  <Star className="size-4 fill-primary text-primary" />
+                  <span className="font-bold text-white">{rating}</span> rated by our customers
                 </div>
               ) : null}
-              <h1 className="display text-white">Quality used cars, without the second-guessing.</h1>
-              <p className="mt-4 text-lg text-slate-300">
-                Every car is ours — inspected by us, photographed honestly, and backed by a team that answers in minutes.
+              <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] text-white">
+                Dream it.<br/>Drive it.<br/>Discover it.
+              </h1>
+              <p className="mt-5 text-xl text-slate-300 font-medium">
+                Quality used cars, without the second-guessing. Inspected by us, photographed honestly, and backed by a team that answers in minutes.
               </p>
-              <div className="mt-8"><HeroSearch /></div>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Link href="/used-cars" className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 font-semibold text-primary-foreground hover:bg-primary-hover">
-                  Browse all cars <ArrowRight className="size-4" />
+              <div className="mt-8"><HeroSearch makes={makes} /></div>
+              <div className="mt-6 flex flex-wrap gap-4">
+                <Link href="/used-cars" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-lg font-bold text-primary-foreground transition-transform hover:scale-105 hover:bg-primary-hover shadow-lg shadow-primary/20">
+                  Browse all cars <ArrowRight className="size-5" />
                 </Link>
-                <Link href="/sell-your-car" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-5 py-2.5 font-semibold text-white hover:bg-white/10">
+                <Link href="/sell-your-car" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border-2 border-white/20 bg-black/30 backdrop-blur-sm px-6 text-lg font-bold text-white transition-colors hover:border-white/40 hover:bg-white/10">
                   Sell your car
                 </Link>
               </div>
@@ -92,6 +106,8 @@ export default async function HomePage() {
           </div>
         </section>
 
+
+
         {/* Featured */}
         {featured.length > 0 ? (
           <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
@@ -108,12 +124,12 @@ export default async function HomePage() {
         ) : null}
 
         {/* Browse by body type */}
-        <section className="bg-muted/40">
+        <section className="bg-[#131313] border-y border-white/5">
           <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-            <h2 className="mb-6 font-heading text-2xl font-bold text-foreground sm:text-3xl">Browse by body type</h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+            <h2 className="mb-8 text-center font-heading text-2xl font-bold text-white sm:text-3xl">Browse by body type</h2>
+            <div className="flex flex-wrap justify-center gap-4">
               {NAV_BODY_TYPES.map((b) => (
-                <Link key={b} href={bodyTypeHref(b)} className="rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-shadow hover:shadow-md">
+                <Link key={b} href={bodyTypeHref(b)} className="group relative flex items-center justify-center rounded-full border border-white/10 bg-black/40 px-6 py-3 font-semibold text-slate-300 transition-all hover:scale-105 hover:border-primary hover:bg-primary hover:text-black hover:shadow-[0_0_20px_rgba(255,204,0,0.3)]">
                   {BODY_TYPE_LABELS[b]}
                 </Link>
               ))}
@@ -123,10 +139,10 @@ export default async function HomePage() {
 
         {/* Browse by make */}
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-          <h2 className="mb-6 font-heading text-2xl font-bold text-foreground sm:text-3xl">Popular makes</h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+          <h2 className="mb-8 text-center font-heading text-2xl font-bold text-white sm:text-3xl">Popular makes</h2>
+          <div className="flex flex-wrap justify-center gap-4">
             {popularMakes.map((m) => (
-              <Link key={m.slug} href={makeHref(m.slug)} className="rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-shadow hover:shadow-md">
+              <Link key={m.slug} href={makeHref(m.slug)} className="group relative flex items-center justify-center rounded-full border border-white/10 bg-[#171717] px-8 py-3.5 text-lg font-bold text-slate-200 transition-all hover:-translate-y-1 hover:border-primary hover:text-primary hover:shadow-[0_8px_24px_rgba(255,204,0,0.15)]">
                 {m.name}
               </Link>
             ))}
@@ -134,18 +150,26 @@ export default async function HomePage() {
         </section>
 
         {/* How it works */}
-        <section className="bg-accent-dark text-white">
-          <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-            <h2 className="mb-8 font-heading text-2xl font-bold sm:text-3xl">How it works</h2>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+        <section className="bg-black border-y border-white/5 text-white overflow-hidden py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="text-center mb-20">
+              <h2 className="font-heading text-4xl font-black uppercase tracking-tight text-white sm:text-5xl">How it Works</h2>
+              <div className="mx-auto mt-6 h-1.5 w-24 bg-primary rounded-full"></div>
+            </div>
+            <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
               {STEPS.map((s, i) => (
-                <div key={s.title}>
-                  <div className="mb-3 inline-flex size-11 items-center justify-center rounded-xl bg-primary/20 text-primary">
-                    <s.icon className="size-5" />
+                <div key={s.title} className="relative group p-10 rounded-3xl border border-white/10 bg-[#0a0a0a] transition-all duration-500 hover:-translate-y-2 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(255,204,0,0.15)]">
+                  {/* Huge Watermark Number */}
+                  <div className="absolute -right-4 -top-8 text-[12rem] font-black leading-none text-white/5 transition-colors duration-500 group-hover:text-primary/10 select-none pointer-events-none">
+                    0{i + 1}
                   </div>
-                  <p className="text-sm font-semibold text-primary">Step {i + 1}</p>
-                  <h3 className="mt-1 font-heading text-lg font-bold">{s.title}</h3>
-                  <p className="mt-1 text-sm text-slate-300">{s.body}</p>
+                  <div className="relative z-10">
+                    <div className="mb-8 inline-flex size-16 items-center justify-center rounded-2xl bg-primary text-black shadow-lg shadow-primary/20">
+                      <s.icon className="size-8" />
+                    </div>
+                    <h3 className="font-heading text-2xl font-bold text-white mb-4">{s.title}</h3>
+                    <p className="text-slate-400 leading-relaxed text-lg">{s.body}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -153,28 +177,41 @@ export default async function HomePage() {
         </section>
 
         {/* Sell / Finance banners */}
-        <section className="mx-auto grid max-w-7xl grid-cols-1 gap-5 px-4 py-14 sm:px-6 md:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-card p-8">
-            <Handshake className="size-8 text-primary" />
-            <h3 className="mt-3 font-heading text-xl font-bold text-foreground">Sell or trade in your car</h3>
-            <p className="mt-2 text-body">Get a fair offer fast. Tell us a few details and we&apos;ll be in touch.</p>
-            <Link href="/sell-your-car" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 font-semibold text-primary-foreground hover:bg-primary-hover">
-              Sell your car <ArrowRight className="size-4" />
-            </Link>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-8">
-            <CircleDollarSign className="size-8 text-primary" />
-            <h3 className="mt-3 font-heading text-xl font-bold text-foreground">Finance made simple</h3>
-            <p className="mt-2 text-body">Estimate weekly repayments and let us help arrange competitive finance.</p>
-            <Link href="/finance" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 font-semibold text-primary-foreground hover:bg-primary-hover">
-              Explore finance <ArrowRight className="size-4" />
-            </Link>
+        <section className="bg-[#131313] py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              {/* Sell Banner */}
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black p-10 sm:p-14 transition-all duration-500 hover:border-primary/50 group">
+                <div className="absolute -right-20 -top-20 size-72 rounded-full bg-primary/20 blur-[100px] transition-all duration-500 group-hover:bg-primary/30"></div>
+                <div className="relative z-10">
+                  <Handshake className="size-12 text-primary mb-6" />
+                  <h3 className="font-heading text-3xl sm:text-4xl font-black text-white leading-tight">Sell or Trade In</h3>
+                  <p className="mt-4 text-lg text-slate-400 max-w-sm">Get a premium, fair-market offer on your current vehicle within 24 hours. No hassle, no games.</p>
+                  <Link href="/sell-your-car" className="mt-10 inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-xl shadow-primary/20">
+                    Get an Offer <ArrowRight className="size-5" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Finance Banner */}
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black p-10 sm:p-14 transition-all duration-500 hover:border-white/40 group">
+                <div className="absolute -left-20 -bottom-20 size-72 rounded-full bg-white/10 blur-[100px] transition-all duration-500 group-hover:bg-white/20"></div>
+                <div className="relative z-10">
+                  <CircleDollarSign className="size-12 text-white mb-6" />
+                  <h3 className="font-heading text-3xl sm:text-4xl font-black text-white leading-tight">Bespoke Finance</h3>
+                  <p className="mt-4 text-lg text-slate-400 max-w-sm">Access highly competitive, tailored finance options designed to get you behind the wheel effortlessly.</p>
+                  <Link href="/finance" className="mt-10 inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-white px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-xl shadow-white/20">
+                    Explore Options <ArrowRight className="size-5" />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Testimonials */}
         {testimonials.length > 0 ? (
-          <section className="bg-muted/40">
+          <section className="bg-[#131313] border-y border-white/5">
             <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
               <h2 className="mb-8 font-heading text-2xl font-bold text-foreground sm:text-3xl">What our customers say</h2>
               <div className="grid grid-cols-1 gap-5 md:grid-cols-3">

@@ -6,7 +6,9 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { VehicleGallery } from "@/components/vehicle-gallery";
 import { VehicleCard } from "@/components/vehicle-card";
+import { GatedPrice } from "@/components/auth/gated-price";
 import { VdpLeadActions } from "@/components/leads/vdp-lead-actions";
+import { FinanceCalculator } from "@/components/finance-calculator";
 import { getVehicleBySlug, getSimilarVehicles } from "@/lib/data/inventory";
 import { getFinanceParams, getPhoneNumbers } from "@/lib/data/settings";
 import { estimateRepayments } from "@/lib/finance";
@@ -168,17 +170,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
                 <h1 className="font-heading text-2xl font-bold leading-tight text-foreground">{title}</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Stock #{v.stockId}</p>
 
-                <div className="mt-4 flex items-baseline gap-2">
-                  <span className="font-heading text-3xl font-extrabold tabular-nums text-foreground">{formatPrice(v.price)}</span>
-                  {v.previousPrice && v.previousPrice > v.price ? (
-                    <span className="text-lg text-muted-foreground line-through tabular-nums">{formatPrice(v.previousPrice)}</span>
-                  ) : null}
-                </div>
-                {v.financeAvailable ? (
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    or approx <span className="font-semibold text-body tabular-nums">{formatPrice(weekly)}/week</span>*
-                  </p>
-                ) : null}
+                <GatedPrice price={v.price} previousPrice={v.previousPrice} />
 
                 {!isSold ? (
                   <div className="mt-5">
@@ -200,7 +192,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
                 )}
 
                 {v.financeAvailable ? (
-                  <p className="mt-4 text-xs text-muted-foreground">{financeParams.disclaimer}</p>
+                  <FinanceCalculator price={v.price} params={financeParams} />
                 ) : null}
               </div>
             </div>

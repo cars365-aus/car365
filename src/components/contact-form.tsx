@@ -78,11 +78,11 @@ export function ContactForm() {
         </p>
       )}
 
-      <label className="grid gap-1.5 text-sm font-medium text-slate-700">
+      <label className="grid gap-1.5 text-sm font-medium text-muted-foreground">
         Name
         <input
           name="name"
-          className="rounded-md border border-slate-300 px-3 py-2 font-normal"
+          className="rounded-md border border-border px-3 py-2 font-normal"
           autoComplete="name"
           required
           minLength={2}
@@ -90,11 +90,11 @@ export function ContactForm() {
         />
       </label>
 
-      <label className="grid gap-1.5 text-sm font-medium text-slate-700">
+      <label className="grid gap-1.5 text-sm font-medium text-muted-foreground">
         Email
         <input
           name="email"
-          className="rounded-md border border-slate-300 px-3 py-2 font-normal"
+          className="rounded-md border border-border px-3 py-2 font-normal"
           type="email"
           inputMode="email"
           autoComplete="email"
@@ -103,9 +103,9 @@ export function ContactForm() {
         />
       </label>
 
-      <label className="grid gap-1.5 text-sm font-medium text-slate-700">
+      <label className="grid gap-1.5 text-sm font-medium text-muted-foreground">
         Topic
-        <select name="topic" className="rounded-md border border-slate-300 px-3 py-2 font-normal" required>
+        <select name="topic" className="rounded-md border border-border px-3 py-2 font-normal" required>
           {topics.map((topic) => (
             <option key={topic.value} value={topic.value}>
               {topic.label}
@@ -114,11 +114,11 @@ export function ContactForm() {
         </select>
       </label>
 
-      <label className="grid gap-1.5 text-sm font-medium text-slate-700">
+      <label className="grid gap-1.5 text-sm font-medium text-muted-foreground">
         Message
         <textarea
           name="message"
-          className="min-h-36 rounded-md border border-slate-300 px-3 py-2 font-normal"
+          className="min-h-36 rounded-md border border-border px-3 py-2 font-normal"
           required
           minLength={10}
           maxLength={2000}

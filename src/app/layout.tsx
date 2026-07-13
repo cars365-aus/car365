@@ -7,6 +7,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { MobileStateProvider } from "@/components/mobile-state-provider";
 import { MobileAnimationProvider } from "@/components/mobile-animation-provider";
+import { AuthProvider } from "@/components/auth/auth-provider";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { PwaInstallBanner } from "@/components/pwa/pwa-install-banner";
 import { appleStartupImages } from "@/lib/pwa-splash";
@@ -29,23 +30,23 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0b5fff",
+  themeColor: "#FFCC00",
 };
 
 export const metadata: Metadata = {
   title: {
-    default: "Car365 — Quality Used Cars, Honestly Inspected",
-    template: "%s | Car365",
+    default: "Cars365 — Quality Used Cars, Honestly Inspected",
+    template: "%s | Cars365",
   },
   description:
     "Browse quality, inspected used cars for sale. Transparent pricing, finance available, trade-ins welcome, and a team that answers fast.",
   keywords: ["used cars", "cars for sale", "second hand cars", "used SUV", "used ute", "car finance", "trade-in"],
-  metadataBase: new URL("https://www.car365.example"),
+  metadataBase: new URL("https://www.cars365.example"),
   alternates: {
     canonical: "/",
   },
   manifest: "/manifest.json",
-  applicationName: "Car365",
+  applicationName: "Cars365",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -59,7 +60,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "HireCar",
+    title: "Cars365",
     startupImage: appleStartupImages,
   },
   // Legacy iOS (< 16.4) reads the apple-prefixed flag for standalone launch;
@@ -73,23 +74,23 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_AU",
-    url: "https://www.car365.example",
-    siteName: "Car365",
-    title: "Car365 — Quality Used Cars, Honestly Inspected",
+    url: "https://www.cars365.example",
+    siteName: "Cars365",
+    title: "Cars365 — Quality Used Cars, Honestly Inspected",
     description:
-      "Quality, inspected used cars for sale with transparent pricing, finance, and trade-ins welcome.",
+      "Browse premium, pre-inspected used cars with transparent pricing. Every vehicle includes a PPSR check, RWC, and 3-month statutory warranty.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Car365 — Quality Used Cars for Sale",
+        alt: "Cars365 — Quality Used Cars for Sale",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Car365 — Quality Used Cars, Honestly Inspected",
+    title: "Cars365 — Quality Used Cars, Honestly Inspected",
     description:
       "Quality, inspected used cars for sale with transparent pricing, finance, and trade-ins welcome.",
     images: ["/og-image.jpg"],
@@ -140,13 +141,15 @@ export default function RootLayout({
             </Script>
           </>
         )}
-        <MobileStateProvider>
-          <MobileAnimationProvider>
-            {children}
-            <ScrollToTop />
-            <PwaInstallBanner />
-          </MobileAnimationProvider>
-        </MobileStateProvider>
+        <AuthProvider>
+          <MobileStateProvider>
+            <MobileAnimationProvider>
+              {children}
+              <ScrollToTop />
+              <PwaInstallBanner />
+            </MobileAnimationProvider>
+          </MobileStateProvider>
+        </AuthProvider>
         <Toaster richColors position="top-right" />
         <Script id="sw-register" strategy="lazyOnload">
           {`

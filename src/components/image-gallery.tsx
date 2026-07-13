@@ -40,7 +40,7 @@ export function ImageGallery({ images }: { images: GalleryImage[] }) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="flex h-[420px] w-full flex-col items-center justify-center bg-slate-100 text-slate-400">
+      <div className="flex h-[420px] w-full flex-col items-center justify-center bg-muted text-slate-400">
         <ImageIcon className="mb-2 h-12 w-12" />
         <p>No images available</p>
       </div>
@@ -52,7 +52,7 @@ export function ImageGallery({ images }: { images: GalleryImage[] }) {
       {/* Main Image */}
       <div
         ref={galleryRef}
-        className="gallery-main-frame group relative h-[420px] w-full overflow-hidden bg-slate-100 touch-pan-y select-none"
+        className="gallery-main-frame group relative h-[420px] w-full overflow-hidden bg-muted touch-pan-y select-none"
       >
         <div
           style={{
@@ -88,14 +88,14 @@ export function ImageGallery({ images }: { images: GalleryImage[] }) {
             <button
               onClick={handlePrev}
               aria-label="Previous image"
-              className="hidden md:flex absolute left-4 top-1/2 h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-900 opacity-0 shadow-sm backdrop-blur-sm transition-opacity hover:bg-white group-hover:opacity-100 touch-target"
+              className="hidden md:flex absolute left-4 top-1/2 h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-card/80 text-foreground opacity-0 shadow-sm backdrop-blur-sm transition-opacity hover:bg-card group-hover:opacity-100 touch-target"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
             <button
               onClick={handleNext}
               aria-label="Next image"
-              className="hidden md:flex absolute right-4 top-1/2 h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-900 opacity-0 shadow-sm backdrop-blur-sm transition-opacity hover:bg-white group-hover:opacity-100 touch-target"
+              className="hidden md:flex absolute right-4 top-1/2 h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-card/80 text-foreground opacity-0 shadow-sm backdrop-blur-sm transition-opacity hover:bg-card group-hover:opacity-100 touch-target"
             >
               <ChevronRight className="h-6 w-6" />
             </button>

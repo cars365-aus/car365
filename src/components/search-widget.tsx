@@ -48,10 +48,10 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
       <div className={`${className} relative w-full max-w-5xl mx-auto`}>
         {/* Mobile View: Inline stacked search card (standard car-rental pattern) */}
         <div className="md:hidden w-full px-4">
-          <div className="bg-white p-4 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.25)] rounded-2xl flex flex-col gap-3 border border-slate-100">
+          <div className="bg-card p-4 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.25)] rounded-2xl flex flex-col gap-3 border border-border">
             {/* Where */}
-            <div className="w-full bg-slate-50 relative px-4 py-2.5 rounded-xl border border-slate-200 focus-within:border-primary focus-within:bg-white transition-colors">
-              <label className="block text-[11px] font-bold text-slate-500 mb-0.5 uppercase tracking-wide">
+            <div className="w-full bg-muted relative px-4 py-2.5 rounded-xl border border-border focus-within:border-primary focus-within:bg-card transition-colors">
+              <label className="block text-[11px] font-bold text-muted-foreground mb-0.5 uppercase tracking-wide">
                 Where
               </label>
               <LocationAutocomplete
@@ -62,14 +62,14 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
                 }}
                 placeholder={location || "City or airport"}
                 hideIcon={true}
-                inputClassName="w-full bg-transparent border-none p-0 focus:ring-0 text-base text-slate-900 font-semibold placeholder:text-slate-400 outline-none truncate"
+                inputClassName="w-full bg-transparent border-none p-0 focus:ring-0 text-base text-foreground font-semibold placeholder:text-slate-400 outline-none truncate"
               />
             </div>
 
             {/* Dates */}
             <div className="flex flex-row gap-3 w-full">
-              <div className="flex-1 min-w-0 bg-slate-50 relative px-4 py-2.5 rounded-xl border border-slate-200 focus-within:border-primary focus-within:bg-white transition-colors">
-                <label className="block text-[11px] font-bold text-slate-500 mb-0.5 uppercase tracking-wide">
+              <div className="flex-1 min-w-0 bg-muted relative px-4 py-2.5 rounded-xl border border-border focus-within:border-primary focus-within:bg-card transition-colors">
+                <label className="block text-[11px] font-bold text-muted-foreground mb-0.5 uppercase tracking-wide">
                   Pickup
                 </label>
                 <input
@@ -80,11 +80,11 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
                   value={pickupDate}
                   onChange={(e) => setPickupDate(e.target.value)}
                   min={new Date().toISOString().split("T")[0]}
-                  className="w-full bg-transparent border-none p-0 focus:ring-0 text-base text-slate-900 font-semibold outline-none appearance-none placeholder:text-slate-400"
+                  className="w-full bg-transparent border-none p-0 focus:ring-0 text-base text-foreground font-semibold outline-none appearance-none placeholder:text-slate-400"
                 />
               </div>
-              <div className="flex-1 min-w-0 bg-slate-50 relative px-4 py-2.5 rounded-xl border border-slate-200 focus-within:border-primary focus-within:bg-white transition-colors">
-                <label className="block text-[11px] font-bold text-slate-500 mb-0.5 uppercase tracking-wide">
+              <div className="flex-1 min-w-0 bg-muted relative px-4 py-2.5 rounded-xl border border-border focus-within:border-primary focus-within:bg-card transition-colors">
+                <label className="block text-[11px] font-bold text-muted-foreground mb-0.5 uppercase tracking-wide">
                   Return
                 </label>
                 <input
@@ -95,7 +95,7 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
                   value={returnDate}
                   onChange={(e) => setReturnDate(e.target.value)}
                   min={pickupDate || new Date().toISOString().split("T")[0]}
-                  className="w-full bg-transparent border-none p-0 focus:ring-0 text-base text-slate-900 font-semibold outline-none appearance-none placeholder:text-slate-400"
+                  className="w-full bg-transparent border-none p-0 focus:ring-0 text-base text-foreground font-semibold outline-none appearance-none placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -113,11 +113,11 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
         </div>
 
         {/* Desktop View: Premium Seamless Glass Pill */}
-        <div className="hidden md:flex bg-white/90 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] rounded-full h-[76px] flex-row items-center divide-x divide-slate-200/60 border border-white backdrop-blur-3xl transition-shadow hover:shadow-[0_25px_65px_-15px_rgba(0,0,0,0.2)]">
+        <div className="hidden md:flex bg-card/90 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] rounded-full h-[76px] flex-row items-center divide-x divide-slate-200/60 border border-white backdrop-blur-3xl transition-shadow hover:shadow-[0_25px_65px_-15px_rgba(0,0,0,0.2)]">
           
           {/* Location Segment */}
-          <div className="flex-[1.2] h-full flex flex-col justify-center px-8 hover:bg-slate-100/50 focus-within:bg-slate-100/80 rounded-l-full transition-colors cursor-text group relative">
-            <label className="text-[10px] font-black tracking-[0.15em] text-slate-800 uppercase mb-0.5 group-focus-within:text-orange-600 transition-colors">
+          <div className="flex-[1.2] h-full flex flex-col justify-center px-8 hover:bg-muted/50 focus-within:bg-muted/80 rounded-l-full transition-colors cursor-text group relative">
+            <label className="text-[10px] font-black tracking-[0.15em] text-foreground uppercase mb-0.5 group-focus-within:text-orange-600 transition-colors">
               Where
             </label>
             <LocationAutocomplete 
@@ -128,15 +128,15 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
               }} 
               placeholder="City or airport"
               hideIcon={true}
-              inputClassName="w-full bg-transparent border-none p-0 focus:ring-0 text-[15px] font-semibold text-slate-900 placeholder:text-slate-400 outline-none truncate"
+              inputClassName="w-full bg-transparent border-none p-0 focus:ring-0 text-[15px] font-semibold text-foreground placeholder:text-slate-400 outline-none truncate"
             />
           </div>
 
           {/* Date Segment Wrapper */}
           <div className="flex-[1.5] h-full flex flex-row divide-x divide-slate-200/60">
             {/* Pickup Date Segment */}
-            <div className="flex-1 h-full flex flex-col justify-center px-6 hover:bg-slate-100/50 focus-within:bg-slate-100/80 transition-colors cursor-text group">
-              <label className="text-[10px] font-black tracking-[0.15em] text-slate-800 uppercase mb-0.5 group-focus-within:text-orange-600 transition-colors">
+            <div className="flex-1 h-full flex flex-col justify-center px-6 hover:bg-muted/50 focus-within:bg-muted/80 transition-colors cursor-text group">
+              <label className="text-[10px] font-black tracking-[0.15em] text-foreground uppercase mb-0.5 group-focus-within:text-orange-600 transition-colors">
                 Pickup
               </label>
               <input
@@ -148,13 +148,13 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
                 value={pickupDate}
                 onChange={(e) => setPickupDate(e.target.value)}
                 min={new Date().toISOString().split("T")[0]}
-                className="w-full bg-transparent border-none p-0 focus:ring-0 text-[15px] font-semibold text-slate-900 placeholder:text-slate-400 outline-none appearance-none"
+                className="w-full bg-transparent border-none p-0 focus:ring-0 text-[15px] font-semibold text-foreground placeholder:text-slate-400 outline-none appearance-none"
               />
             </div>
 
             {/* Return Date Segment */}
-            <div className="flex-1 h-full flex flex-col justify-center px-6 hover:bg-slate-100/50 focus-within:bg-slate-100/80 transition-colors cursor-text group">
-              <label className="text-[10px] font-black tracking-[0.15em] text-slate-800 uppercase mb-0.5 group-focus-within:text-orange-600 transition-colors">
+            <div className="flex-1 h-full flex flex-col justify-center px-6 hover:bg-muted/50 focus-within:bg-muted/80 transition-colors cursor-text group">
+              <label className="text-[10px] font-black tracking-[0.15em] text-foreground uppercase mb-0.5 group-focus-within:text-orange-600 transition-colors">
                 Return
               </label>
               <input
@@ -166,22 +166,22 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
                 value={returnDate}
                 onChange={(e) => setReturnDate(e.target.value)}
                 min={pickupDate || new Date().toISOString().split("T")[0]}
-                className="w-full bg-transparent border-none p-0 focus:ring-0 text-[15px] font-semibold text-slate-900 placeholder:text-slate-400 outline-none appearance-none"
+                className="w-full bg-transparent border-none p-0 focus:ring-0 text-[15px] font-semibold text-foreground placeholder:text-slate-400 outline-none appearance-none"
               />
             </div>
           </div>
 
           {/* Vehicle Type Segment & Search Button Wrapper */}
-          <div className="flex-[1.2] h-full flex flex-row items-center justify-between pl-6 pr-2 hover:bg-slate-100/50 focus-within:bg-slate-100/80 rounded-r-full transition-colors group">
+          <div className="flex-[1.2] h-full flex flex-row items-center justify-between pl-6 pr-2 hover:bg-muted/50 focus-within:bg-muted/80 rounded-r-full transition-colors group">
             <div className="flex-1 flex flex-col justify-center cursor-pointer relative pr-4">
-              <label className="text-[10px] font-black tracking-[0.15em] text-slate-800 uppercase mb-0.5 group-focus-within:text-orange-600 transition-colors">
+              <label className="text-[10px] font-black tracking-[0.15em] text-foreground uppercase mb-0.5 group-focus-within:text-orange-600 transition-colors">
                 Vehicle
               </label>
               <div className="relative">
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full bg-transparent border-none p-0 focus:ring-0 text-[15px] font-semibold text-slate-900 placeholder:text-slate-400 outline-none pr-6 appearance-none cursor-pointer"
+                  className="w-full bg-transparent border-none p-0 focus:ring-0 text-[15px] font-semibold text-foreground placeholder:text-slate-400 outline-none pr-6 appearance-none cursor-pointer"
                 >
                   {categories.map((cat) => (
                     <option key={cat.value} value={cat.value}>
@@ -213,9 +213,9 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
     <div className={`${className}`}>
       {/* COMPACT DESKTOP (Professional Seamless Pill) */}
       {isCompact && (
-        <div className="hidden md:flex bg-white shadow-sm border border-slate-300 rounded-full h-[60px] w-full max-w-4xl flex-row items-center divide-x divide-slate-200 hover:shadow-md transition-shadow">
-          <div className="flex-1 px-6 h-full flex flex-col justify-center focus-within:bg-slate-50/80 hover:bg-slate-50/50 rounded-l-full group transition-colors cursor-text">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Where</label>
+        <div className="hidden md:flex bg-card shadow-sm border border-border rounded-full h-[60px] w-full max-w-4xl flex-row items-center divide-x divide-slate-200 hover:shadow-md transition-shadow">
+          <div className="flex-1 px-6 h-full flex flex-col justify-center focus-within:bg-muted/80 hover:bg-muted/50 rounded-l-full group transition-colors cursor-text">
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Where</label>
             <LocationAutocomplete 
               onSelect={(res) => {
                 if (res?.features?.[0]?.properties?.name) {
@@ -224,12 +224,12 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
               }} 
               placeholder={location || "City or airport"} 
               hideIcon={true}
-              inputClassName="w-full bg-transparent border-none p-0 focus:ring-0 text-sm text-slate-900 font-semibold placeholder:text-slate-400 outline-none truncate"
+              inputClassName="w-full bg-transparent border-none p-0 focus:ring-0 text-sm text-foreground font-semibold placeholder:text-slate-400 outline-none truncate"
             />
           </div>
           
-          <div className="flex-[0.7] px-6 h-full flex flex-col justify-center focus-within:bg-slate-50/80 hover:bg-slate-50/50 transition-colors cursor-text">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Pickup</label>
+          <div className="flex-[0.7] px-6 h-full flex flex-col justify-center focus-within:bg-muted/80 hover:bg-muted/50 transition-colors cursor-text">
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Pickup</label>
             <input
               type={pickupDate ? "date" : "text"}
               placeholder="Add date"
@@ -238,12 +238,12 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
               value={pickupDate}
               onChange={(e) => setPickupDate(e.target.value)}
               min={new Date().toISOString().split("T")[0]}
-              className="w-full bg-transparent border-none p-0 focus:ring-0 text-sm text-slate-900 font-semibold outline-none appearance-none placeholder:text-slate-400"
+              className="w-full bg-transparent border-none p-0 focus:ring-0 text-sm text-foreground font-semibold outline-none appearance-none placeholder:text-slate-400"
             />
           </div>
 
-          <div className="flex-[0.7] px-6 h-full flex flex-col justify-center focus-within:bg-slate-50/80 hover:bg-slate-50/50 transition-colors cursor-text">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Return</label>
+          <div className="flex-[0.7] px-6 h-full flex flex-col justify-center focus-within:bg-muted/80 hover:bg-muted/50 transition-colors cursor-text">
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Return</label>
             <input
               type={returnDate ? "date" : "text"}
               placeholder="Add date"
@@ -252,7 +252,7 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
               value={returnDate}
               onChange={(e) => setReturnDate(e.target.value)}
               min={pickupDate || new Date().toISOString().split("T")[0]}
-              className="w-full bg-transparent border-none p-0 focus:ring-0 text-sm text-slate-900 font-semibold outline-none appearance-none placeholder:text-slate-400"
+              className="w-full bg-transparent border-none p-0 focus:ring-0 text-sm text-foreground font-semibold outline-none appearance-none placeholder:text-slate-400"
             />
           </div>
 
@@ -270,11 +270,11 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
 
       {/* COMPACT MOBILE & SIDEBAR (Stacked View) */}
       <div className={`
-        ${isCompact ? "md:hidden bg-white p-4 shadow-xl rounded-2xl flex flex-col gap-4" : ""}
-        ${variant === "sidebar" ? "bg-white p-6 shadow-xl rounded-2xl flex flex-col gap-4" : ""}
+        ${isCompact ? "md:hidden bg-card p-4 shadow-xl rounded-2xl flex flex-col gap-4" : ""}
+        ${variant === "sidebar" ? "bg-card p-6 shadow-xl rounded-2xl flex flex-col gap-4" : ""}
       `}>
-        <div className="flex-1 w-full bg-slate-50 relative px-4 py-3 rounded-xl border border-slate-200 focus-within:border-primary transition-colors">
-          <label className="block text-xs font-bold text-slate-500 mb-1">
+        <div className="flex-1 w-full bg-muted relative px-4 py-3 rounded-xl border border-border focus-within:border-primary transition-colors">
+          <label className="block text-xs font-bold text-muted-foreground mb-1">
             WHERE
           </label>
           <LocationAutocomplete 
@@ -285,13 +285,13 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
             }} 
             placeholder={location || "City or airport"} 
             hideIcon={true}
-            inputClassName="w-full bg-transparent border-none p-0 focus:ring-0 text-base md:text-sm text-slate-900 font-medium placeholder:text-slate-400 outline-none"
+            inputClassName="w-full bg-transparent border-none p-0 focus:ring-0 text-base md:text-sm text-foreground font-medium placeholder:text-slate-400 outline-none"
           />
         </div>
 
         <div className="flex flex-row gap-4 w-full">
-          <div className="flex-1 w-full bg-slate-50 relative px-4 py-3 rounded-xl border border-slate-200 focus-within:border-primary transition-colors">
-            <label className="block text-xs font-bold text-slate-500 mb-1">
+          <div className="flex-1 w-full bg-muted relative px-4 py-3 rounded-xl border border-border focus-within:border-primary transition-colors">
+            <label className="block text-xs font-bold text-muted-foreground mb-1">
               PICKUP
             </label>
             <input
@@ -301,12 +301,12 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
               onBlur={(e) => { if (!e.target.value) e.target.type = "text"; }}
               value={pickupDate}
               onChange={(e) => setPickupDate(e.target.value)}
-              className="w-full bg-transparent border-none p-0 focus:ring-0 text-base md:text-sm text-slate-900 font-medium outline-none placeholder:text-slate-400"
+              className="w-full bg-transparent border-none p-0 focus:ring-0 text-base md:text-sm text-foreground font-medium outline-none placeholder:text-slate-400"
             />
           </div>
 
-          <div className="flex-1 w-full bg-slate-50 relative px-4 py-3 rounded-xl border border-slate-200 focus-within:border-primary transition-colors">
-            <label className="block text-xs font-bold text-slate-500 mb-1">
+          <div className="flex-1 w-full bg-muted relative px-4 py-3 rounded-xl border border-border focus-within:border-primary transition-colors">
+            <label className="block text-xs font-bold text-muted-foreground mb-1">
               RETURN
             </label>
             <input
@@ -316,7 +316,7 @@ export function SearchWidget({ variant = "hero", className = "", onSubmit }: Sea
               onBlur={(e) => { if (!e.target.value) e.target.type = "text"; }}
               value={returnDate}
               onChange={(e) => setReturnDate(e.target.value)}
-              className="w-full bg-transparent border-none p-0 focus:ring-0 text-base md:text-sm text-slate-900 font-medium outline-none placeholder:text-slate-400"
+              className="w-full bg-transparent border-none p-0 focus:ring-0 text-base md:text-sm text-foreground font-medium outline-none placeholder:text-slate-400"
             />
           </div>
         </div>

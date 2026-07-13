@@ -30,7 +30,7 @@ export function StepCard({ step, icon: Icon, title, description, isLast = false 
 
       {/* Content */}
       <div className="flex-1 pb-8 md:text-center md:pb-0">
-        <h3 className="text-lg font-semibold text-slate-900 mb-2">{title}</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
         <p className="text-sm text-slate-600 leading-relaxed">{description}</p>
       </div>
 

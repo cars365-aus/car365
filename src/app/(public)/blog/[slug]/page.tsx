@@ -85,21 +85,21 @@ export default async function BlogArticlePage({ params }: Props) {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeSchemas(schemas) }}
       />
       <SiteHeader />
       <main className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
-        <nav className="mb-8 text-sm text-slate-500">
+        <nav className="mb-8 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-primary">Home</Link>
           <span className="mx-2">/</span>
           <Link href="/blog" className="hover:text-primary">Blog</Link>
           {article.category && (
             <>
               <span className="mx-2">/</span>
-              <span className="text-slate-700">{article.category.name}</span>
+              <span className="text-muted-foreground">{article.category.name}</span>
             </>
           )}
         </nav>
@@ -110,10 +110,10 @@ export default async function BlogArticlePage({ params }: Props) {
               {article.category.name}
             </span>
           )}
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight mb-4">
+          <h1 className="text-3xl sm:text-4xl font-black text-foreground leading-tight mb-4">
             {article.title}
           </h1>
-          <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             <time dateTime={article.published_at}>
               {format(new Date(article.published_at), "d MMMM yyyy")}
             </time>
@@ -124,7 +124,7 @@ export default async function BlogArticlePage({ params }: Props) {
 
         {article.featured_image_url && (
           <figure className="mb-10 -mx-4 sm:mx-0">
-            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-slate-100">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-muted">
               <Image
                 src={article.featured_image_url}
                 alt={article.featured_image_alt ?? article.title}
@@ -148,7 +148,7 @@ export default async function BlogArticlePage({ params }: Props) {
             {article.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+                className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-slate-600"
               >
                 {tag}
               </span>
@@ -157,7 +157,7 @@ export default async function BlogArticlePage({ params }: Props) {
         )}
 
         <div className="mt-12 rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100 p-6 text-center">
-          <p className="font-semibold text-slate-900 mb-3">Ready to find your rental car?</p>
+          <p className="font-semibold text-foreground mb-3">Ready to find your rental car?</p>
           <Link
             href="/search"
             className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-white hover:bg-primary/90 transition-colors"
@@ -167,8 +167,8 @@ export default async function BlogArticlePage({ params }: Props) {
         </div>
 
         {related.length > 0 && (
-          <section className="mt-16 border-t border-slate-200 pt-12">
-            <h2 className="text-xl font-bold text-slate-900 mb-6">Related articles</h2>
+          <section className="mt-16 border-t border-border pt-12">
+            <h2 className="text-xl font-bold text-foreground mb-6">Related articles</h2>
             <div className="grid gap-6 sm:grid-cols-3">
               {related.map((post) => (
                 <Link
@@ -176,7 +176,7 @@ export default async function BlogArticlePage({ params }: Props) {
                   href={`/blog/${post.slug}`}
                   className="group block"
                 >
-                  <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-100 mb-3">
+                  <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-muted mb-3">
                     {post.featured_image_url ? (
                       <Image
                         src={post.featured_image_url}
@@ -189,7 +189,7 @@ export default async function BlogArticlePage({ params }: Props) {
                       <div className="absolute inset-0 bg-gradient-to-br from-orange-100 to-amber-50" />
                     )}
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900 group-hover:text-primary line-clamp-2">
+                  <h3 className="text-sm font-bold text-foreground group-hover:text-primary line-clamp-2">
                     {post.title}
                   </h3>
                 </Link>

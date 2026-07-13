@@ -3,6 +3,7 @@ import { Phone, ChevronDown } from "lucide-react";
 import { getMakes } from "@/lib/data/inventory";
 import { getPhoneNumbers } from "@/lib/data/settings";
 import { MobileNav } from "@/components/mobile-nav";
+import { AuthMenu } from "@/components/auth/auth-menu";
 import {
   NAV_BODY_TYPES,
   BODY_TYPE_LABELS,
@@ -23,8 +24,7 @@ const PRIMARY = [
 function Wordmark() {
   return (
     <Link href="/" className="flex items-center gap-2 font-heading text-xl font-extrabold tracking-tight text-foreground">
-      <span className="inline-flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">C</span>
-      <span>Car<span className="text-primary">365</span></span>
+      <img src="/LOGO.png" alt="Cars365" className="h-10 w-auto object-contain" />
     </Link>
   );
 }
@@ -107,6 +107,7 @@ export async function SiteHeader() {
               <Phone className="size-4" /> Contact
             </Link>
           )}
+          <AuthMenu />
           <MobileNav makes={makes} phone={phone} />
         </div>
       </div>

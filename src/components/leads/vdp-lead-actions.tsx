@@ -6,6 +6,8 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/
 import { VehicleEnquiryForm } from "@/components/leads/vehicle-enquiry-form";
 import { InspectionForm } from "@/components/leads/inspection-form";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/components/auth/auth-provider";
+import { Lock } from "lucide-react";
 
 function track(vehicleId: string, channel: "call" | "whatsapp" | "enquire") {
   // Fire-and-forget; never blocks the click.
@@ -46,17 +48,32 @@ export function VdpLeadActions({
     ? "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-semibold"
     : "flex items-center justify-center gap-2 rounded-lg px-4 py-3 font-semibold";
 
+  const { isLoggedIn, openAuthModal } = useAuth();
+
   return (
     <div className={cn(variant === "sticky" ? "flex gap-2" : "space-y-2")}>
       {phone ? (
-        <a href={`tel:${phone}`} onClick={() => track(vehicleId, "call")} className={cn(primaryBtn, "bg-primary text-primary-foreground hover:bg-primary-hover")}>
-          <Phone className={variant === "sticky" ? "size-4" : "size-5"} /> {variant === "sticky" ? "Call" : `Call ${phone}`}
-        </a>
+        isLoggedIn ? (
+          <a href={`tel:${phone}`} onClick={() => track(vehicleId, "call")} className={cn(primaryBtn, "bg-primary text-primary-foreground hover:bg-primary-hover")}>
+            <Phone className={variant === "sticky" ? "size-4" : "size-5"} /> {variant === "sticky" ? "Call" : `Call ${phone}`}
+          </a>
+        ) : (
+          <button onClick={openAuthModal} className={cn(primaryBtn, "bg-primary text-primary-foreground hover:bg-primary-hover")}>
+            <Lock className={variant === "sticky" ? "size-4" : "size-5"} /> {variant === "sticky" ? "Call" : "Login to Call"}
+          </button>
+        )
       ) : null}
+      
       {whatsappUrl ? (
-        <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" onClick={() => track(vehicleId, "whatsapp")} className={cn(primaryBtn, "bg-success text-white hover:opacity-90")}>
-          <MessageCircle className={variant === "sticky" ? "size-4" : "size-5"} /> WhatsApp
-        </a>
+        isLoggedIn ? (
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" onClick={() => track(vehicleId, "whatsapp")} className={cn(primaryBtn, "bg-success text-white hover:opacity-90")}>
+            <MessageCircle className={variant === "sticky" ? "size-4" : "size-5"} /> WhatsApp
+          </a>
+        ) : (
+          <button onClick={openAuthModal} className={cn(primaryBtn, "bg-success text-white hover:opacity-90")}>
+            <Lock className={variant === "sticky" ? "size-4" : "size-5"} /> Login for WhatsApp
+          </button>
+        )
       ) : null}
 
       <Dialog>

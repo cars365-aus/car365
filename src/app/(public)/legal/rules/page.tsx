@@ -10,22 +10,22 @@ export const metadata: Metadata = {
 
 export default function RulesPage() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-muted">
       <SiteHeader />
       <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight mb-4">Platform Rules & Guidelines</h1>
+          <h1 className="text-3xl sm:text-5xl font-black text-foreground tracking-tight mb-4">Platform Rules & Guidelines</h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
             To maintain a safe, premium, and reliable marketplace for everyone in Australia, all users must adhere to the following guidelines.
           </p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="bg-card p-8 rounded-3xl border border-border shadow-sm">
             <div className="h-12 w-12 bg-amber-100 rounded-2xl flex items-center justify-center mb-6">
               <ShieldAlert className="h-6 w-6 text-amber-600" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">For Renters</h2>
+            <h2 className="text-xl font-bold text-foreground mb-3">For Renters</h2>
             <ul className="space-y-4 text-slate-600">
               <li className="flex gap-3">
                 <span className="font-bold text-amber-500">•</span>
@@ -46,11 +46,11 @@ export default function RulesPage() {
             </ul>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="bg-card p-8 rounded-3xl border border-border shadow-sm">
             <div className="h-12 w-12 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6">
               <Car className="h-6 w-6 text-emerald-600" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">For Vendors</h2>
+            <h2 className="text-xl font-bold text-foreground mb-3">For Vendors</h2>
             <ul className="space-y-4 text-slate-600">
               <li className="flex gap-3">
                 <span className="font-bold text-emerald-500">•</span>

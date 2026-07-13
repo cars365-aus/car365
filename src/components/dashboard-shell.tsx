@@ -80,27 +80,27 @@ function ProfileDropdown({ onLogout, email, initial }: { onLogout: () => void, e
     <div className="relative" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1 pr-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+        className="flex items-center gap-2 p-1 pr-2 bg-muted hover:bg-muted border border-border rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-orange-500/20"
       >
         <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-white font-bold text-sm shadow-sm">
           {initial}
         </div>
-        <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {isOpen && (
         <div className="absolute right-0 mt-3 w-64 rounded-2xl glass-panel shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="p-4 border-b border-slate-100/50 bg-slate-50/30">
-            <p className="text-sm font-bold text-slate-900">Signed In As</p>
-            <p className="text-xs font-medium text-slate-500 mt-0.5 truncate">{email}</p>
+          <div className="p-4 border-b border-border/50 bg-muted/30">
+            <p className="text-sm font-bold text-foreground">Signed In As</p>
+            <p className="text-xs font-medium text-muted-foreground mt-0.5 truncate">{email}</p>
           </div>
           <div className="p-2">
-            <Link href="/vendor/settings" onClick={() => setIsOpen(false)} className="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors">
+            <Link href="/vendor/settings" onClick={() => setIsOpen(false)} className="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-muted hover:text-foreground rounded-xl transition-colors">
               <Settings className="h-4 w-4 text-slate-400" />
               Account Settings
             </Link>
           </div>
-          <div className="p-2 border-t border-slate-100">
+          <div className="p-2 border-t border-border">
             <button onClick={onLogout} className="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors">
               <LogOut className="h-4 w-4" />
               Sign Out
@@ -191,7 +191,7 @@ function NotificationDropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={handleOpen}
-        className="relative p-2.5 text-slate-500 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 rounded-full transition-colors border border-transparent hover:border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+        className="relative p-2.5 text-muted-foreground hover:text-foreground bg-muted hover:bg-muted rounded-full transition-colors border border-transparent hover:border-border focus:outline-none focus:ring-2 focus:ring-orange-500/20"
         aria-label="View notifications"
       >
         <Bell className="h-5 w-5" />
@@ -202,8 +202,8 @@ function NotificationDropdown({
 
       {isOpen && (
         <div className="absolute right-0 mt-3 w-80 rounded-2xl glass-panel shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="p-4 border-b border-slate-100/50 bg-slate-50/30 flex items-center justify-between">
-            <p className="text-sm font-bold text-slate-900">Notifications</p>
+          <div className="p-4 border-b border-border/50 bg-muted/30 flex items-center justify-between">
+            <p className="text-sm font-bold text-foreground">Notifications</p>
             {unreadCount > 0 && (
               <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">{unreadCount} new</span>
             )}
@@ -218,15 +218,15 @@ function NotificationDropdown({
                 <div
                   key={n.id}
                   onClick={() => { if (n.link) window.location.href = n.link; setIsOpen(false); }}
-                  className={`p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors cursor-pointer group ${!n.read ? "bg-orange-50/40" : ""}`}
+                  className={`p-4 border-b border-slate-50 hover:bg-muted transition-colors cursor-pointer group ${!n.read ? "bg-orange-50/40" : ""}`}
                 >
                   <div className="flex gap-3">
                     <div className="h-9 w-9 rounded-full bg-orange-50 flex items-center justify-center shrink-0 text-base">
                       {typeIcon[n.type] ?? "🔔"}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 truncate">{n.title}</p>
-                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed line-clamp-2">{n.message}</p>
+                      <p className="text-sm font-semibold text-foreground truncate">{n.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed line-clamp-2">{n.message}</p>
                       <p className="text-[10px] font-medium text-slate-400 mt-1.5 uppercase tracking-wider">
                         {new Date(n.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                       </p>
@@ -236,11 +236,11 @@ function NotificationDropdown({
               ))
             )}
           </div>
-          <div className="p-2 border-t border-slate-100 bg-slate-50/50">
+          <div className="p-2 border-t border-border bg-muted/50">
             <Link
               href={mode === "vendor" ? "/vendor/leads" : "/admin/audit"}
               onClick={() => setIsOpen(false)}
-              className="block w-full text-center px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors"
+              className="block w-full text-center px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-foreground hover:bg-muted rounded-xl transition-colors"
             >
               View all activity
             </Link>
@@ -381,14 +381,14 @@ export function DashboardShell({
               className={`group flex items-center gap-3 rounded-xl px-4 min-h-[44px] text-sm font-bold transition-all duration-300 ${
                 isActive
                   ? "bg-gradient-to-r from-orange-50 to-amber-50/30 text-primary shadow-sm relative overflow-hidden"
-                  : "text-slate-500 hover:bg-slate-50/80 hover:text-slate-900 hover:shadow-sm"
+                  : "text-muted-foreground hover:bg-muted/80 hover:text-foreground hover:shadow-sm"
               }`}
               aria-current={isActive ? "page" : undefined}
             >
               {isActive && (
                 <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-amber-500 rounded-r-md shadow-[0_0_8px_rgba(234,88,12,0.6)]"></span>
               )}
-              <Icon className={`h-5 w-5 shrink-0 transition-all duration-300 ${isActive ? "scale-110 drop-shadow-md text-primary" : "group-hover:scale-110 group-hover:text-slate-700"}`} />
+              <Icon className={`h-5 w-5 shrink-0 transition-all duration-300 ${isActive ? "scale-110 drop-shadow-md text-primary" : "group-hover:scale-110 group-hover:text-muted-foreground"}`} />
               <span className="transform transition-transform duration-300 group-hover:translate-x-1">{label}</span>
             </Link>
           );
@@ -398,7 +398,7 @@ export function DashboardShell({
   );
 
   return (
-    <div className="min-h-screen bg-slate-50/50 relative selection:bg-primary/20 selection:text-primary">
+    <div className="min-h-screen bg-muted/50 relative selection:bg-primary/20 selection:text-primary">
       {/* Dynamic Background Blurs */}
       <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-orange-50/40 to-transparent pointer-events-none -z-10" />
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] pointer-events-none -z-10" />
@@ -412,7 +412,7 @@ export function DashboardShell({
             <button
               ref={triggerRef}
               onClick={() => setDrawerOpen(true)}
-              className="inline-flex items-center justify-center h-10 w-10 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors md:hidden"
+              className="inline-flex items-center justify-center h-10 w-10 rounded-xl text-slate-600 hover:bg-muted hover:text-foreground transition-colors md:hidden"
               aria-label="Open navigation menu"
               aria-expanded={drawerOpen}
               aria-controls="mobile-nav-drawer"
@@ -437,7 +437,7 @@ export function DashboardShell({
           <div className="flex items-center gap-3 sm:gap-5">
             <Link
               href="/search"
-              className="hidden sm:flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-[#ea580c] transition-colors bg-white hover:bg-orange-50 px-4 py-2 rounded-xl border border-slate-200 hover:border-orange-200 shadow-sm group"
+              className="hidden sm:flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-[#ea580c] transition-colors bg-card hover:bg-orange-50 px-4 py-2 rounded-xl border border-border hover:border-orange-200 shadow-sm group"
             >
               <span>Public marketplace</span>
               <ExternalLink className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -478,9 +478,9 @@ export function DashboardShell({
             role="dialog"
             aria-modal="true"
             aria-label={`${mode === "admin" ? "Admin" : "Vendor"} navigation`}
-            className="absolute left-0 top-0 h-full w-[280px] max-w-[80vw] glass-panel bg-white/90 shadow-2xl animate-in slide-in-from-left duration-300"
+            className="absolute left-0 top-0 h-full w-[280px] max-w-[80vw] glass-panel bg-card/90 shadow-2xl animate-in slide-in-from-left duration-300"
           >
-            <div className="flex items-center justify-between p-5 border-b border-slate-100/50 bg-slate-50/30">
+            <div className="flex items-center justify-between p-5 border-b border-border/50 bg-muted/30">
               <div className="flex items-center gap-3">
                 <BrandLogo
                   priority
@@ -496,7 +496,7 @@ export function DashboardShell({
                   setDrawerOpen(false);
                   triggerRef.current?.focus();
                 }}
-                className="inline-flex items-center justify-center h-8 w-8 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+                className="inline-flex items-center justify-center h-8 w-8 rounded-lg text-slate-400 hover:bg-muted hover:text-foreground transition-colors"
                 aria-label="Close navigation menu"
               >
                 <X className="h-5 w-5" />
@@ -517,7 +517,7 @@ export function DashboardShell({
         <div className="flex flex-col md:flex-row gap-8">
           {/* Desktop sidebar */}
           <aside className="hidden md:block w-[260px] shrink-0">
-            <div className="sticky top-24 rounded-3xl glass-panel bg-white/40 p-4 h-[calc(100vh-8rem)] overflow-y-auto hidden-scrollbar">
+            <div className="sticky top-24 rounded-3xl glass-panel bg-card/40 p-4 h-[calc(100vh-8rem)] overflow-y-auto hidden-scrollbar">
               <nav>{navContent}</nav>
             </div>
           </aside>

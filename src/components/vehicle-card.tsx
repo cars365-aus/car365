@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { Gauge, Fuel, Settings2, Calendar, MapPin, ShieldCheck } from "lucide-react";
+import { Gauge, Fuel, Settings2, Calendar, MapPin, ShieldCheck, Lock } from "lucide-react";
+import { useAuth } from "@/components/auth/auth-provider";
 import type { VehicleListItem } from "@/lib/domain";
 import { BODY_TYPE_LABELS, FUEL_LABELS, TRANSMISSION_LABELS, formatPrice, formatKm } from "@/lib/nav";
 import { FavoriteButton } from "@/components/favorite-button";
@@ -32,6 +35,7 @@ export function VehicleCard({
   priority?: boolean;
   className?: string;
 }) {
+  const { isLoggedIn, openAuthModal } = useAuth();
   const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""}`;
   const priceDrop = v.previousPrice != null && v.previousPrice > v.price;
 
@@ -87,19 +91,32 @@ export function VehicleCard({
 
         <div className="mt-auto pt-4">
           <div className="flex items-end justify-between">
-            <div>
-              <div className="flex items-baseline gap-2">
-                <span className="font-heading text-xl font-bold tabular-nums text-foreground">{formatPrice(v.price)}</span>
-                {priceDrop ? (
-                  <span className="text-sm text-muted-foreground line-through tabular-nums">{formatPrice(v.previousPrice!)}</span>
+            {isLoggedIn ? (
+              <div>
+                <div className="flex items-baseline gap-2">
+                  <span className="font-heading text-xl font-bold tabular-nums text-foreground">{formatPrice(v.price)}</span>
+                  {priceDrop ? (
+                    <span className="text-sm text-muted-foreground line-through tabular-nums">{formatPrice(v.previousPrice!)}</span>
+                  ) : null}
+                </div>
+                {v.weeklyEstimate ? (
+                  <p className="text-xs text-muted-foreground">
+                    or ~<span className="font-medium text-body tabular-nums">{formatPrice(v.weeklyEstimate)}</span>/wk*
+                  </p>
                 ) : null}
               </div>
-              {v.weeklyEstimate ? (
-                <p className="text-xs text-muted-foreground">
-                  or ~<span className="font-medium text-body tabular-nums">{formatPrice(v.weeklyEstimate)}</span>/wk*
-                </p>
-              ) : null}
-            </div>
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  openAuthModal();
+                }}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-black px-3 py-1.5 text-sm font-bold text-primary transition-colors hover:bg-black/80"
+              >
+                <Lock className="size-4" /> View Price
+              </button>
+            )}
             {v.city ? (
               <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                 <MapPin className="size-3.5" />{v.city}

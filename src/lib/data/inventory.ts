@@ -404,6 +404,20 @@ export const getMakes = unstable_cache(
   { revalidate: 3600, tags: ["makes", "public"] },
 );
 
+/** All models (for the admin cascading make→model select). */
+export async function getAllModels(): Promise<Model[]> {
+  const supabase = createAdminClient();
+  const { data } = await supabase.from("models").select("id, make_id, name, slug").order("name");
+  return ((data ?? []) as RawRow[]).map((m) => ({ id: m.id, makeId: m.make_id, name: m.name, slug: m.slug }));
+}
+
+/** All features grouped for the admin form. */
+export async function getAllFeatures(): Promise<Feature[]> {
+  const supabase = createAdminClient();
+  const { data } = await supabase.from("features").select("id, name, slug, category").order("category").order("name");
+  return ((data ?? []) as RawRow[]).map((f) => ({ id: f.id, name: f.name, slug: f.slug, category: f.category }));
+}
+
 export const getModelsForMake = unstable_cache(
   async (makeSlug: string): Promise<Model[]> => {
     const supabase = createAdminClient();

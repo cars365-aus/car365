@@ -30,7 +30,7 @@ export function ImageWithFallback({ alt, onError, src, ...props }: ImageProps) {
       <div
         role="img"
         aria-label={typeof alt === "string" ? alt : undefined}
-        className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-100 p-4 text-center text-slate-500"
+        className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-muted p-4 text-center text-muted-foreground"
       >
         <ImageIcon className="h-8 w-8 shrink-0 text-slate-400" aria-hidden="true" />
         {typeof alt === "string" && alt.length > 0 && (

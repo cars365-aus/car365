@@ -1,122 +1,97 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { DataTable, type DataTableColumn } from "@/components/data-table";
+import Link from "next/link";
+import { formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { Search } from "lucide-react";
 
-interface LeadRow {
+export type AdminLead = {
   id: string;
-  customer_name: string;
-  customer_email: string;
-  lead_type: string;
+  name: string;
+  email: string;
+  phone: string;
+  type: string;
   status: string;
-  vendor_name: string;
   vehicle_title: string;
   created_at: string;
-}
-
-interface AdminLeadsTableProps {
-  data: LeadRow[];
-}
-
-const statusBadgeVariant = (status: string) => {
-  switch (status) {
-    case "delivered": return "success" as const;
-    case "new": return "info" as const;
-    case "failed": return "destructive" as const;
-    default: return "outline" as const;
-  }
 };
 
-export function AdminLeadsTable({ data }: AdminLeadsTableProps) {
-  const [search, setSearch] = useState("");
-
-  const filteredData = useMemo(() => {
-    if (!search.trim()) return data;
-    const q = search.toLowerCase();
-    return data.filter(
-      (l) =>
-        l.customer_name.toLowerCase().includes(q) ||
-        l.vendor_name.toLowerCase().includes(q) ||
-        l.vehicle_title.toLowerCase().includes(q) ||
-        l.lead_type.toLowerCase().includes(q)
+export function AdminLeadsTable({ data }: { data: AdminLead[] }) {
+  if (data.length === 0) {
+    return (
+      <div className="rounded-xl border border-border bg-card p-12 text-center shadow-sm">
+        <h3 className="text-lg font-medium text-foreground">No leads found</h3>
+        <p className="mt-2 text-muted-foreground">When customers submit enquiries, they will appear here.</p>
+      </div>
     );
-  }, [data, search]);
+  }
 
-  const columns: DataTableColumn<Record<string, unknown>>[] = [
-    {
-      key: "customer_name",
-      label: "Customer",
-      sortable: true,
-      render: (val) => <span className="font-medium text-foreground">{val as string}</span>,
-    },
-    {
-      key: "lead_type",
-      label: "Type",
-      sortable: true,
-      render: (val) => (
-        <Badge variant="outline" className="capitalize">{val as string}</Badge>
-      ),
-    },
-    {
-      key: "vendor_name",
-      label: "Vendor",
-      sortable: true,
-    },
-    {
-      key: "vehicle_title",
-      label: "Vehicle",
-      sortable: true,
-    },
-    {
-      key: "status",
-      label: "Status",
-      sortable: true,
-      render: (val) => (
-        <Badge variant={statusBadgeVariant(val as string)}>
-          {val as string}
-        </Badge>
-      ),
-    },
-    {
-      key: "created_at",
-      label: "Date",
-      sortable: true,
-      render: (val) => (
-        <span className="text-sm text-muted-foreground">
-          {new Date(val as string).toLocaleDateString("en-AU")}
-        </span>
-      ),
-    },
-  ];
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "new":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+      case "contacted":
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+      case "won":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      case "lost":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200";
+    }
+  };
+
+  const getTypeLabel = (type: string) => {
+    return type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  };
 
   return (
-    <div className="space-y-4">
-      {/* Filter control */}
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <input
-          type="text"
-          placeholder="Search by customer, vendor, vehicle, or type..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-border bg-background pl-10 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-        />
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm text-muted-foreground">
+          <thead className="bg-muted/50 text-xs uppercase text-foreground">
+            <tr>
+              <th scope="col" className="px-6 py-4 font-medium">Customer</th>
+              <th scope="col" className="px-6 py-4 font-medium">Type</th>
+              <th scope="col" className="px-6 py-4 font-medium">Vehicle</th>
+              <th scope="col" className="px-6 py-4 font-medium">Status</th>
+              <th scope="col" className="px-6 py-4 font-medium">Received</th>
+              <th scope="col" className="px-6 py-4 font-medium text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border bg-card">
+            {data.map((lead) => (
+              <tr key={lead.id} className="hover:bg-muted/50 transition-colors">
+                <td className="whitespace-nowrap px-6 py-4">
+                  <div className="font-medium text-foreground">{lead.name}</div>
+                  <div className="text-xs">{lead.phone || lead.email}</div>
+                </td>
+                <td className="whitespace-nowrap px-6 py-4">
+                  {getTypeLabel(lead.type)}
+                </td>
+                <td className="whitespace-nowrap px-6 py-4">
+                  {lead.vehicle_title !== "N/A" ? lead.vehicle_title : <span className="text-muted-foreground italic">General</span>}
+                </td>
+                <td className="whitespace-nowrap px-6 py-4">
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(lead.status)}`}>
+                    {lead.status.toUpperCase()}
+                  </span>
+                </td>
+                <td className="whitespace-nowrap px-6 py-4">
+                  {formatDistanceToNow(new Date(lead.created_at), { addSuffix: true })}
+                </td>
+                <td className="whitespace-nowrap px-6 py-4 text-right font-medium">
+                  <Link
+                    href={`/admin/leads/${lead.id}`}
+                    className="text-primary hover:text-primary-hover hover:underline"
+                  >
+                    View
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-
-      {filteredData.length === 0 ? (
-        <div className="rounded-xl border border-border bg-card p-8 text-center">
-          <p className="text-muted-foreground">No leads found.</p>
-        </div>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={filteredData as unknown as Record<string, unknown>[]}
-          pageSize={20}
-          pageSizeOptions={[10, 20, 50]}
-        />
-      )}
     </div>
   );
 }

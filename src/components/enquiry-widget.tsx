@@ -177,7 +177,7 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
 
   if (isLoggedIn) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <h2 className="text-xl font-semibold flex items-center gap-2">
           {instantBook ? (
             <><Zap className="h-5 w-5 text-amber-500 fill-amber-500" /> Instant Book</>
@@ -185,17 +185,17 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
             "Request to Book"
           )}
         </h2>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-muted-foreground">
           Click below to express your interest. We&apos;ll share your contact details (
-          <span className="font-semibold text-slate-900">{userProfile?.email}</span>) with the vendor and open a chat.
+          <span className="font-semibold text-foreground">{userProfile?.email}</span>) with the vendor and open a chat.
         </p>
 
         {error && <p className="mt-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">{error}</p>}
 
-        <label className="mt-6 flex items-start gap-3 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100 cursor-pointer">
+        <label className="mt-6 flex items-start gap-3 text-sm text-slate-600 bg-muted p-4 rounded-xl border border-border cursor-pointer">
           <input
             type="checkbox"
-            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-orange-500 focus:ring-orange-500"
+            className="mt-0.5 h-4 w-4 rounded border-border text-orange-500 focus:ring-orange-500"
             checked={licenseConfirmed}
             onChange={(e) => setLicenseConfirmed(e.target.checked)}
             required
@@ -227,7 +227,7 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
       <h2 className="text-xl font-semibold flex items-center gap-2">
         {instantBook ? (
           <><Zap className="h-5 w-5 text-amber-500 fill-amber-500" /> Instant Book</>
@@ -235,7 +235,7 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
           "Request to Book"
         )}
       </h2>
-      <p className="mt-1 text-sm text-slate-500">
+      <p className="mt-1 text-sm text-muted-foreground">
         Or{" "}
         <Link href="/auth/sign-in" className="font-medium text-amber-600 hover:underline">
           log in
@@ -247,7 +247,7 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
 
       <form className="mt-6 grid gap-4.5" onSubmit={handleGuestSubmit}>
         <input
-          className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-white focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all placeholder:text-slate-400"
+          className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-card focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all placeholder:text-slate-400"
           placeholder="Full name"
           name="name"
           autoComplete="name"
@@ -256,7 +256,7 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
           required
         />
         <input
-          className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-white focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all placeholder:text-slate-400"
+          className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-card focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all placeholder:text-slate-400"
           placeholder="Email"
           type="email"
           name="email"
@@ -267,7 +267,7 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
           required
         />
         <input
-          className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-white focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all placeholder:text-slate-400"
+          className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-card focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all placeholder:text-slate-400"
           placeholder="Phone number"
           type="tel"
           name="phone"
@@ -278,7 +278,7 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
           required
         />
         <input
-          className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-white focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all placeholder:text-slate-400"
+          className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-card focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all placeholder:text-slate-400"
           placeholder="Pickup city"
           name="pickupCity"
           autoComplete="address-level2"
@@ -288,9 +288,9 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
         />
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block">Pickup date</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">Pickup date</label>
             <input
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-white focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all text-slate-700"
+              className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-card focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all text-muted-foreground"
               type="date"
               value={startDate}
               min={new Date().toISOString().split("T")[0]}
@@ -299,9 +299,9 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
             />
           </div>
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block">Return date</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">Return date</label>
             <input
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-white focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all text-slate-700"
+              className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-card focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all text-muted-foreground"
               type="date"
               ref={endDateRef}
               value={endDate}
@@ -312,20 +312,20 @@ export function EnquiryWidget({ vehicleId, vendorId, isLoggedIn, userProfile, in
           </div>
         </div>
         <textarea
-          className="w-full min-h-[100px] rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-white focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all resize-none placeholder:text-slate-400"
+          className="w-full min-h-[100px] rounded-xl border border-border bg-muted/50 px-4 py-3 text-base md:text-sm font-medium focus:bg-card focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100 transition-all resize-none placeholder:text-slate-400"
           placeholder="Optional message to the vendor..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <label className="flex items-start gap-3 text-sm text-slate-600 mt-2 bg-slate-50 p-4 rounded-xl border border-slate-100 cursor-pointer">
-          <input type="checkbox" className="mt-0.5 h-4 w-4 rounded border-slate-300 text-orange-500 focus:ring-orange-500" required />
+        <label className="flex items-start gap-3 text-sm text-slate-600 mt-2 bg-muted p-4 rounded-xl border border-border cursor-pointer">
+          <input type="checkbox" className="mt-0.5 h-4 w-4 rounded border-border text-orange-500 focus:ring-orange-500" required />
           <span className="leading-snug">I agree for Hire Car to share my enquiry details with this verified local vendor.</span>
         </label>
 
-        <label className="flex items-start gap-3 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100 cursor-pointer">
+        <label className="flex items-start gap-3 text-sm text-slate-600 bg-muted p-4 rounded-xl border border-border cursor-pointer">
           <input
             type="checkbox"
-            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-orange-500 focus:ring-orange-500"
+            className="mt-0.5 h-4 w-4 rounded border-border text-orange-500 focus:ring-orange-500"
             checked={licenseConfirmed}
             onChange={(e) => setLicenseConfirmed(e.target.checked)}
             required

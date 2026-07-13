@@ -85,7 +85,7 @@ export function LocationAutocomplete({ onSelect, placeholder = "City or airport"
           }}
           onFocus={() => setIsOpen(true)}
           placeholder={placeholder}
-          className={inputClassName || "w-full rounded-xl border-2 border-transparent bg-white/80 hover:bg-white pl-11 pr-10 py-3.5 text-base md:text-sm font-medium text-slate-900 shadow-sm focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none"}
+          className={inputClassName || "w-full rounded-xl border-2 border-transparent bg-card/80 hover:bg-card pl-11 pr-10 py-3.5 text-base md:text-sm font-medium text-foreground shadow-sm focus:bg-card focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none"}
         />
         {isLoading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -95,7 +95,7 @@ export function LocationAutocomplete({ onSelect, placeholder = "City or airport"
       </div>
 
       {isOpen && results.length > 0 && (
-        <ul className="absolute top-[calc(100%+8px)] left-0 right-0 max-h-64 overflow-auto rounded-xl bg-white shadow-2xl border border-slate-100 z-50 py-2 animate-in fade-in slide-in-from-top-2">
+        <ul className="absolute top-[calc(100%+8px)] left-0 right-0 max-h-64 overflow-auto rounded-xl bg-card shadow-2xl border border-border z-50 py-2 animate-in fade-in slide-in-from-top-2">
           {results.map((item, index) => {
             const props = item.properties;
             // Build a descriptive sub-label. e.g. "Suburb • Sydney, New South Wales"
@@ -116,11 +116,11 @@ export function LocationAutocomplete({ onSelect, placeholder = "City or airport"
                   setIsOpen(false);
                   onSelect({ features: [{ properties: { name: props.name || displayName } }] });
                 }}
-                className="cursor-pointer px-4 py-2.5 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors flex flex-col gap-0.5 border-b border-slate-50 last:border-0"
+                className="cursor-pointer px-4 py-2.5 text-sm text-muted-foreground hover:bg-amber-50 hover:text-amber-700 transition-colors flex flex-col gap-0.5 border-b border-slate-50 last:border-0"
               >
-                <span className="font-semibold text-slate-900">{props.name}</span>
+                <span className="font-semibold text-foreground">{props.name}</span>
                 {subtext && (
-                  <span className="text-[11px] text-slate-500 uppercase tracking-wider font-medium">
+                  <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">
                     {subtext}
                   </span>
                 )}

@@ -42,7 +42,7 @@ export async function BlogSetupChecklist() {
           </div>
         )}
 
-        <div className="rounded-lg bg-slate-50 border border-slate-200 p-3 text-sm text-slate-700">
+        <div className="rounded-lg bg-muted border border-border p-3 text-sm text-muted-foreground">
           <p className="font-semibold mb-1">What runs automatically vs manually</p>
           <ul className="space-y-1">
             <li><strong>Automatic (after setup):</strong> Vercel cron → generate article → image → publish to /blog</li>

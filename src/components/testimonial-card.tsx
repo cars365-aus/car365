@@ -24,7 +24,7 @@ export function TestimonialCard({
 
   if (variant === "featured") {
     return (
-      <div className="relative bg-white rounded-xl p-8 border border-border shadow-sm">
+      <div className="relative bg-card rounded-xl p-8 border border-border shadow-sm">
         <Quote className="absolute top-6 right-6 h-8 w-8 text-primary/15" aria-hidden="true" />
         
         {/* Star Rating */}
@@ -91,7 +91,7 @@ export function TestimonialCard({
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-border shadow-sm">
+    <div className="bg-card rounded-xl p-6 border border-border shadow-sm">
       {/* Star Rating */}
       <div className="flex gap-1 mb-3" role="img" aria-label={`${rating} out of 5 stars`}>
         {Array.from({ length: 5 }).map((_, i) => (

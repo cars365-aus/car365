@@ -18,10 +18,10 @@ const operatorBenefits = [
 
 export default function SuccessStoriesPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       <SiteHeader />
       <main className="mx-auto max-w-3xl px-4 py-20 sm:py-28">
-        <h1 className="text-4xl font-black tracking-tight text-slate-900">
+        <h1 className="text-4xl font-black tracking-tight text-foreground">
           Success Stories
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-600">
@@ -39,10 +39,10 @@ export default function SuccessStoriesPage() {
           {operatorBenefits.map((benefit) => (
             <li
               key={benefit}
-              className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+              className="flex items-start gap-3 rounded-xl border border-border bg-muted px-4 py-3"
             >
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-              <span className="text-sm font-medium text-slate-700">{benefit}</span>
+              <span className="text-sm font-medium text-muted-foreground">{benefit}</span>
             </li>
           ))}
         </ul>
@@ -56,7 +56,7 @@ export default function SuccessStoriesPage() {
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 px-6 py-3 text-sm font-bold text-slate-900 transition-colors hover:bg-slate-50"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-6 py-3 text-sm font-bold text-foreground transition-colors hover:bg-muted"
           >
             Talk to our team
           </Link>

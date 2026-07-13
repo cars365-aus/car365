@@ -39,12 +39,12 @@ export function ChatSidebar({ chats }: ChatSidebarProps) {
   return (
     <div className={`
       ${isMobileHidden ? 'hidden md:flex' : 'flex'}
-      flex-col w-full md:w-[320px] lg:w-[360px] flex-shrink-0 bg-white border-r border-slate-100 h-full
+      flex-col w-full md:w-[320px] lg:w-[360px] flex-shrink-0 bg-card border-r border-border h-full
     `}>
       {/* Header */}
-      <div className="px-5 pt-4 pb-3 flex-shrink-0 border-b border-slate-100">
+      <div className="px-5 pt-4 pb-3 flex-shrink-0 border-b border-border">
         <div className="flex items-center justify-between mb-3">
-          <div className="font-heading text-xl font-bold text-slate-900">Messages</div>
+          <div className="font-heading text-xl font-bold text-foreground">Messages</div>
           <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
             <MessageCircle className="h-4 w-4 text-primary" />
           </div>
@@ -58,7 +58,7 @@ export function ChatSidebar({ chats }: ChatSidebarProps) {
             placeholder="Search conversations..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200/80 rounded-2xl pl-10 pr-4 py-2.5 text-base md:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 focus:bg-white transition-all"
+            className="w-full bg-muted border border-border/80 rounded-2xl pl-10 pr-4 py-2.5 text-base md:text-sm text-foreground placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 focus:bg-card transition-all"
           />
         </div>
       </div>
@@ -96,7 +96,7 @@ export function ChatSidebar({ chats }: ChatSidebarProps) {
                     w-full flex items-center gap-3 px-3 py-3.5 rounded-2xl transition-all duration-200
                     ${isActive 
                       ? 'bg-primary text-white shadow-[0_4px_16px_rgba(234,88,12,0.2)]' 
-                      : 'hover:bg-slate-50 text-slate-800'
+                      : 'hover:bg-muted text-foreground'
                     }
                   `}
                 >
@@ -104,8 +104,8 @@ export function ChatSidebar({ chats }: ChatSidebarProps) {
                   <div className={`
                     h-11 w-11 rounded-2xl flex items-center justify-center font-bold text-sm shrink-0
                     ${isActive 
-                      ? 'bg-white/20 text-white' 
-                      : 'bg-slate-100 text-slate-600'
+                      ? 'bg-card/20 text-white' 
+                      : 'bg-muted text-slate-600'
                     }
                   `}>
                     {chat.initials}
@@ -114,7 +114,7 @@ export function ChatSidebar({ chats }: ChatSidebarProps) {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-baseline gap-2">
-                      <div className={`text-[14px] font-semibold truncate ${isActive ? 'text-white' : 'text-slate-900'}`}>
+                      <div className={`text-[14px] font-semibold truncate ${isActive ? 'text-white' : 'text-foreground'}`}>
                         {chat.name}
                       </div>
                       <span className={`text-[10px] font-semibold whitespace-nowrap flex-shrink-0 ${isActive ? 'text-white/70' : 'text-slate-400'}`}>

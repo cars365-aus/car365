@@ -198,10 +198,10 @@ export function ChatInterface({ leadId, currentUserId, initialMessages, otherPar
     <div className="fixed inset-0 z-50 md:relative md:inset-auto md:z-auto flex flex-col h-[100dvh] md:h-full w-full overflow-hidden">
       
       {/* Premium Header */}
-      <div className="bg-white border-b border-slate-100 px-4 sm:px-5 py-3 flex items-center justify-between z-20 flex-shrink-0">
+      <div className="bg-card border-b border-border px-4 sm:px-5 py-3 flex items-center justify-between z-20 flex-shrink-0">
         <div className="flex items-center gap-3">
           {backLink && (
-            <Link href={backLink} className="md:hidden -ml-1 p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition-all active:scale-95">
+            <Link href={backLink} className="md:hidden -ml-1 p-2 rounded-xl hover:bg-muted text-slate-600 transition-all active:scale-95">
               <ChevronLeft className="h-5 w-5" />
             </Link>
           )}
@@ -213,7 +213,7 @@ export function ChatInterface({ leadId, currentUserId, initialMessages, otherPar
             <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white shadow-sm" />
           </div>
           <div>
-            <div className="font-semibold text-slate-900 text-[15px] leading-tight tracking-tight">{otherPartyName}</div>
+            <div className="font-semibold text-foreground text-[15px] leading-tight tracking-tight">{otherPartyName}</div>
             <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">● Online · Replies quickly</p>
           </div>
         </div>
@@ -225,7 +225,7 @@ export function ChatInterface({ leadId, currentUserId, initialMessages, otherPar
       </div>
 
       {/* Messages Area with subtle pattern */}
-      <div className="flex-1 overflow-hidden relative bg-slate-50">
+      <div className="flex-1 overflow-hidden relative bg-muted">
         <ChatBg />
         <div 
           ref={scrollContainerRef} 
@@ -234,24 +234,24 @@ export function ChatInterface({ leadId, currentUserId, initialMessages, otherPar
         >
           {/* Encryption notice */}
           <div className="flex justify-center mb-8">
-            <div className="flex items-center gap-1.5 bg-white/80 border border-slate-200/60 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+            <div className="flex items-center gap-1.5 bg-card/80 border border-border/60 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
               <Lock className="h-3 w-3 text-slate-400 shrink-0" />
-              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">End-to-end encrypted</span>
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">End-to-end encrypted</span>
             </div>
           </div>
 
           {messages.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center gap-5 py-16">
               <div className="relative">
-                <div className="h-24 w-24 rounded-3xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex items-center justify-center">
+                <div className="h-24 w-24 rounded-3xl bg-card shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex items-center justify-center">
                   <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center">
                     <Send className="h-7 w-7 text-primary translate-x-0.5" />
                   </div>
                 </div>
               </div>
               <div className="text-center">
-                <h3 className="font-heading font-bold text-slate-800 text-lg">Start the conversation</h3>
-                <p className="text-slate-500 text-sm mt-1.5 max-w-[200px] leading-relaxed">Send a message to connect with {otherPartyName}</p>
+                <h3 className="font-heading font-bold text-foreground text-lg">Start the conversation</h3>
+                <p className="text-muted-foreground text-sm mt-1.5 max-w-[200px] leading-relaxed">Send a message to connect with {otherPartyName}</p>
               </div>
             </div>
           ) : (
@@ -260,8 +260,8 @@ export function ChatInterface({ leadId, currentUserId, initialMessages, otherPar
                 <div key={group.dateLabel} className="flex flex-col w-full mb-6">
                   {/* Date separator */}
                   <div className="flex items-center justify-center mb-5">
-                    <div className="bg-white/90 border border-slate-200/60 backdrop-blur-sm shadow-sm px-4 py-1.5 rounded-full">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <div className="bg-card/90 border border-border/60 backdrop-blur-sm shadow-sm px-4 py-1.5 rounded-full">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                         {group.dateLabel}
                       </span>
                     </div>
@@ -312,13 +312,13 @@ export function ChatInterface({ leadId, currentUserId, initialMessages, otherPar
                                      : "rounded-2xl rounded-br-md"
                                    }
                                    shadow-[0_2px_8px_rgba(234,88,12,0.2)]`
-                                : `bg-white text-slate-800
+                                : `bg-card text-foreground
                                    ${msg.isConsecutive && msg.isLastInGroup ? "rounded-r-2xl rounded-tl-md rounded-bl-2xl"
                                      : !msg.isConsecutive && !msg.isLastInGroup ? "rounded-r-2xl rounded-t-2xl rounded-bl-md"
                                      : msg.isConsecutive && !msg.isLastInGroup ? "rounded-r-2xl rounded-l-md"
                                      : "rounded-2xl rounded-bl-md"
                                    }
-                                   border border-slate-100 shadow-[0_1px_4px_rgba(0,0,0,0.04)]`
+                                   border border-border shadow-[0_1px_4px_rgba(0,0,0,0.04)]`
                               }
                             `}>
                               {msg.body}
@@ -351,10 +351,10 @@ export function ChatInterface({ leadId, currentUserId, initialMessages, otherPar
       </div>
 
       {/* Input Area */}
-      <div className="bg-white border-t border-slate-100 px-4 sm:px-5 py-3.5 z-20 flex-shrink-0">
+      <div className="bg-card border-t border-border px-4 sm:px-5 py-3.5 z-20 flex-shrink-0">
         <form onSubmit={handleSend} className="flex items-end gap-3 max-w-4xl mx-auto">
           {/* Textarea wrapper */}
-          <div className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl focus-within:bg-white focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/[0.08] transition-all duration-200">
+          <div className="flex-1 bg-muted border border-border rounded-2xl focus-within:bg-card focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/[0.08] transition-all duration-200">
             <textarea
               ref={textareaRef}
               value={newMessage}
@@ -362,7 +362,7 @@ export function ChatInterface({ leadId, currentUserId, initialMessages, otherPar
               onKeyDown={handleKeyDown}
               placeholder="Message..."
               rows={1}
-              className="w-full resize-none bg-transparent px-4 py-3 text-base md:text-[14px] text-slate-800 placeholder:text-slate-400 focus:outline-none leading-relaxed max-h-[160px] font-medium"
+              className="w-full resize-none bg-transparent px-4 py-3 text-base md:text-[14px] text-foreground placeholder:text-slate-400 focus:outline-none leading-relaxed max-h-[160px] font-medium"
               disabled={isSending}
               style={{ minHeight: '46px' }}
             />
@@ -392,9 +392,9 @@ export function ChatInterface({ leadId, currentUserId, initialMessages, otherPar
 
         {/* Keyboard hint - desktop only */}
         <p className="text-center mt-2.5 hidden md:block text-[10px] text-slate-400 font-medium">
-          <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-sans">Enter</kbd>
+          <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-[10px] font-sans">Enter</kbd>
           {" to send · "}
-          <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-sans">Shift + Enter</kbd>
+          <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-[10px] font-sans">Shift + Enter</kbd>
           {" for new line"}
         </p>
       </div>

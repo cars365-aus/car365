@@ -77,7 +77,7 @@ function AssignRoleForm() {
               {ROLE_OPTIONS.map((opt) => (
                 <label
                   key={opt.value}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white/70 hover:bg-white hover:border-primary/30 cursor-pointer transition-all group"
+                  className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card/70 hover:bg-card hover:border-primary/30 cursor-pointer transition-all group"
                 >
                   <input
                     type="radio"
@@ -100,7 +100,7 @@ function AssignRoleForm() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white/70">
+          <div className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card/70">
             <input
               id="mfaRequired"
               type="checkbox"
@@ -136,7 +136,7 @@ function AssignRoleForm() {
 
 function RoleRow({ entry }: { entry: AdminRoleEntry }) {
   const [isPending, startTransition] = useTransition();
-  const badgeColor = ROLE_BADGE_COLORS[entry.role] ?? "bg-slate-100 text-slate-700 border-slate-200";
+  const badgeColor = ROLE_BADGE_COLORS[entry.role] ?? "bg-muted text-muted-foreground border-border";
 
   const handleRevoke = () => {
     startTransition(async () => {
@@ -154,22 +154,22 @@ function RoleRow({ entry }: { entry: AdminRoleEntry }) {
     <div
       className={`group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border p-4 transition-all duration-200 ${
         entry.active
-          ? "bg-white/70 border-slate-200/60 hover:border-primary/20 hover:bg-white hover:shadow-sm"
-          : "bg-slate-50/50 border-slate-100 opacity-60"
+          ? "bg-card/70 border-border/60 hover:border-primary/20 hover:bg-card hover:shadow-sm"
+          : "bg-muted/50 border-border opacity-60"
       }`}
     >
       <div className="flex items-center gap-3 min-w-0">
         <div className={`h-10 w-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
-          entry.active ? "bg-gradient-to-br from-orange-400 to-amber-500 text-white shadow-sm" : "bg-slate-200 text-slate-500"
+          entry.active ? "bg-gradient-to-br from-orange-400 to-amber-500 text-white shadow-sm" : "bg-slate-200 text-muted-foreground"
         }`}>
           {(entry.fullName || entry.email).charAt(0).toUpperCase()}
         </div>
         <div className="min-w-0">
-          <div className="font-semibold text-slate-900 truncate">
+          <div className="font-semibold text-foreground truncate">
             {entry.fullName ?? entry.email}
           </div>
           {entry.fullName && (
-            <div className="text-xs text-slate-500 truncate">{entry.email}</div>
+            <div className="text-xs text-muted-foreground truncate">{entry.email}</div>
           )}
           <div className="text-[10px] text-slate-400 mt-0.5 uppercase tracking-wider">
             Granted {new Date(entry.createdAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
@@ -182,12 +182,12 @@ function RoleRow({ entry }: { entry: AdminRoleEntry }) {
           {entry.role}
         </span>
         {entry.mfaRequired && (
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full border bg-slate-100 text-slate-600 border-slate-200 flex items-center gap-1">
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-full border bg-muted text-slate-600 border-border flex items-center gap-1">
             <ShieldCheck className="h-3 w-3" /> MFA
           </span>
         )}
         {!entry.active && (
-          <Badge variant="outline" className="text-xs bg-slate-100 text-slate-500 border-slate-200">
+          <Badge variant="outline" className="text-xs bg-muted text-muted-foreground border-border">
             Revoked
           </Badge>
         )}
@@ -236,7 +236,7 @@ export function RolesManager({ roles }: { roles: AdminRoleEntry[] }) {
                 <Shield className="h-5 w-5 text-primary" />
                 Active Admins
               </span>
-              <span className="text-sm font-semibold text-muted-foreground bg-slate-100 px-3 py-1 rounded-full">
+              <span className="text-sm font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-full">
                 {activeRoles.length}
               </span>
             </CardTitle>
@@ -261,11 +261,11 @@ export function RolesManager({ roles }: { roles: AdminRoleEntry[] }) {
           <Card variant="elevated">
             <CardHeader className="border-b border-border/50 pb-4">
               <CardTitle className="flex items-center justify-between">
-                <span className="flex items-center gap-2 text-lg text-slate-500">
+                <span className="flex items-center gap-2 text-lg text-muted-foreground">
                   <ShieldOff className="h-5 w-5" />
                   Revoked Access
                 </span>
-                <span className="text-sm font-semibold text-muted-foreground bg-slate-100 px-3 py-1 rounded-full">
+                <span className="text-sm font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-full">
                   {revokedRoles.length}
                 </span>
               </CardTitle>

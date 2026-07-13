@@ -35,10 +35,10 @@ export default async function MfaPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="max-w-md w-full rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-lg">
+    <main className="min-h-screen flex items-center justify-center bg-muted px-4">
+      <div className="max-w-md w-full rounded-2xl border border-border bg-card p-8 text-center shadow-lg">
         <Shield className="h-12 w-12 text-orange-600 mx-auto mb-4" />
-        <h1 className="text-2xl font-bold text-slate-900">Two-factor authentication required</h1>
+        <h1 className="text-2xl font-bold text-foreground">Two-factor authentication required</h1>
         <p className="mt-3 text-sm text-slate-600">
           Admin access requires MFA (authenticator app). Enroll in your Supabase account security settings, then sign in again.
         </p>
@@ -49,7 +49,7 @@ export default async function MfaPage() {
           >
             I have enrolled — continue
           </Link>
-          <Link href="/customer/dashboard" className="text-sm text-slate-500 hover:text-slate-800">
+          <Link href="/customer/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
             Back to dashboard
           </Link>
         </div>

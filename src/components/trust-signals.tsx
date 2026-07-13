@@ -9,7 +9,7 @@ const signals = [
 
 export function TrustSignals() {
   return (
-    <section className="border-y border-slate-200 bg-white py-6 mt-8">
+    <section className="border-y border-border bg-card py-6 mt-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
           {signals.map((signal) => {
@@ -17,7 +17,7 @@ export function TrustSignals() {
             return (
               <div key={signal.label} className="flex items-center gap-2.5">
                 <Icon className="h-5 w-5 text-[#ea580c]" />
-                <span className="text-sm font-bold text-slate-700">{signal.label}</span>
+                <span className="text-sm font-bold text-muted-foreground">{signal.label}</span>
               </div>
             );
           })}

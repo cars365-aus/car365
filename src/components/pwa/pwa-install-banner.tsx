@@ -70,18 +70,18 @@ export function PwaInstallBanner() {
         role="dialog"
         aria-label="Install HireCar app"
       >
-        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_18px_50px_-12px_rgba(15,23,42,0.35)]">
+        <div className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-[0_18px_50px_-12px_rgba(15,23,42,0.35)]">
           <div className="flex items-center gap-3 p-3.5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/icons/icon-192.png"
               alt=""
               aria-hidden="true"
-              className="h-12 w-12 shrink-0 rounded-xl border border-slate-100"
+              className="h-12 w-12 shrink-0 rounded-xl border border-border"
             />
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold text-slate-900">Install HireCar</p>
-              <p className="truncate text-xs text-slate-500">
+              <p className="text-sm font-bold text-foreground">Install HireCar</p>
+              <p className="truncate text-xs text-muted-foreground">
                 {mode === "ios"
                   ? "Add to your home screen for a faster, app-like experience."
                   : "Faster access, offline-ready, no app store needed."}
@@ -90,12 +90,12 @@ export function PwaInstallBanner() {
             <button
               onClick={dismiss}
               aria-label="Dismiss"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 transition-colors"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-400 hover:bg-muted transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
-          <div className="flex gap-2 border-t border-slate-100 p-2.5">
+          <div className="flex gap-2 border-t border-border p-2.5">
             <button
               onClick={handlePrimary}
               className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-br from-[#ea580c] to-[#c2410c] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:shadow-md hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1 transition-all min-h-[44px]"
@@ -105,7 +105,7 @@ export function PwaInstallBanner() {
             </button>
             <button
               onClick={dismiss}
-              className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-100 transition-colors min-h-[44px]"
+              className="rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors min-h-[44px]"
             >
               Not now
             </button>

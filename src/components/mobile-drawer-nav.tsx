@@ -113,7 +113,7 @@ export function MobileDrawerNav({ isOpen, onClose, children }: MobileDrawerNavPr
       {/* Drawer panel — slides in from right */}
       <div
         ref={panelRef}
-        className={`absolute top-0 right-0 h-[100dvh] w-[85vw] max-w-sm bg-white shadow-xl
+        className={`absolute top-0 right-0 h-[100dvh] w-[85vw] max-w-sm bg-card shadow-xl
           transform transition-transform duration-[250ms] ease-out will-change-transform
           overflow-y-auto overscroll-contain
           ${isOpen ? "translate-x-0" : "translate-x-full"}`}

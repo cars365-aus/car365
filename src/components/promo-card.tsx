@@ -82,7 +82,7 @@ export function PromoCard({
             className={`
               inline-flex items-center justify-center gap-2 font-bold transition-all duration-300
               rounded-xl backdrop-blur-md border border-white/20
-              bg-white/10 text-white hover:bg-white hover:text-slate-950
+              bg-card/10 text-white hover:bg-card hover:text-slate-950
               ${variant === "large" ? "px-8 py-4 text-lg" : "px-6 py-3 text-base"}
             `}
           >

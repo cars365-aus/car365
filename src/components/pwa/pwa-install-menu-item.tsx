@@ -54,10 +54,10 @@ export function PwaInstallMenuItem() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/icons/icon-192.png" alt="" aria-hidden="true" className="h-10 w-10 shrink-0 rounded-xl border border-orange-100" />
         <div className="min-w-0 flex-1">
-          <p className="text-base font-bold text-slate-900">
+          <p className="text-base font-bold text-foreground">
             {isIos ? "Add to Home Screen" : "Install app"}
           </p>
-          <p className="truncate text-xs text-slate-500">
+          <p className="truncate text-xs text-muted-foreground">
             Faster access · offline-ready · no app store
           </p>
         </div>

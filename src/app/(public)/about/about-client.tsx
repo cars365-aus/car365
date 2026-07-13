@@ -5,10 +5,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Building2, ShieldCheck, HeartHandshake, ArrowRight, Zap, Car, Lock, Globe, AlertCircle, DollarSign } from "lucide-react";
 import { useRef } from "react";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-
-export function AboutClient() {
+export function AboutClient({ header, footer }: { header: React.ReactNode; footer: React.ReactNode }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -21,7 +18,7 @@ export function AboutClient() {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-slate-950 text-slate-50 selection:bg-orange-500/30 selection:text-orange-200">
-      <SiteHeader />
+      {header}
 
       <main className="relative z-10 overflow-hidden">
         {/* SECTION 1: Artistic Hero */}
@@ -85,7 +82,7 @@ export function AboutClient() {
           </motion.div>
 
           <motion.div 
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500"
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5, duration: 1 }}
@@ -112,7 +109,7 @@ export function AboutClient() {
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.6 }}
                 >
-                  <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">The industry is <span className="text-slate-500 line-through">broken</span>.</h2>
+                  <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">The industry is <span className="text-muted-foreground line-through">broken</span>.</h2>
                   <p className="text-lg text-slate-400 mb-8">
                     For decades, mobility has been gatekept by three massive global conglomerates. They dictate the rules, control the prices, and leave customers with rigid, impersonal experiences.
                   </p>
@@ -162,7 +159,7 @@ export function AboutClient() {
         </section>
 
         {/* SECTION 3: The Solution (Glassmorphism Light Transition) */}
-        <section className="relative bg-white text-slate-900 py-32 rounded-t-[3rem] -mt-10 overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+        <section className="relative bg-card text-foreground py-32 rounded-t-[3rem] -mt-10 overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
           {/* Subtle light background gradients */}
           <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-orange-50/50 to-transparent"></div>
           
@@ -216,15 +213,15 @@ export function AboutClient() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.15 }}
                   whileHover={{ y: -10, scale: 1.02 }}
-                  className={`relative p-8 rounded-3xl border border-slate-100 ${value.bgCard} shadow-lg shadow-slate-200/50 backdrop-blur-xl overflow-hidden group`}
+                  className={`relative p-8 rounded-3xl border border-border ${value.bgCard} shadow-lg shadow-slate-200/50 backdrop-blur-xl overflow-hidden group`}
                 >
                   <div className={`absolute -right-10 -top-10 w-40 h-40 bg-gradient-to-br ${value.gradient} rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700`}></div>
                   
                   <div className="relative z-10">
-                    <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-8 border border-slate-100 group-hover:shadow-md transition-shadow">
+                    <div className="w-16 h-16 rounded-2xl bg-card shadow-sm flex items-center justify-center mb-8 border border-border group-hover:shadow-md transition-shadow">
                       <value.icon className={`h-8 w-8 ${value.iconColor}`} />
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-900 mb-4">{value.title}</h3>
+                    <h3 className="text-2xl font-bold text-foreground mb-4">{value.title}</h3>
                     <p className="text-slate-600 leading-relaxed text-lg">{value.description}</p>
                   </div>
                 </motion.div>
@@ -234,7 +231,7 @@ export function AboutClient() {
         </section>
 
         {/* SECTION 4: Impact / Visual Data */}
-        <section className="bg-slate-50 py-32 border-t border-slate-200">
+        <section className="bg-muted py-32 border-t border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <motion.div 
@@ -260,14 +257,14 @@ export function AboutClient() {
                     whileInView={{ y: 0, opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.5, duration: 0.6 }}
-                    className="absolute bottom-8 left-8 bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-xl flex items-center gap-5"
+                    className="absolute bottom-8 left-8 bg-card/90 backdrop-blur-md rounded-2xl p-6 shadow-xl flex items-center gap-5"
                   >
                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-100 text-orange-600">
                       <Building2 className="h-7 w-7" />
                     </div>
                     <div>
-                      <p className="text-3xl font-black text-slate-900">100%</p>
-                      <p className="text-sm font-bold uppercase tracking-widest text-slate-500">Local Business</p>
+                      <p className="text-3xl font-black text-foreground">100%</p>
+                      <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Local Business</p>
                     </div>
                   </motion.div>
                 </div>
@@ -280,7 +277,7 @@ export function AboutClient() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
                 >
-                  <h2 className="text-4xl font-black text-slate-900 mb-6">Empowering communities, not corporations.</h2>
+                  <h2 className="text-4xl font-black text-foreground mb-6">Empowering communities, not corporations.</h2>
                   <p className="text-xl text-slate-600 leading-relaxed">
                     When you rent through Hire Car, your money stays in the local economy. You're supporting families, small fleet owners, and independent entrepreneurs—not lining the pockets of shareholders.
                   </p>
@@ -299,8 +296,8 @@ export function AboutClient() {
                       transition={{ duration: 0.5, delay: i * 0.2 }}
                       className="border-l-4 border-orange-500 pl-6"
                     >
-                      <p className="text-5xl font-black text-slate-900 mb-2">{stat.number}</p>
-                      <p className="text-lg font-bold text-slate-500">{stat.label}</p>
+                      <p className="text-5xl font-black text-foreground mb-2">{stat.number}</p>
+                      <p className="text-lg font-bold text-muted-foreground">{stat.label}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -351,7 +348,7 @@ export function AboutClient() {
         </section>
       </main>
 
-      <SiteFooter />
+      {footer}
     </div>
   );
 }

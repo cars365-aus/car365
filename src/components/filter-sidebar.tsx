@@ -85,12 +85,12 @@ function FilterSection({ title, sectionKey, expandedSections, toggleSection, chi
   const isExpanded = expandedSections.includes(sectionKey);
 
   return (
-    <div className="border-b border-slate-100 last:border-0">
+    <div className="border-b border-border last:border-0">
       <button
         onClick={() => toggleSection(sectionKey)}
         className="flex w-full items-center justify-between py-4 text-left"
       >
-        <span className="font-semibold text-slate-900">{title}</span>
+        <span className="font-semibold text-foreground">{title}</span>
         <ChevronDown 
           className={`h-5 w-5 text-slate-400 transition-transform ${isExpanded ? "rotate-180" : ""}`} 
         />
@@ -150,7 +150,7 @@ export function FilterSidebar({
     <div className="flex-1 overflow-y-auto lg:overflow-visible h-full flex flex-col">
       {/* Active Filter Pills */}
       {hasActiveFilters && (
-        <div className="flex flex-wrap gap-2 p-4 border-b border-slate-100 shrink-0">
+        <div className="flex flex-wrap gap-2 p-4 border-b border-border shrink-0">
           {Object.entries(currentFilters).map(([key, value]) => {
             if (!value || value === "" || value === 0) return null;
             return (
@@ -182,9 +182,9 @@ export function FilterSidebar({
                   type="checkbox"
                   checked={currentFilters.category === cat.value}
                   onChange={(e) => updateFilter("category", e.target.checked ? cat.value : undefined)}
-                  className="h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-500"
+                  className="h-4 w-4 rounded border-border text-amber-500 focus:ring-amber-500"
                 />
-                <span className="flex-1 text-sm text-slate-700 group-hover:text-slate-900">
+                <span className="flex-1 text-sm text-muted-foreground group-hover:text-foreground">
                   {cat.label}
                 </span>
                 {facetCount(facetCounts, "category", cat.value) !== null && (
@@ -202,7 +202,7 @@ export function FilterSidebar({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-slate-500 mb-1 block">Min ($/day)</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Min ($/day)</label>
                 <input
                   type="number"
                   value={currentFilters.minPrice || ""}
@@ -210,11 +210,11 @@ export function FilterSidebar({
                   placeholder="0"
                   min={0}
                   max={2000}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
+                  className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                 />
               </div>
               <div>
-                <label className="text-xs text-slate-500 mb-1 block">Max ($/day)</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Max ($/day)</label>
                 <input
                   type="number"
                   value={currentFilters.maxPrice || ""}
@@ -222,7 +222,7 @@ export function FilterSidebar({
                   placeholder="2000"
                   min={0}
                   max={2000}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
+                  className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                 />
               </div>
             </div>
@@ -249,7 +249,7 @@ export function FilterSidebar({
                   px-3 py-1.5 text-sm rounded-lg border transition-colors
                   ${currentFilters.seats === option.value 
                     ? "border-amber-500 bg-amber-50 text-amber-700 font-medium" 
-                    : "border-slate-200 text-slate-600 hover:border-slate-300"
+                    : "border-border text-slate-600 hover:border-border"
                   }
                 `}
               >
@@ -268,9 +268,9 @@ export function FilterSidebar({
                   type="checkbox"
                   checked={currentFilters.transmission === trans.value}
                   onChange={(e) => updateFilter("transmission", e.target.checked ? trans.value : undefined)}
-                  className="h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-500"
+                  className="h-4 w-4 rounded border-border text-amber-500 focus:ring-amber-500"
                 />
-                <span className="flex-1 text-sm text-slate-700 group-hover:text-slate-900">
+                <span className="flex-1 text-sm text-muted-foreground group-hover:text-foreground">
                   {trans.label}
                 </span>
                 {facetCount(facetCounts, "transmission", trans.value) !== null && (
@@ -292,9 +292,9 @@ export function FilterSidebar({
                   type="checkbox"
                   checked={currentFilters.fuel === fuel.value}
                   onChange={(e) => updateFilter("fuel", e.target.checked ? fuel.value : undefined)}
-                  className="h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-500"
+                  className="h-4 w-4 rounded border-border text-amber-500 focus:ring-amber-500"
                 />
-                <span className="flex-1 text-sm text-slate-700 group-hover:text-slate-900">
+                <span className="flex-1 text-sm text-muted-foreground group-hover:text-foreground">
                   {fuel.label}
                 </span>
                 {facetCount(facetCounts, "fuel", fuel.value) !== null && (
@@ -316,9 +316,9 @@ export function FilterSidebar({
                   type="checkbox"
                   checked={currentFilters.make === make.value}
                   onChange={(e) => updateFilter("make", e.target.checked ? make.value : undefined)}
-                  className="h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-500"
+                  className="h-4 w-4 rounded border-border text-amber-500 focus:ring-amber-500"
                 />
-                <span className="flex-1 text-sm text-slate-700 group-hover:text-slate-900">
+                <span className="flex-1 text-sm text-muted-foreground group-hover:text-foreground">
                   {make.label}
                 </span>
                 {facetCount(facetCounts, "make", make.value) !== null && (
@@ -338,11 +338,11 @@ export function FilterSidebar({
   if (mobileOnly) {
     return (
       <Sheet open={mobileOpen} onOpenChange={(open) => !open && handleClose()}>
-        <SheetContent side="right" className="w-[85vw] sm:max-w-[340px] p-0 flex flex-col bg-white">
-          <SheetHeader className="p-4 border-b border-slate-100 text-left flex flex-row items-center justify-between shrink-0">
+        <SheetContent side="right" className="w-[85vw] sm:max-w-[340px] p-0 flex flex-col bg-card">
+          <SheetHeader className="p-4 border-b border-border text-left flex flex-row items-center justify-between shrink-0">
             <div>
               <SheetTitle>Filters</SheetTitle>
-              <p className="text-sm text-slate-500">{totalResults} results</p>
+              <p className="text-sm text-muted-foreground">{totalResults} results</p>
             </div>
             {hasActiveFilters && (
               <button
@@ -355,7 +355,7 @@ export function FilterSidebar({
             )}
           </SheetHeader>
           {filterContent}
-          <div className="shrink-0 p-4 border-t border-slate-100 bg-white pb-[calc(1rem+env(safe-area-inset-bottom))]">
+          <div className="shrink-0 p-4 border-t border-border bg-card pb-[calc(1rem+env(safe-area-inset-bottom))]">
             <button
               onClick={handleClose}
               className="w-full py-3 bg-amber-500 text-slate-950 font-semibold rounded-lg hover:bg-amber-400 transition-colors"
@@ -371,12 +371,12 @@ export function FilterSidebar({
   // Desktop render (with hidden logic handled by parent)
   return (
     <aside className="hidden lg:block bg-transparent sticky top-24 h-fit">
-      <div className="h-full flex flex-col bg-white rounded-xl border border-slate-200 shadow-sm">
+      <div className="h-full flex flex-col bg-card rounded-xl border border-border shadow-sm">
         {/* Header */}
-        <div className="shrink-0 flex items-center justify-between p-4 border-b border-slate-100">
+        <div className="shrink-0 flex items-center justify-between p-4 border-b border-border">
           <div>
-            <h2 className="font-semibold text-slate-900">Filters</h2>
-            <p className="text-sm text-slate-500">{totalResults} results</p>
+            <h2 className="font-semibold text-foreground">Filters</h2>
+            <p className="text-sm text-muted-foreground">{totalResults} results</p>
           </div>
           {hasActiveFilters && (
             <button

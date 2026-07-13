@@ -11,10 +11,10 @@ export const metadata = {
 
 export default function CareersPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       <SiteHeader />
       <main className="mx-auto max-w-3xl px-4 py-20 sm:py-28">
-        <h1 className="text-4xl font-black tracking-tight text-slate-900">
+        <h1 className="text-4xl font-black tracking-tight text-foreground">
           Careers at Hire Car
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-600">

@@ -30,7 +30,7 @@ export default async function BlogPage({
   });
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeSchemas([schema]) }}
@@ -38,7 +38,7 @@ export default async function BlogPage({
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-4 py-16 sm:py-24">
         <div className="mb-12 text-center">
-          <h1 className="text-4xl font-black text-slate-900 sm:text-5xl mb-4">
+          <h1 className="text-4xl font-black text-foreground sm:text-5xl mb-4">
             Hire Car Blog
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
@@ -47,7 +47,7 @@ export default async function BlogPage({
         </div>
 
         {articles.length === 0 ? (
-          <p className="text-center text-slate-500 py-16">
+          <p className="text-center text-muted-foreground py-16">
             New articles are published daily. Check back soon.
           </p>
         ) : (
@@ -55,9 +55,9 @@ export default async function BlogPage({
             {articles.map((article) => (
               <article
                 key={article.id}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow"
+                className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-shadow"
               >
-                <Link href={`/blog/${article.slug}`} className="block aspect-[16/10] relative bg-slate-100 overflow-hidden">
+                <Link href={`/blog/${article.slug}`} className="block aspect-[16/10] relative bg-muted overflow-hidden">
                   {article.featured_image_url ? (
                     <Image
                       src={article.featured_image_url}
@@ -77,14 +77,14 @@ export default async function BlogPage({
                     </span>
                   )}
                   <Link href={`/blog/${article.slug}`}>
-                    <h2 className="text-lg font-bold text-slate-900 group-hover:text-primary transition-colors line-clamp-2">
+                    <h2 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
                       {article.title}
                     </h2>
                   </Link>
                   <p className="mt-2 text-sm text-slate-600 line-clamp-3 flex-1">
                     {article.excerpt}
                   </p>
-                  <div className="mt-4 flex items-center gap-3 text-xs text-slate-500">
+                  <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
                     <time dateTime={article.published_at}>
                       {format(new Date(article.published_at), "d MMM yyyy")}
                     </time>
@@ -102,12 +102,12 @@ export default async function BlogPage({
             {page > 1 ? (
               <Link
                 href={page === 2 ? "/blog" : `/blog?page=${page - 1}`}
-                className="rounded-full border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="rounded-full border border-border px-5 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted"
               >
                 Previous
               </Link>
             ) : (
-              <span className="rounded-full border border-slate-100 px-5 py-2 text-sm text-slate-300">
+              <span className="rounded-full border border-border px-5 py-2 text-sm text-slate-300">
                 Previous
               </span>
             )}
@@ -117,12 +117,12 @@ export default async function BlogPage({
             {page < totalPages ? (
               <Link
                 href={`/blog?page=${page + 1}`}
-                className="rounded-full border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="rounded-full border border-border px-5 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted"
               >
                 Next
               </Link>
             ) : (
-              <span className="rounded-full border border-slate-100 px-5 py-2 text-sm text-slate-300">
+              <span className="rounded-full border border-border px-5 py-2 text-sm text-slate-300">
                 Next
               </span>
             )}

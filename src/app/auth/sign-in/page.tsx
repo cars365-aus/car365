@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Users, MessageCircle, BadgeDollarSign } from "lucide-react";
-import { AuthPanel } from "@/components/auth/AuthPanel";
+import { StaffSignIn } from "@/components/auth/staff-sign-in";
 
 function SignInContent() {
   const searchParams = useSearchParams();
@@ -18,10 +18,10 @@ function SignInContent() {
         <div className="max-w-md space-y-8">
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-foreground" style={{ letterSpacing: "-0.03em" }}>
-              Australia&apos;s trusted car hire marketplace
+              Australia&apos;s trusted used car dealership
             </h2>
             <p className="mt-3 text-lg text-muted-foreground">
-              Connect with verified local operators and find the perfect vehicle for your journey.
+              Browse premium, pre-inspected used cars with transparent pricing.
             </p>
           </div>
 
@@ -31,9 +31,9 @@ function SignInContent() {
                 <Users className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Verified operators</h3>
+                <h3 className="font-semibold text-foreground">Pre-inspected vehicles</h3>
                 <p className="text-sm text-muted-foreground">
-                  Every vendor is verified for quality and reliability before joining our platform.
+                  Every vehicle undergoes a rigorous inspection process before being listed.
                 </p>
               </div>
             </div>
@@ -43,9 +43,9 @@ function SignInContent() {
                 <MessageCircle className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Direct communication</h3>
+                <h3 className="font-semibold text-foreground">Fast support</h3>
                 <p className="text-sm text-muted-foreground">
-                  Message vendors directly via WhatsApp, phone, or our inquiry system.
+                  Get your questions answered quickly by our dedicated team.
                 </p>
               </div>
             </div>
@@ -55,9 +55,9 @@ function SignInContent() {
                 <BadgeDollarSign className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">No hidden fees</h3>
+                <h3 className="font-semibold text-foreground">Transparent pricing</h3>
                 <p className="text-sm text-muted-foreground">
-                  Transparent pricing from local operators — what you see is what you pay.
+                  What you see is what you pay. No hidden fees or surprises.
                 </p>
               </div>
             </div>
@@ -67,11 +67,7 @@ function SignInContent() {
 
       {/* Form Card Panel */}
       <div className="flex w-full lg:w-1/2 items-center justify-center px-4 py-12 sm:px-6 lg:px-12">
-        <AuthPanel
-          redirectedFrom={redirectedFrom}
-          plan={plan}
-          mfaRequired={mfaRequired}
-        />
+        <StaffSignIn />
       </div>
     </main>
   );

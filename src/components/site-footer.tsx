@@ -14,15 +14,15 @@ import {
 
 const COMPANY_LINKS = [
   { href: "/about", label: "About Us" },
-  { href: "/testimonials", label: "Testimonials" },
+  { href: "/success-stories", label: "Testimonials" },
   { href: "/blog", label: "Blog" },
-  { href: "/faqs", label: "FAQs" },
+  { href: "/faq", label: "FAQs" },
   { href: "/contact", label: "Contact" },
 ];
 
 const LEGAL_LINKS = [
-  { href: "/privacy-policy", label: "Privacy Policy" },
-  { href: "/terms", label: "Terms & Conditions" },
+  { href: "/legal/privacy-policy", label: "Privacy Policy" },
+  { href: "/legal/terms", label: "Terms & Conditions" },
 ];
 
 export async function SiteFooter() {
@@ -36,22 +36,22 @@ export async function SiteFooter() {
   const email = (company.email as string) || null;
   const rating = company.google_rating as number | undefined;
   const reviewCount = company.google_review_count as number | undefined;
-  const tradingName = (company.trading_name as string) || "Car365";
+  const tradingName = (company.trading_name as string) || "Cars365";
 
   return (
-    <footer className="border-t border-border bg-accent-dark text-slate-300">
+    <footer className="border-t border-white/10 bg-black text-slate-300 pt-10">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         {/* Link hubs */}
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-6">
           <div className="col-span-2 lg:col-span-2">
-            <span className="font-heading text-xl font-extrabold text-white">
-              Car<span className="text-primary">365</span>
-            </span>
+            <Link href="/" className="block">
+              <img src="/LOGO.png" alt="Cars365" className="h-10 w-auto object-contain" />
+            </Link>
             <p className="mt-3 max-w-xs text-sm text-slate-400">
               Quality used cars, honestly inspected and backed by a team that answers fast.
             </p>
             {rating ? (
-              <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2 text-sm">
+              <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-card/5 px-3 py-2 text-sm">
                 <Star className="size-4 fill-warning text-warning" />
                 <span className="font-semibold text-white">{rating}</span>
                 {reviewCount ? <span className="text-slate-400">({reviewCount} Google reviews)</span> : null}
@@ -105,7 +105,7 @@ export async function SiteFooter() {
         </div>
 
         {/* Newsletter */}
-        <div className="mt-10 rounded-xl border border-white/10 bg-white/5 p-6">
+        <div className="mt-10 rounded-xl border border-white/10 bg-card/5 p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h3 className="font-heading text-lg font-bold text-white">New arrivals in your inbox</h3>

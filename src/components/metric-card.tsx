@@ -32,7 +32,7 @@ const iconBgMap: Record<string, string> = {
   green: "bg-green-100 text-green-600",
   amber: "bg-amber-100 text-amber-600",
   emerald: "bg-emerald-100 text-emerald-600",
-  slate: "bg-slate-100 text-slate-600",
+  slate: "bg-muted text-slate-600",
   primary: "bg-primary/10 text-primary",
 };
 

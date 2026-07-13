@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { optionalEnv } from "@/lib/config";
 import type { LeadType } from "@/lib/domain";
 
-const FROM = optionalEnv("EMAIL_FROM") || "Car365 <noreply@car365.example>";
+const FROM = optionalEnv("EMAIL_FROM") || "Cars365 <noreply@cars365.example>";
 
 const TYPE_LABEL: Record<LeadType, string> = {
   vehicle_enquiry: "Vehicle enquiry",

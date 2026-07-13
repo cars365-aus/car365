@@ -1,87 +1,67 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import { estimateRepayments } from "@/lib/finance";
-import { formatPrice } from "@/lib/nav";
 import type { FinanceParams } from "@/lib/domain";
+import { formatPrice } from "@/lib/nav";
 
-/**
- * Interactive repayment calculator (SRS FR-13). Buyer adjusts price, deposit and
- * term; weekly/monthly update live. Always shown with the finance disclaimer.
- */
-export function FinanceCalculator({
-  params,
-  initialPrice = 30000,
-}: {
-  params: FinanceParams;
-  initialPrice?: number;
-}) {
-  const [price, setPrice] = useState(initialPrice);
-  const [deposit, setDeposit] = useState(Math.round((params.depositPct / 100) * initialPrice));
-  const [term, setTerm] = useState(params.termMonths);
+export function FinanceCalculator({ price, params }: { price: number; params: FinanceParams }) {
+  const [deposit, setDeposit] = useState<number>(Math.round((params.depositPct / 100) * price));
+  const [termMonths, setTermMonths] = useState<number>(params.termMonths);
 
-  const est = useMemo(
-    () => estimateRepayments(price, params, { deposit, termMonths: term }),
-    [price, deposit, term, params],
+  const estimate = useMemo(
+    () => estimateRepayments(price, params, { deposit, termMonths }),
+    [price, params, deposit, termMonths]
   );
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
-      <h3 className="font-heading text-lg font-bold text-foreground">Estimate your repayments</h3>
-
-      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <label className="block">
-          <span className="mb-1 flex items-center justify-between text-sm font-medium text-foreground">
-            Car price <span className="tabular-nums text-primary">{formatPrice(price)}</span>
-          </span>
+    <div className="mt-6 rounded-xl border border-border bg-black/20 p-5 shadow-inner">
+      <h3 className="font-heading text-lg font-bold text-foreground">Finance Calculator</h3>
+      
+      <div className="mt-5 space-y-6">
+        <div>
+          <div className="flex justify-between text-sm mb-3">
+            <span className="text-muted-foreground font-medium">Deposit</span>
+            <span className="font-bold text-foreground">{formatPrice(deposit)}</span>
+          </div>
           <input
-            type="range" min={5000} max={150000} step={500}
-            value={price}
-            onChange={(e) => { const p = Number(e.target.value); setPrice(p); if (deposit > p) setDeposit(p); }}
-            className="w-full accent-[var(--primary)]"
-          />
-        </label>
-
-        <label className="block">
-          <span className="mb-1 flex items-center justify-between text-sm font-medium text-foreground">
-            Deposit <span className="tabular-nums text-primary">{formatPrice(deposit)}</span>
-          </span>
-          <input
-            type="range" min={0} max={price} step={500}
+            type="range"
+            min={0}
+            max={price * 0.5}
+            step={500}
             value={deposit}
             onChange={(e) => setDeposit(Number(e.target.value))}
-            className="w-full accent-[var(--primary)]"
+            className="w-full accent-primary cursor-pointer"
           />
-        </label>
-
-        <label className="block sm:col-span-2">
-          <span className="mb-1 block text-sm font-medium text-foreground">Loan term</span>
-          <select
-            value={term}
-            onChange={(e) => setTerm(Number(e.target.value))}
-            className="w-full rounded-lg border border-border bg-card px-3 py-2.5 text-foreground"
-          >
-            {[24, 36, 48, 60, 72, 84].map((m) => (
-              <option key={m} value={m}>{m} months ({m / 12} years)</option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <div className="mt-6 grid grid-cols-2 gap-4">
-        <div className="rounded-lg bg-primary/5 p-4 text-center">
-          <p className="text-xs text-muted-foreground">Weekly from</p>
-          <p className="font-heading text-2xl font-extrabold tabular-nums text-primary">{formatPrice(est.weekly)}</p>
         </div>
-        <div className="rounded-lg bg-muted p-4 text-center">
-          <p className="text-xs text-muted-foreground">Monthly from</p>
-          <p className="font-heading text-2xl font-extrabold tabular-nums text-foreground">{formatPrice(est.monthly)}</p>
+
+        <div>
+          <div className="flex justify-between text-sm mb-3">
+            <span className="text-muted-foreground font-medium">Loan Term</span>
+            <span className="font-bold text-foreground">{termMonths / 12} Years</span>
+          </div>
+          <input
+            type="range"
+            min={12}
+            max={84}
+            step={12}
+            value={termMonths}
+            onChange={(e) => setTermMonths(Number(e.target.value))}
+            className="w-full accent-primary cursor-pointer"
+          />
         </div>
       </div>
 
-      <p className="mt-4 text-xs text-muted-foreground">
-        Based on a {params.annualRate}% p.a. indicative rate over {term} months. {params.disclaimer}
-      </p>
+      <div className="mt-6 border-t border-white/10 pt-5 text-center">
+        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Estimated Repayment</p>
+        <p className="font-heading text-5xl font-black text-primary my-2 drop-shadow-md">
+          {formatPrice(estimate.weekly)}<span className="text-xl text-muted-foreground font-normal">/wk</span>
+        </p>
+        <p className="text-xs leading-relaxed text-muted-foreground mt-3 px-2">
+          Based on {params.annualRate}% interest rate over {termMonths} months.<br />
+          {params.disclaimer}
+        </p>
+      </div>
     </div>
   );
 }

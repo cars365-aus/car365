@@ -50,13 +50,13 @@ export function SavedVehicleButton({
       onClick={handleClick}
       disabled={isLoading}
       aria-label={saved ? "Remove from saved" : "Save vehicle"}
-      className={`touch-target flex h-10 w-10 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 shadow-sm hover:scale-105 transition-transform ${className}`}
+      className={`touch-target flex h-10 w-10 items-center justify-center rounded-full bg-card/90 backdrop-blur-sm border border-border shadow-sm hover:scale-105 transition-transform ${className}`}
     >
       {isLoading ? (
         <Loader2 className="h-4 w-4 animate-spin text-slate-400" />
       ) : (
         <Heart
-          className={`h-4 w-4 ${saved ? "fill-red-500 text-red-500" : "text-slate-500"}`}
+          className={`h-4 w-4 ${saved ? "fill-red-500 text-red-500" : "text-muted-foreground"}`}
         />
       )}
     </button>
