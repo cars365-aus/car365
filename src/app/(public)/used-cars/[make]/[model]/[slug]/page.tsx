@@ -11,11 +11,10 @@ import { VdpLeadActions } from "@/components/leads/vdp-lead-actions";
 import { FinanceCalculator } from "@/components/finance-calculator";
 import { getVehicleBySlug, getSimilarVehicles } from "@/lib/data/inventory";
 import { getFinanceParams, getPhoneNumbers } from "@/lib/data/settings";
-import { estimateRepayments } from "@/lib/finance";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import {
   BODY_TYPE_LABELS, FUEL_LABELS, TRANSMISSION_LABELS, DRIVE_LABELS,
-  formatPrice, formatKm,
+  formatKm,
 } from "@/lib/nav";
 import type { VehicleImage } from "@/lib/domain";
 
@@ -45,7 +44,6 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
 
   const similar = await getSimilarVehicles({ id: v.id, bodyType: v.bodyType, price: v.price });
   const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""}`;
-  const weekly = v.weeklyEstimate ?? estimateRepayments(v.price, financeParams).weekly;
 
   const galleryImages: VehicleImage[] =
     v.images.length > 0
@@ -212,7 +210,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
 
       {/* Sticky mobile CTA bar */}
       {!isSold ? (
-        <div className="sticky bottom-0 z-40 border-t border-border bg-card p-3 lg:hidden">
+        <div className="sticky bottom-0 z-40 border-t border-border bg-card px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:hidden">
           <VdpLeadActions
             vehicleId={v.id}
             vehicleTitle={title}

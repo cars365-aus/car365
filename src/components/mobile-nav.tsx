@@ -70,7 +70,7 @@ export function MobileNav({ makes, phone }: { makes: Make[]; phone: string | nul
         </nav>
 
         {phone ? (
-          <div className="sticky bottom-0 border-t border-border bg-card p-4">
+          <div className="sticky bottom-0 border-t border-border bg-card px-4 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
             <a
               href={`tel:${phone}`}
               className="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 font-semibold text-primary-foreground"

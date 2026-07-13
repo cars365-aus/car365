@@ -37,7 +37,7 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
         </header>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <FinanceCalculator params={params} initialPrice={ctx?.price ?? 30000} />
+          <FinanceCalculator params={params} price={ctx?.price ?? 30000} />
           <div className="rounded-xl border border-border bg-card p-6">
             <h2 className="font-heading text-lg font-bold text-foreground">Enquire about finance</h2>
             <p className="mb-4 mt-1 text-sm text-muted-foreground">A specialist will contact you — no obligation.</p>

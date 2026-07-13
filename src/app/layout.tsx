@@ -151,14 +151,20 @@ export default function RootLayout({
           </MobileStateProvider>
         </AuthProvider>
         <Toaster richColors position="top-right" />
+        {/* Register the PWA service worker in production only. In dev it caused
+            stale CSS/HTML (see public/sw.js); there we actively unregister it and
+            clear caches so developer machines self-heal. */}
         <Script id="sw-register" strategy="lazyOnload">
-          {`
-            if ('serviceWorker' in navigator) {
-              navigator.serviceWorker.register('/sw.js').catch(function(err) {
-                console.log('SW registration failed:', err);
-              });
-            }
-          `}
+          {process.env.NODE_ENV === "production"
+            ? `if ('serviceWorker' in navigator) {
+                 navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                   console.log('SW registration failed:', err);
+                 });
+               }`
+            : `if ('serviceWorker' in navigator) {
+                 navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
+                 if (window.caches) { caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); }); }
+               }`}
         </Script>
         <SpeedInsights />
         <Analytics />
