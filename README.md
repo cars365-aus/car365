@@ -1,6 +1,6 @@
-# Hire Car – Premium Vehicle Marketplace
+# car365 – Premium Vehicle Marketplace
 
-Hire Car is a modern, scalable, multi-tenant marketplace connecting customers with premium local car rental operators. It enables vendors to manage their fleets, locations, and leads, while offering customers an intuitive platform to discover and book vehicles.
+car365 is a modern, scalable, multi-tenant marketplace connecting customers with premium local car rental operators. It enables vendors to manage their fleets, locations, and leads, while offering customers an intuitive platform to discover and book vehicles.
 
 ## Tech Stack
 - **Frontend Framework**: Next.js 16 (App Router, Server Actions)
