@@ -29,23 +29,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ].map((p) => url(p, staticDate, p === "/" ? 1 : 0.7));
 
   // Programmatic landing pages.
-  const makeRoutes = ((makesRes.data ?? []) as Row[]).map((m) => url(`/used-cars/${m.slug}`, staticDate, 0.6));
-  const modelRoutes = ((modelsRes.data ?? []) as Row[])
-    .filter((m) => (m.makes as unknown as Row)?.slug)
-    .map((m) => url(`/used-cars/${(m.makes as unknown as Row).slug}/${m.slug}`, staticDate, 0.5));
+  const makeRoutes = ((makesRes.data ?? []) as any[]).map((m) => url(`/used-cars/${m.slug}`, staticDate, 0.6));
+  const modelRoutes = ((modelsRes.data ?? []) as any[])
+    .filter((m) => m.makes?.slug)
+    .map((m) => url(`/used-cars/${m.makes.slug}/${m.slug}`, staticDate, 0.5));
   const bodyRoutes = NAV_BODY_TYPES.map((b) => url(bodyTypeHref(b), staticDate, 0.6));
   const budgetRoutes = BUDGET_BANDS.map((b) => url(budgetHref(b.max), staticDate, 0.5));
 
   // VDPs.
-  const vehicleRoutes = ((vehiclesRes.data ?? []) as Row[])
-    .filter((v) => (v.makes as unknown as Row)?.slug && (v.models as unknown as Row)?.slug)
+  const vehicleRoutes = ((vehiclesRes.data ?? []) as any[])
+    .filter((v) => v.makes?.slug && v.models?.slug)
     .map((v) => url(
-      `/used-cars/${(v.makes as unknown as Row).slug}/${(v.models as unknown as Row).slug}/${v.slug}`,
+      `/used-cars/${v.makes.slug}/${v.models.slug}/${v.slug}`,
       v.updated_at ? new Date(v.updated_at) : staticDate,
       0.8,
     ));
 
-  const blogRoutes = ((blogRes.data ?? []) as Row[]).map((p) =>
+  const blogRoutes = ((blogRes.data ?? []) as any[]).map((p) =>
     url(`/blog/${p.slug}`, p.updated_at ? new Date(p.updated_at) : staticDate, 0.5),
   );
 
