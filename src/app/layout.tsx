@@ -9,8 +9,6 @@ import { MobileStateProvider } from "@/components/mobile-state-provider";
 import { MobileAnimationProvider } from "@/components/mobile-animation-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { ScrollToTop } from "@/components/scroll-to-top";
-import { PwaInstallBanner } from "@/components/pwa/pwa-install-banner";
-import { appleStartupImages } from "@/lib/pwa-splash";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -45,7 +43,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  manifest: "/manifest.json",
+
   applicationName: "Cars365",
   icons: {
     icon: [
@@ -57,12 +55,7 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Cars365",
-    startupImage: appleStartupImages,
-  },
+
   // Legacy iOS (< 16.4) reads the apple-prefixed flag for standalone launch;
   // Next emits the modern `mobile-web-app-capable`, so add the legacy one too.
   other: {
@@ -146,26 +139,12 @@ export default function RootLayout({
             <MobileAnimationProvider>
               {children}
               <ScrollToTop />
-              <PwaInstallBanner />
+
             </MobileAnimationProvider>
           </MobileStateProvider>
         </AuthProvider>
         <Toaster richColors position="top-right" />
-        {/* Register the PWA service worker in production only. In dev it caused
-            stale CSS/HTML (see public/sw.js); there we actively unregister it and
-            clear caches so developer machines self-heal. */}
-        <Script id="sw-register" strategy="lazyOnload">
-          {process.env.NODE_ENV === "production"
-            ? `if ('serviceWorker' in navigator) {
-                 navigator.serviceWorker.register('/sw.js').catch(function(err) {
-                   console.log('SW registration failed:', err);
-                 });
-               }`
-            : `if ('serviceWorker' in navigator) {
-                 navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
-                 if (window.caches) { caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); }); }
-               }`}
-        </Script>
+
         <SpeedInsights />
         <Analytics />
       </body>
