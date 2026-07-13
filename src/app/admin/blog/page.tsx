@@ -1,126 +1,46 @@
-import Link from "next/link";
 import { format } from "date-fns";
-import { requireAdminRole } from "@/lib/security/auth";
-import {
-  getAdminBlogArticles,
-  getAdminBlogArticleById,
-  getBlogCategories,
-} from "@/lib/blog/queries";
-import { GenerateBlogButton } from "./generate-blog-button";
-import { BlogSetupChecklist } from "./blog-setup-checklist";
-import { BlogEditForm } from "./blog-edit-form";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-export const metadata = { title: "Blog | Admin" };
+export const metadata = { title: "Blog" };
+export const dynamic = "force-dynamic";
 
-interface AdminBlogPageProps {
-  searchParams: Promise<{ edit?: string }>;
-}
+const STATUS_STYLES: Record<string, string> = {
+  published: "bg-success/15 text-success",
+  scheduled: "bg-warning/15 text-warning",
+  draft: "bg-muted text-muted-foreground",
+};
 
-export default async function AdminBlogPage({ searchParams }: AdminBlogPageProps) {
-  await requireAdminRole(["owner", "admin"]);
-  const { edit } = await searchParams;
-  const articles = await getAdminBlogArticles();
-
-  if (edit) {
-    const [article, categories] = await Promise.all([
-      getAdminBlogArticleById(edit),
-      getBlogCategories(),
-    ]);
-
-    if (article) {
-      return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <section className="flex flex-col gap-3 border-b border-border pb-6">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              Edit Article
-            </h1>
-            <p className="max-w-2xl text-sm text-muted-foreground">
-              Auto-posting keeps running on its own schedule. Edits made here
-              apply to this article only.
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Source: <span className="font-medium capitalize">{article.source.replace("_", " ")}</span>
-              {article.published_at && (
-                <>
-                  {" "}· Published{" "}
-                  {format(new Date(article.published_at), "d MMM yyyy HH:mm")}
-                </>
-              )}
-            </p>
-          </section>
-          <BlogEditForm article={article} categories={categories} cancelHref="/admin/blog" />
-        </div>
-      );
-    }
-  }
+export default async function AdminBlogPage() {
+  const supabase = createAdminClient();
+  const { data: posts } = await supabase
+    .from("blog_posts")
+    .select("id, title, slug, status, published_at, blog_categories:category_id ( name )")
+    .order("created_at", { ascending: false })
+    .limit(100);
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <section className="flex flex-col gap-3 border-b border-border pb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          SEO Blog Bot
-        </h1>
-        <p className="max-w-2xl text-sm text-muted-foreground">
-          Automated daily articles are published via the cron job at 06:00 UTC.
-          Use the button below to trigger generation manually for testing.
-        </p>
-      </section>
+    <div className="space-y-6">
+      <header>
+        <h1 className="font-heading text-2xl font-bold text-foreground">Blog</h1>
+        <p className="text-sm text-muted-foreground">Published posts appear at /blog. A rich editor + AI drafting is on the roadmap.</p>
+      </header>
 
-      <BlogSetupChecklist />
-
-      <GenerateBlogButton />
-
-      <div className="rounded-xl border border-border overflow-hidden">
+      <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <table className="w-full text-sm">
-          <thead className="bg-muted/50 border-b border-border">
-            <tr>
-              <th className="text-left px-4 py-3 font-semibold">Title</th>
-              <th className="text-left px-4 py-3 font-semibold">Status</th>
-              <th className="text-left px-4 py-3 font-semibold">Source</th>
-              <th className="text-left px-4 py-3 font-semibold">Published</th>
-              <th className="text-left px-4 py-3 font-semibold">Actions</th>
-            </tr>
+          <thead className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
+            <tr><th className="p-3">Title</th><th className="p-3">Category</th><th className="p-3">Status</th><th className="p-3">Published</th></tr>
           </thead>
           <tbody>
-            {articles.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
-                  No articles yet. Generate the first one above.
-                </td>
+            {(posts ?? []).length === 0 ? (
+              <tr><td colSpan={4} className="p-8 text-center text-muted-foreground">No posts yet.</td></tr>
+            ) : (posts ?? []).map((p) => (
+              <tr key={p.id} className="border-b border-border last:border-0">
+                <td className="p-3 font-medium text-foreground">{p.title}</td>
+                <td className="p-3 text-body">{(p.blog_categories as unknown as { name: string })?.name ?? "—"}</td>
+                <td className="p-3"><span className={`rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${STATUS_STYLES[p.status] ?? ""}`}>{p.status}</span></td>
+                <td className="p-3 text-muted-foreground">{p.published_at ? format(new Date(p.published_at), "d MMM yyyy") : "—"}</td>
               </tr>
-            ) : (
-              articles.map((article) => (
-                <tr key={article.id} className="border-b border-border last:border-0">
-                  <td className="px-4 py-3 font-medium">{article.title}</td>
-                  <td className="px-4 py-3 capitalize">{article.status}</td>
-                  <td className="px-4 py-3">{article.source}</td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {article.published_at
-                      ? format(new Date(article.published_at), "d MMM yyyy HH:mm")
-                      : "—"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <Link
-                        href={`/admin/blog?edit=${article.id}`}
-                        className="text-primary hover:underline"
-                      >
-                        Edit
-                      </Link>
-                      {article.status === "published" ? (
-                        <Link
-                          href={`/blog/${article.slug}`}
-                          className="text-primary hover:underline"
-                          target="_blank"
-                        >
-                          View
-                        </Link>
-                      ) : null}
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
+            ))}
           </tbody>
         </table>
       </div>

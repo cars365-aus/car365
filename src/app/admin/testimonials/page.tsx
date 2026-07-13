@@ -1,0 +1,16 @@
+import { createAdminClient } from "@/lib/supabase/admin";
+import { TestimonialsManager } from "./testimonials-manager";
+
+export const metadata = { title: "Testimonials" };
+export const dynamic = "force-dynamic";
+
+export default async function AdminTestimonialsPage() {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("testimonials")
+    .select("id, customer_name, rating, quote, source, review_date, is_approved, sort_order")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  return <TestimonialsManager items={data ?? []} />;
+}

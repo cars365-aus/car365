@@ -1,4 +1,4 @@
-import { Shield, Users, ShieldAlert } from "lucide-react";
+import { Shield, ShieldAlert } from "lucide-react";
 import { requireAdminRole } from "@/lib/security/auth";
 import { getAdminRoles } from "./actions";
 import { RolesManager } from "./roles-manager";
