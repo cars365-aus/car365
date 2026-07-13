@@ -19,7 +19,7 @@ export type RoleActionState = {
   message: string;
 };
 
-const VALID_ROLES = ["owner", "admin", "moderator", "support"] as const;
+const VALID_ROLES = ["owner", "admin", "manager", "sales", "content"] as const;
 type ValidRole = (typeof VALID_ROLES)[number];
 
 function isValidRole(role: string): role is ValidRole {

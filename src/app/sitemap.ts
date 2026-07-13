@@ -1,167 +1,53 @@
 import type { MetadataRoute } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getAllPublishedArticleSlugs } from "@/lib/blog/queries";
-import { getIndexableSitemapUrls } from "@/lib/seo/discovery";
+import { siteBaseUrl } from "@/lib/seo/site";
+import { NAV_BODY_TYPES, BUDGET_BANDS, bodyTypeHref, budgetHref } from "@/lib/nav";
 
-const PAGE_SIZE = 5000;
-const base = "https://www.hirecarmarketplace.com.au";
+export const revalidate = 3600;
 
-export async function generateSitemaps() {
-  try {
-    const supabase = createAdminClient();
-    const { count } = await supabase
-      .from("vehicles")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "approved");
+type Row = Record<string, string | null>;
 
-    const totalVehicles = count || 0;
-    const vehicleChunks = Math.ceil(totalVehicles / PAGE_SIZE) || 1;
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const base = siteBaseUrl();
+  const supabase = createAdminClient();
+  const staticDate = new Date("2026-01-01T00:00:00Z");
 
-    // 0: static + PSEO
-    // 1: vendors
-    // 2+: vehicles
-    const chunks = [{ id: 0 }, { id: 1 }];
-    for (let i = 0; i < vehicleChunks; i++) {
-      chunks.push({ id: 2 + i });
-    }
-    return chunks;
-  } catch {
-    return [{ id: 0 }, { id: 1 }, { id: 2 }];
-  }
-}
+  const [makesRes, modelsRes, vehiclesRes, blogRes] = await Promise.all([
+    supabase.from("makes").select("slug"),
+    supabase.from("models").select("slug, makes:make_id ( slug )"),
+    supabase.from("vehicles").select("slug, updated_at, makes:make_id ( slug ), models:model_id ( slug )").in("status", ["available", "reserved", "sold"]).limit(45000),
+    supabase.from("blog_posts").select("slug, updated_at").eq("status", "published").limit(5000),
+  ]);
 
-export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
-  const chunkId = typeof id === "number" ? id : 0;
+  const url = (path: string, lastModified: Date | string = staticDate, priority = 0.6): MetadataRoute.Sitemap[number] =>
+    ({ url: `${base}${path}`, lastModified, changeFrequency: "weekly", priority });
 
-  if (chunkId === 0) {
-    // Use a stable date for static pages so Google doesn't think they changed on every build
-    const staticDate = new Date("2025-06-01T00:00:00Z");
+  const staticRoutes = [
+    "/", "/used-cars", "/sell-your-car", "/trade-in", "/finance", "/about",
+    "/testimonials", "/faqs", "/contact", "/blog", "/how-it-works",
+    "/success-stories", "/careers", "/press", "/privacy-policy", "/terms",
+  ].map((p) => url(p, staticDate, p === "/" ? 1 : 0.7));
 
-    const staticRoutes: MetadataRoute.Sitemap = [
-      // Core pages — highest priority. `/search` is intentionally excluded: it
-      // is noindexed, so listing it in the sitemap is a conflicting signal.
-      { url: base, lastModified: new Date(), changeFrequency: "daily", priority: 1 },
-      { url: `${base}/locations`, lastModified: new Date(), changeFrequency: "daily", priority: 0.85 },
-      { url: `${base}/vendors`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-      { url: `${base}/categories`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+  // Programmatic landing pages.
+  const makeRoutes = ((makesRes.data ?? []) as Row[]).map((m) => url(`/used-cars/${m.slug}`, staticDate, 0.6));
+  const modelRoutes = ((modelsRes.data ?? []) as Row[])
+    .filter((m) => (m.makes as unknown as Row)?.slug)
+    .map((m) => url(`/used-cars/${(m.makes as unknown as Row).slug}/${m.slug}`, staticDate, 0.5));
+  const bodyRoutes = NAV_BODY_TYPES.map((b) => url(bodyTypeHref(b), staticDate, 0.6));
+  const budgetRoutes = BUDGET_BANDS.map((b) => url(budgetHref(b.max), staticDate, 0.5));
 
-      // Conversion pages
-      { url: `${base}/for-vendors`, lastModified: staticDate, changeFrequency: "weekly", priority: 0.8 },
-      { url: `${base}/for-vendors/api`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.5 },
-      { url: `${base}/pricing`, lastModified: staticDate, changeFrequency: "weekly", priority: 0.75 },
+  // VDPs.
+  const vehicleRoutes = ((vehiclesRes.data ?? []) as Row[])
+    .filter((v) => (v.makes as unknown as Row)?.slug && (v.models as unknown as Row)?.slug)
+    .map((v) => url(
+      `/used-cars/${(v.makes as unknown as Row).slug}/${(v.models as unknown as Row).slug}/${v.slug}`,
+      v.updated_at ? new Date(v.updated_at) : staticDate,
+      0.8,
+    ));
 
-      // Trust / content pages
-      { url: `${base}/about`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.6 },
-      { url: `${base}/how-it-works`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.65 },
-      { url: `${base}/faq`, lastModified: staticDate, changeFrequency: "weekly", priority: 0.6 },
-      { url: `${base}/contact`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.5 },
-      { url: `${base}/success-stories`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.5 },
-      { url: `${base}/press`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.4 },
-      { url: `${base}/careers`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.4 },
+  const blogRoutes = ((blogRes.data ?? []) as Row[]).map((p) =>
+    url(`/blog/${p.slug}`, p.updated_at ? new Date(p.updated_at) : staticDate, 0.5),
+  );
 
-      // Blog index
-      { url: `${base}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.75 },
-
-      // Legal
-      { url: `${base}/legal/privacy`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.3 },
-      { url: `${base}/legal/terms`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.3 },
-      { url: `${base}/legal/rules`, lastModified: staticDate, changeFrequency: "monthly", priority: 0.3 },
-    ];
-
-    let blogRoutes: MetadataRoute.Sitemap = [];
-    try {
-      const articles = await getAllPublishedArticleSlugs();
-      blogRoutes = articles.map((a) => ({
-        url: `${base}/blog/${a.slug}`,
-        lastModified: new Date(a.updated_at),
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
-      }));
-    } catch {
-      // graceful fallback
-    }
-
-    let pseoRoutes: MetadataRoute.Sitemap = [];
-    try {
-      const { cityUrls, categoryUrls, cityCategoryUrls } = await getIndexableSitemapUrls();
-      const now = new Date();
-      
-      const cityMapped = cityUrls.map((path) => ({
-        url: `${base}${path}`,
-        lastModified: now,
-        changeFrequency: "daily" as const,
-        priority: 0.8,
-      }));
-      const categoryMapped = categoryUrls.map((path) => ({
-        url: `${base}${path}`,
-        lastModified: now,
-        changeFrequency: "weekly" as const,
-        priority: 0.75,
-      }));
-      const cityCategoryMapped = cityCategoryUrls.map((path) => ({
-        url: `${base}${path}`,
-        lastModified: now,
-        changeFrequency: "daily" as const,
-        priority: 0.7,
-      }));
-
-      // Limit PSEO to 45,000 URLs to stay safely under Google's 50k limit
-      pseoRoutes = [...cityMapped, ...categoryMapped, ...cityCategoryMapped].slice(0, 45000);
-    } catch {
-      // graceful fallback
-    }
-
-    return [...staticRoutes, ...blogRoutes, ...pseoRoutes];
-  }
-
-  if (chunkId === 1) {
-    try {
-      const supabase = createAdminClient();
-      const { data: vendors } = await supabase
-        .from("organizations")
-        .select("slug, updated_at")
-        .eq("status", "approved")
-        .limit(45000);
-
-      if (vendors) {
-        return vendors.map((v) => ({
-          url: `${base}/vendors/${v.slug}`,
-          lastModified: v.updated_at ? new Date(v.updated_at) : new Date(),
-          changeFrequency: "weekly" as const,
-          priority: 0.6,
-        }));
-      }
-    } catch {
-      // graceful fallback
-    }
-    return [];
-  }
-
-  // chunkId >= 2 are Vehicles
-  try {
-    const supabase = createAdminClient();
-    const vehicleChunkIndex = chunkId - 2;
-    const start = vehicleChunkIndex * PAGE_SIZE;
-    const end = start + PAGE_SIZE - 1;
-
-    const { data: vehicles } = await supabase
-      .from("vehicles")
-      .select("slug, updated_at")
-      .eq("status", "approved")
-      .order("updated_at", { ascending: false })
-      .range(start, end);
-
-    if (vehicles) {
-      return vehicles.map((v) => ({
-        url: `${base}/cars/${v.slug}`,
-        lastModified: v.updated_at ? new Date(v.updated_at) : new Date(),
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
-      }));
-    }
-  } catch {
-    // graceful fallback
-  }
-
-  return [];
+  return [...staticRoutes, ...makeRoutes, ...modelRoutes, ...bodyRoutes, ...budgetRoutes, ...vehicleRoutes, ...blogRoutes];
 }

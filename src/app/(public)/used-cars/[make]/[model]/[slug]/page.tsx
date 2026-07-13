@@ -10,8 +10,10 @@ import { GatedPrice } from "@/components/auth/gated-price";
 import { VdpLeadActions } from "@/components/leads/vdp-lead-actions";
 import { FinanceCalculator } from "@/components/finance-calculator";
 import { getVehicleBySlug, getSimilarVehicles } from "@/lib/data/inventory";
-import { getFinanceParams, getPhoneNumbers } from "@/lib/data/settings";
+import { getFinanceParams, getPhoneNumbers, getCompanyProfile } from "@/lib/data/settings";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { JsonLd } from "@/components/json-ld";
+import { vehicleSchema, breadcrumbSchema } from "@/lib/seo/jsonld";
 import {
   BODY_TYPE_LABELS, FUEL_LABELS, TRANSMISSION_LABELS, DRIVE_LABELS,
   formatKm,
@@ -35,15 +37,29 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function VehicleDetailPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
-  const [v, financeParams, phones] = await Promise.all([
+  const [v, financeParams, phones, company] = await Promise.all([
     getVehicleBySlug(slug),
     getFinanceParams(),
     getPhoneNumbers(),
+    getCompanyProfile(),
   ]);
   if (!v) notFound();
 
   const similar = await getSimilarVehicles({ id: v.id, bodyType: v.bodyType, price: v.price });
   const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""}`;
+
+  const sellerName = (company.trading_name as string) || "Cars365";
+  const vdpPath = `/used-cars/${v.makeSlug}/${v.modelSlug}/${v.slug}`;
+  const jsonLd = [
+    vehicleSchema(v, { path: vdpPath, sellerName }),
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Used Cars", path: "/used-cars" },
+      { name: v.makeName, path: `/used-cars/${v.makeSlug}` },
+      { name: v.modelName, path: `/used-cars/${v.makeSlug}/${v.modelSlug}` },
+      { name: title, path: vdpPath },
+    ]),
+  ];
 
   const galleryImages: VehicleImage[] =
     v.images.length > 0
@@ -72,6 +88,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
 
   return (
     <>
+      <JsonLd schema={jsonLd} />
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         {/* Breadcrumbs */}

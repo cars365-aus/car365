@@ -11,19 +11,19 @@ import { assignAdminRole, revokeAdminRole, restoreAdminRole } from "./actions";
 import type { AdminRoleEntry, RoleActionState } from "./actions";
 
 const ROLE_OPTIONS = [
-  { value: "moderator", label: "Moderator", description: "Can approve vendors, listings & fraud flags", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  { value: "support", label: "Support", description: "Can view leads, reviews & contact customers", color: "bg-purple-100 text-purple-700 border-purple-200" },
-  { value: "finance", label: "Finance", description: "Can view billing, subscriptions & revenue", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  { value: "admin", label: "Admin", description: "Full admin access except super-admin actions", color: "bg-amber-100 text-amber-700 border-amber-200" },
-  { value: "owner", label: "Owner", description: "Full platform control including role management", color: "bg-red-100 text-red-700 border-red-200" },
+  { value: "sales", label: "Sales", description: "Work leads (view, update, assign to self) & quick-change vehicle status", color: "bg-blue-100 text-blue-700 border-blue-200" },
+  { value: "content", label: "Content", description: "Manage blog, FAQs, testimonials & static pages", color: "bg-purple-100 text-purple-700 border-purple-200" },
+  { value: "manager", label: "Manager", description: "Inventory, leads, content & reports (no users/settings)", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  { value: "admin", label: "Admin", description: "Full admin access except owner-only actions", color: "bg-amber-100 text-amber-700 border-amber-200" },
+  { value: "owner", label: "Owner", description: "Full control including users, settings & hard delete", color: "bg-red-100 text-red-700 border-red-200" },
 ];
 
 const ROLE_BADGE_COLORS: Record<string, string> = {
   owner: "bg-red-100 text-red-700 border-red-200",
   admin: "bg-amber-100 text-amber-700 border-amber-200",
-  moderator: "bg-blue-100 text-blue-700 border-blue-200",
-  support: "bg-purple-100 text-purple-700 border-purple-200",
-  finance: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  manager: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  sales: "bg-blue-100 text-blue-700 border-blue-200",
+  content: "bg-purple-100 text-purple-700 border-purple-200",
 };
 
 const initialAssignState: RoleActionState = { status: "idle", message: "" };
@@ -83,7 +83,7 @@ function AssignRoleForm() {
                     type="radio"
                     name="role"
                     value={opt.value}
-                    defaultChecked={opt.value === "moderator"}
+                    defaultChecked={opt.value === "sales"}
                     className="accent-primary"
                     required
                   />
