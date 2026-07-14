@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any --
+   Untyped Supabase client: joined rows surface as `any` at this DB boundary. */
 import type { MetadataRoute } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { siteBaseUrl } from "@/lib/seo/site";
 import { NAV_BODY_TYPES, BUDGET_BANDS, bodyTypeHref, budgetHref } from "@/lib/nav";
 
 export const revalidate = 3600;
-
-type Row = Record<string, string | null>;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteBaseUrl();

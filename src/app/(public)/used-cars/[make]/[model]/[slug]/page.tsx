@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ShieldCheck, BadgeCheck, Handshake, CircleDollarSign } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
@@ -11,6 +11,7 @@ import { VdpLeadActions } from "@/components/leads/vdp-lead-actions";
 import { FinanceCalculator } from "@/components/finance-calculator";
 import { getVehicleBySlug, getSimilarVehicles } from "@/lib/data/inventory";
 import { getFinanceParams, getPhoneNumbers, getCompanyProfile } from "@/lib/data/settings";
+import { resolveRedirect } from "@/lib/data/redirects";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { JsonLd } from "@/components/json-ld";
 import { vehicleSchema, breadcrumbSchema } from "@/lib/seo/jsonld";
@@ -36,14 +37,19 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 }
 
 export default async function VehicleDetailPage({ params }: { params: Promise<Params> }) {
-  const { slug } = await params;
+  const { make, model, slug } = await params;
   const [v, financeParams, phones, company] = await Promise.all([
     getVehicleBySlug(slug),
     getFinanceParams(),
     getPhoneNumbers(),
     getCompanyProfile(),
   ]);
-  if (!v) notFound();
+  if (!v) {
+    // Sold cars are archived 60 days after sale with a 301 to the model page.
+    const rule = await resolveRedirect(`/used-cars/${make}/${model}/${slug}`);
+    if (rule && rule.code !== 410) permanentRedirect(rule.toPath);
+    notFound();
+  }
 
   const similar = await getSimilarVehicles({ id: v.id, bodyType: v.bodyType, price: v.price });
   const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""}`;

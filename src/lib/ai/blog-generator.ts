@@ -52,7 +52,9 @@ ${topic.citySlug ? `Focus city: ${topic.citySlug.replace(/-/g, " ")}` : ""}
 
 Requirements:
 - 800-1200 words of valuable, original content in Australian English
-- Use semantic HTML in bodyHtml: h2, h3, p, ul, ol, blockquote only (no h1, no script, no inline styles)
+- Use semantic HTML in bodyHtml: h2, h3, p, ul, ol, blockquote, table, img only (no h1, no script, no inline styles)
+- Include 1-2 HTML tables with useful data related to the topic (e.g., comparing prices, distances, features)
+- Include 1-2 descriptive internal images using <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=800&auto=format&fit=crop" alt="Descriptive alt text" />
 - Include 2-4 internal links using relative paths from this list (embed as <a href="/path">anchor text</a> in bodyHtml):
 ${linkSuggestions}
 - End with a clear CTA paragraph linking to /search
