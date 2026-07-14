@@ -82,6 +82,11 @@ export async function searchUserByEmail(
   );
 
   if (match) {
+    // Before returning, ensure they exist in the profiles table to prevent foreign key errors
+    // when assigning admin_roles.
+    const { deriveProfileFromUser } = await import("@/lib/auth/profile");
+    await supabase.from("profiles").upsert(deriveProfileFromUser(match), { onConflict: "id" });
+    
     return {
       id: match.id,
       email: match.email!,

@@ -105,10 +105,11 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
             type="button"
             onClick={async () => {
               setLoading(true);
+              const next = window.location.pathname + window.location.search;
               const { error } = await supabase.auth.signInWithOAuth({
                 provider: "google",
                 options: {
-                  redirectTo: `${window.location.origin}/auth/callback`,
+                  redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
                   queryParams: { prompt: "select_account" }
                 },
               });
