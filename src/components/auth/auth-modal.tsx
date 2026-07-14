@@ -39,6 +39,8 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         } else {
           setError(signInError.message);
         }
+      } else {
+        window.location.reload();
       }
     }
     

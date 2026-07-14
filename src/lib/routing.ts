@@ -8,7 +8,7 @@ export function isSafeRedirectPath(next: string): boolean {
 }
 
 export function isCustomerZone(path: string): boolean {
-  return path.startsWith("/customer");
+  return path.startsWith("/account");
 }
 
 export function isVendorZone(path: string): boolean {
@@ -50,7 +50,7 @@ export function defaultDashboardForRole(
   if (role === "vendor") {
     return buildVendorUpgradeHref({ plan });
   }
-  return "/customer/dashboard";
+  return "/account";
 }
 
 export function resolvePostAuthDestination(

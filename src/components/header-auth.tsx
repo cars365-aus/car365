@@ -23,7 +23,7 @@ export function HeaderAuth() {
     
     const loadUserContext = async (hasSession: boolean) => {
       if (!hasSession) {
-        setProfileHref("/customer/dashboard");
+        setProfileHref("/account");
         setProfileLabel("My Account");
         setIsVendor(false);
         setVendorUpgradeHref("/vendor/upgrade");
@@ -35,14 +35,14 @@ export function HeaderAuth() {
         const res = await fetch("/api/user/context");
         if (res.ok) {
           const data = await res.json();
-          setProfileHref(data.profileHref ?? "/customer/dashboard");
+          setProfileHref(data.profileHref ?? "/account");
           setProfileLabel(data.profileLabel ?? "My Account");
           setIsVendor(!!data.isVendor);
           setVendorUpgradeHref(data.vendorUpgradeHref ?? "/vendor/upgrade");
           setListFleetLabel(data.listFleetLabel ?? "List Your Fleet");
         }
       } catch {
-        setProfileHref("/customer/dashboard");
+        setProfileHref("/account");
         setProfileLabel("My Account");
         setIsVendor(false);
         setVendorUpgradeHref("/vendor/upgrade");
@@ -84,7 +84,7 @@ export function HeaderAuth() {
     return (
       <div className="hidden md:flex items-center gap-3">
         {isVendor ? (
-          <Link href="/customer/dashboard" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors">
+          <Link href="/account" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors">
             My Enquiries
           </Link>
         ) : (
