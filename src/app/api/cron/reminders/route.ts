@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 
   if ((pendingVendors && pendingVendors > 0) || (pendingVehicles && pendingVehicles > 0)) {
     // Notify admin
-    const adminEmail = process.env.ADMIN_EMAIL || "support@hirecarmarketplace.com.au";
+    const adminEmail = process.env.ADMIN_EMAIL || "support@cars365.info";
     await sendAdminPendingReminderEmail({
       to: adminEmail,
       pendingVendorsCount: pendingVendors || 0,

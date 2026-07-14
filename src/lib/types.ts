@@ -18,31 +18,21 @@ export type Vehicle = {
   year: number;
   city: string;
   state: string;
-  pricePerDayAud: number;
   seats: number;
   fuel: string;
   transmission: string;
   category: string;
+  price: number;
   imageUrl: string;
   vendorName: string;
   vendorSlug: string;
   branchName: string;
   verified: boolean;
-  dailyDistanceLimitKm?: number | null;
-  extraDistanceFeeAud?: number | null;
-  instantBook?: boolean;
-  // Card-enrichment fields. All optional so leaner data sources still satisfy
-  // the type; the card renders each element only when its value is present.
-  weeklyRateAud?: number | null;
-  monthlyRateAud?: number | null;
   avgRating?: number | null;
   reviewCount?: number | null;
   features?: string[];
   vendorLogoUrl?: string | null;
-  freeDelivery?: boolean;
-  freeCancellation?: boolean;
   noHiddenFees?: boolean;
-  superHost?: boolean;
 };
 
 export type Vendor = {

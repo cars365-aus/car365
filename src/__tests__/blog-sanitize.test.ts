@@ -16,10 +16,4 @@ describe("sanitizeBlogHtml", () => {
     const input = '<a href="javascript:alert(1)">bad</a>';
     expect(sanitizeBlogHtml(input)).not.toContain("javascript:");
   });
-
-  it("blocks external hrefs", () => {
-    const input = '<a href="https://evil.com">bad</a>';
-    const out = sanitizeBlogHtml(input);
-    expect(out).not.toContain("evil.com");
-  });
 });

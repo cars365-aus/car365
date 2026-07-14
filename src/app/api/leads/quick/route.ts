@@ -1,4 +1,4 @@
-﻿import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { readJsonBody } from "@/lib/api/request";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendCustomerEnquiryConfirmation, sendLeadAlert } from "@/lib/email/ses";
@@ -101,33 +101,22 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Create the lead
-    // Set some default dates since this is a quick interest expression, 
-    // we can default to tomorrow and the day after just to satisfy the schema constraints
-    const today = new Date();
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() + 1);
-    
-    const endDate = new Date(today);
-    endDate.setDate(today.getDate() + 4);
-
     console.info("[quick lead] Creating lead record for user:", user.id);
     const { data: lead, error: leadError } = await supabase
       .from("leads")
       .insert({
+        type: "general",
         vehicle_id: vehicleId,
-        vendor_id: vendorId,
-        customer_name: profile.full_name || "Interested User",
-        customer_email: profile.email,
-        // Store the authenticated user's UUID so that chat authorization can
-        // use a direct UUID match instead of the fragile email sub-select.
-        customer_user_id: user.id,
-        customer_phone: profile.phone || "Not provided",
-        pickup_city: branch?.city || "Unknown",
-        start_date: startDate.toISOString().split('T')[0],
-        end_date: endDate.toISOString().split('T')[0],
-        message: "I am interested in this vehicle. Please contact me via chat.",
+        name: profile.full_name || "Interested User",
+        email: profile.email,
+        phone: profile.phone || "Not provided",
+        message: "I have unlocked the contact details for this vehicle.",
         ip_hash: ipHash,
         status: "new",
+        payload: {
+          vendor_id: vendorId,
+          customer_user_id: user.id
+        }
       })
       .select("id")
       .maybeSingle();

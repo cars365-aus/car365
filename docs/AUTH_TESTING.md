@@ -1,6 +1,6 @@
 # Multi-Method Auth — Manual Test Checklist & Configuration Notes
 
-Hire Car supports three sign-in methods, all delegated to Supabase Auth: Google OAuth, email + password, and phone OTP. This document covers the manual verification checklist for those flows and the Supabase dashboard configuration they depend on.
+Cars365 supports three sign-in methods, all delegated to Supabase Auth: Google OAuth, email + password, and phone OTP. This document covers the manual verification checklist for those flows and the Supabase dashboard configuration they depend on.
 
 See also: `docs/SECURITY.md` (auth boundaries), `docs/ARCHITECTURE.md` (system overview).
 

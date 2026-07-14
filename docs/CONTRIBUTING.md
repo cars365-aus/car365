@@ -1,6 +1,6 @@
 # Contributing Guide
 
-Welcome to the Hire Car engineering team. Follow these guidelines to maintain a clean, scalable, and secure codebase.
+Welcome to the Cars365 engineering team. Follow these guidelines to maintain a clean, scalable, and secure codebase.
 
 ## Local Setup
 See the `README.md` for standard local environment initialization.

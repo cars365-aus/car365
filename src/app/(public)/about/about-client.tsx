@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Building2, ShieldCheck, HeartHandshake, ArrowRight, Zap, Car, Lock, Globe, AlertCircle, DollarSign } from "lucide-react";
+import { Building2, ShieldCheck, HeartHandshake, ArrowRight, Zap, Globe, AlertCircle, DollarSign } from "lucide-react";
 import { useRef } from "react";
 export function AboutClient({ header, footer }: { header: React.ReactNode; footer: React.ReactNode }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,16 +68,16 @@ export function AboutClient({ header, footer }: { header: React.ReactNode; foote
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              Solving the <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-500 to-orange-600">rental monopoly.</span>
+              Buying used, <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-500 to-orange-600">done right.</span>
             </motion.h1>
-            
-            <motion.p 
+
+            <motion.p
               className="text-xl sm:text-2xl text-slate-400 max-w-3xl mx-auto font-medium leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              We are dismantling the outdated car rental industry, giving power back to local operators and putting customers directly in the driver&apos;s seat.
+              We&apos;re fixing how people buy used cars — every vehicle honestly inspected, every price transparent, and never a hint of pressure.
             </motion.p>
           </motion.div>
 
@@ -109,12 +109,12 @@ export function AboutClient({ header, footer }: { header: React.ReactNode; foote
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.6 }}
                 >
-                  <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">The industry is <span className="text-muted-foreground line-through">broken</span>.</h2>
+                  <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">Buying used feels <span className="text-muted-foreground line-through">risky</span>.</h2>
                   <p className="text-lg text-slate-400 mb-8">
-                    For decades, mobility has been gatekept by three massive global conglomerates. They dictate the rules, control the prices, and leave customers with rigid, impersonal experiences.
+                    For most people, buying a second-hand car means guesswork — unknown history, glossy photos that hide the truth, and a nagging worry about what you can&apos;t see.
                   </p>
                   <p className="text-lg text-slate-400">
-                    Meanwhile, brilliant local rental businesses struggle to be found, drowned out by million-dollar marketing budgets.
+                    Add pushy sales tactics and surprise fees at the end, and it&apos;s no wonder buyers dread the whole process.
                   </p>
                 </motion.div>
               </div>
@@ -124,18 +124,18 @@ export function AboutClient({ header, footer }: { header: React.ReactNode; foote
                 {[
                   {
                     icon: Globe,
-                    title: "The Illusion of Choice",
-                    desc: "You think you're comparing 10 different rental companies, but most are owned by the exact same parent corporation, artificially keeping prices high."
+                    title: "Unknown History",
+                    desc: "Was it in an accident? Serviced on time? Odometer genuine? Too often that information is missing, vague, or quietly left out."
                   },
                   {
                     icon: DollarSign,
-                    title: "Hidden Fees & Middlemen",
-                    desc: "Online Travel Agencies (OTAs) charge massive commissions. You pay a premium just to use their platform, while the actual rental operator earns less."
+                    title: "Hidden Fees & Add-ons",
+                    desc: "The advertised price is rarely the price you pay. Extra charges and add-ons appear right when you're ready to sign."
                   },
                   {
                     icon: AlertCircle,
-                    title: "Impersonal Service",
-                    desc: "You're just a reservation number at an airport desk. If something goes wrong, you're routed through endless offshore call centers."
+                    title: "Pushy Sales Tactics",
+                    desc: "Pressure, false urgency, and a salesperson working an angle instead of helping you find the right car for you."
                   }
                 ].map((item, index) => (
                   <motion.div 
@@ -175,35 +175,35 @@ export function AboutClient({ header, footer }: { header: React.ReactNode; foote
                 A better way forward.
               </h2>
               <p className="text-xl text-slate-600 font-medium">
-                Hire Car is a dedicated marketplace that cuts out the middlemen. We connect you directly with strictly verified, independent local fleet owners.
+                Cars365 is a used-car dealership built around honesty. Every car is inspected before it&apos;s listed, priced transparently, and backed by a team that actually answers.
               </p>
             </motion.div>
 
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
-                  title: "Direct Connection",
-                  description: "Deal directly with the fleet owner. No call centers, no runarounds. Just direct communication for better, personalized service.",
-                  icon: HeartHandshake,
-                  gradient: "from-blue-500/20 to-cyan-500/20",
-                  iconColor: "text-blue-600",
-                  bgCard: "bg-blue-50/50"
-                },
-                {
-                  title: "Strictly Verified",
-                  description: "Every operator undergoes rigorous verification. We check their ABN, contact details, and business standing before they can list a single car.",
+                  title: "Every Car Inspected",
+                  description: "A multi-point inspection before a car is ever listed, with the condition documented honestly — imperfections and all.",
                   icon: ShieldCheck,
                   gradient: "from-emerald-500/20 to-teal-500/20",
                   iconColor: "text-emerald-600",
                   bgCard: "bg-emerald-50/50"
                 },
                 {
-                  title: "Zero Booking Fees",
-                  description: "We don't charge customers booking fees or hidden commissions that inflate prices. The price you see is the transparent daily rate.",
+                  title: "Transparent Pricing",
+                  description: "The price you see is the price we talk about. No hidden add-ons, no surprises when it's time to sign.",
                   icon: Zap,
                   gradient: "from-orange-500/20 to-amber-500/20",
                   iconColor: "text-orange-600",
                   bgCard: "bg-orange-50/50"
+                },
+                {
+                  title: "Finance & Trade-in",
+                  description: "We help arrange competitive finance and make fair offers on your current car — all in one place, without the runaround.",
+                  icon: HeartHandshake,
+                  gradient: "from-blue-500/20 to-cyan-500/20",
+                  iconColor: "text-blue-600",
+                  bgCard: "bg-blue-50/50"
                 }
               ].map((value, i) => (
                 <motion.div
@@ -244,7 +244,7 @@ export function AboutClient({ header, footer }: { header: React.ReactNode; foote
                 <div className="aspect-square sm:aspect-[4/3] lg:aspect-square overflow-hidden rounded-[2.5rem] shadow-2xl relative group">
                   <Image
                     src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80"
-                    alt="Independent car rental operator handing over keys"
+                    alt="Salesperson handing over the keys to a used car"
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-cover transition-transform duration-1000 group-hover:scale-105"
@@ -277,16 +277,16 @@ export function AboutClient({ header, footer }: { header: React.ReactNode; foote
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
                 >
-                  <h2 className="text-4xl font-black text-foreground mb-6">Empowering communities, not corporations.</h2>
+                  <h2 className="text-4xl font-black text-foreground mb-6">Cars you can actually trust.</h2>
                   <p className="text-xl text-slate-600 leading-relaxed">
-                    When you rent through Hire Car, your money stays in the local economy. You're supporting families, small fleet owners, and independent entrepreneurs—not lining the pockets of shareholders.
+                    Every car we sell is inspected, photographed honestly, and priced fairly. When you buy from Cars365, you know exactly what you&apos;re getting — and we&apos;re here long after you drive away.
                   </p>
                 </motion.div>
 
                 <div className="grid sm:grid-cols-2 gap-8">
                   {[
-                    { number: "0", label: "Hidden Platform Fees" },
-                    { number: "24/7", label: "Direct Support" },
+                    { number: "0", label: "Hidden Fees" },
+                    { number: "100%", label: "Inspected Stock" },
                   ].map((stat, i) => (
                     <motion.div 
                       key={i}
@@ -319,7 +319,7 @@ export function AboutClient({ header, footer }: { header: React.ReactNode; foote
               transition={{ duration: 0.6 }}
               className="text-4xl sm:text-6xl font-black text-white mb-8"
             >
-              Join the movement.
+              Find your next car.
             </motion.h2>
             
             <motion.div 
@@ -330,18 +330,18 @@ export function AboutClient({ header, footer }: { header: React.ReactNode; foote
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
             >
               <Link
-                href="/search"
+                href="/used-cars"
                 className="group relative inline-flex h-16 items-center justify-center overflow-hidden rounded-2xl bg-orange-600 px-8 font-bold text-white transition-all hover:bg-orange-500 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-slate-900 w-full sm:w-auto"
               >
-                <span className="mr-2 text-lg">Find a Vehicle</span>
+                <span className="mr-2 text-lg">Browse cars</span>
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
-              
+
               <Link
-                href="/vendors"
+                href="/contact"
                 className="inline-flex h-16 items-center justify-center rounded-2xl border-2 border-slate-700 bg-transparent px-8 text-lg font-bold text-white transition-all hover:bg-slate-800 hover:border-slate-600 w-full sm:w-auto"
               >
-                Browse Operators
+                Talk to our team
               </Link>
             </motion.div>
           </div>

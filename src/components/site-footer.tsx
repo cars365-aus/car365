@@ -14,9 +14,9 @@ import {
 
 const COMPANY_LINKS = [
   { href: "/about", label: "About Us" },
-  { href: "/success-stories", label: "Testimonials" },
+  { href: "/testimonials", label: "Testimonials" },
   { href: "/blog", label: "Blog" },
-  { href: "/faq", label: "FAQs" },
+  { href: "/faqs", label: "FAQs" },
   { href: "/contact", label: "Contact" },
 ];
 

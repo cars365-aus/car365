@@ -33,6 +33,6 @@ export function getCityMeta(slug: string, fallbackState = "") {
   const state = override?.state ?? fallbackState;
   const description =
     override?.description ??
-    `Find cheap car hire in ${title}${state ? `, ${state}` : ""}. Compare vehicles from verified local rental operators on Hire Car.`;
+    `Find cheap car hire in ${title}${state ? `, ${state}` : ""}. Compare vehicles from verified local rental operators on Cars365.`;
   return { title, state, description, slug: key };
 }

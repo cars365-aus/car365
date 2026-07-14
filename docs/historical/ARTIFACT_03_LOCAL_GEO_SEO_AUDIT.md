@@ -7,7 +7,7 @@
 ### 1. City Pages (`/locations/[city]`)
 - **Current status**: Strong
 - **Score out of 10**: 9/10
-- **Search intent**: Informational / Navigational ("car hire in Sydney")
+- **Search intent**: Informational / Navigational ("Used Cars in Sydney")
 - **Evidence**: `ItemList` schema present. "Market Insights" text present. `noindex` protection for <5 listings active.
 - **Problems**: Lacks an explicit `FAQPage` block for localized anomalies (e.g., "Are there toll roads in Sydney?").
 - **Recommended improvements**: Inject city-specific non-commodity insights into the layout (e.g., toll info, airport distance).

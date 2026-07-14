@@ -20,8 +20,7 @@ export const getActiveFeaturedVehicles = unstable_cache(
       id, city, vehicle_id,
       vehicles!inner(
         id, slug, title, make, model, year, seats, fuel, transmission, category,
-        price_per_day_aud, weekly_rate_aud, monthly_rate_aud, daily_distance_limit_km,
-        extra_distance_fee_aud, instant_book, status,
+        price, status,
         branches!inner(name, city, state, status),
         organizations!inner(name, slug, status, logo_url, verified_at),
         vehicle_images(storage_path, approved, sort_order),
@@ -55,12 +54,7 @@ export const getActiveFeaturedVehicles = unstable_cache(
     fuel: string;
     transmission: string;
     category: string;
-    price_per_day_aud: number;
-    weekly_rate_aud: number | null;
-    monthly_rate_aud: number | null;
-    daily_distance_limit_km: number | null;
-    extra_distance_fee_aud: number | null;
-    instant_book: boolean;
+    price: number;
     branches: { name: string; city: string; state: string };
     organizations: { name: string; slug: string; logo_url: string | null; verified_at: string | null };
     vehicle_images?: VehicleImageRecord[] | null;
@@ -108,12 +102,7 @@ export const getActiveFeaturedVehicles = unstable_cache(
       fuel: v.fuel,
       transmission: v.transmission,
       category: v.category,
-      pricePerDayAud: v.price_per_day_aud,
-      weeklyRateAud: v.weekly_rate_aud,
-      monthlyRateAud: v.monthly_rate_aud,
-      dailyDistanceLimitKm: v.daily_distance_limit_km,
-      extraDistanceFeeAud: v.extra_distance_fee_aud,
-      instantBook: v.instant_book,
+      price: v.price,
       city: v.branches.city,
       state: v.branches.state,
       imageUrl: resolveVehicleImage(supabaseUrl, v.vehicle_images ?? [], v.category),
@@ -125,10 +114,7 @@ export const getActiveFeaturedVehicles = unstable_cache(
       avgRating,
       reviewCount,
       features: (v.vehicle_features ?? []).map((f) => f.feature),
-      freeDelivery: false,
-      freeCancellation: false,
       noHiddenFees: false,
-      superHost: computeSuperHost({ verified, avgRating, reviewCount }),
     } satisfies Vehicle;
   });
 }, ["featured-vehicles"], { revalidate: 3600, tags: ["featured"] });

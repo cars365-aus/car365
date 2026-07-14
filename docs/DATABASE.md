@@ -1,6 +1,6 @@
 # Database Documentation
 
-Hire Car utilizes Supabase (PostgreSQL 15+) as its primary source of truth.
+Cars365 utilizes Supabase (PostgreSQL 15+) as its primary source of truth.
 
 ## Core Schema Structure
 

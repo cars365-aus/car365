@@ -17,7 +17,7 @@ export function BrandLogo({
     <div className={cn("relative h-[56px] w-[220px] shrink-0", className)}>
       <Image
         src="/LOGO.png"
-        alt="HireCar Marketplace"
+        alt="Cars365"
         fill
         loading={priority ? "eager" : "lazy"}
         fetchPriority={priority ? "high" : "auto"}

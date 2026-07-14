@@ -37,7 +37,7 @@ export function TrustSignalsSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Why rent with Hire Car?
+            Why rent with Cars365?
           </h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
             We connect you directly with verified local rental operators. 

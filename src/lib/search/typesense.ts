@@ -66,7 +66,7 @@ export async function setupVehicleCollection() {
       { name: "fuel", type: "string" as const, facet: true },
       { name: "transmission", type: "string" as const, facet: true },
       { name: "category", type: "string" as const, facet: true },
-      { name: "price_per_day_aud", type: "int32" as const, facet: true },
+      { name: "price", type: "int32" as const, facet: true },
       { name: "city", type: "string" as const, facet: true },
       { name: "state", type: "string" as const, facet: true },
       { name: "vendor_name", type: "string" as const, facet: false },
@@ -76,16 +76,12 @@ export async function setupVehicleCollection() {
       { name: "organization_id", type: "string" as const, facet: false },
       { name: "avg_rating", type: "float" as const, facet: false, optional: true },
       { name: "review_count", type: "int32" as const, facet: false, optional: true },
-      { name: "weekly_rate_aud", type: "int32" as const, facet: false, optional: true },
-      { name: "monthly_rate_aud", type: "int32" as const, facet: false, optional: true },
       { name: "features", type: "string[]" as const, facet: true, optional: true },
-      { name: "free_delivery", type: "bool" as const, facet: true, optional: true },
-      { name: "free_cancellation", type: "bool" as const, facet: true, optional: true },
       { name: "no_hidden_fees", type: "bool" as const, facet: true, optional: true },
       { name: "vendor_logo_url", type: "string" as const, facet: false, optional: true },
       { name: "verified", type: "bool" as const, facet: true, optional: true },
     ],
-    default_sorting_field: "price_per_day_aud",
+    default_sorting_field: "price",
   };
 
   try {
@@ -160,7 +156,7 @@ export async function searchVehicles(
     return fallbackDatabaseSearch(query, filters, options);
   }
 
-  const { page = 1, perPage = 20, sortBy = "price_per_day_aud:asc" } = options;
+  const { page = 1, perPage = 20, sortBy = "price:asc" } = options;
 
   // Build filter by string with proper escaping
   const filterParts: string[] = ["status:=approved"]; // Only show approved vehicles
@@ -184,10 +180,10 @@ export async function searchVehicles(
     filterParts.push(`fuel:=${escapeFilterValue(filters.fuel)}`);
   }
   if (filters.minPrice !== undefined) {
-    filterParts.push(`price_per_day_aud:>=${filters.minPrice}`);
+    filterParts.push(`price:>=${filters.minPrice}`);
   }
   if (filters.maxPrice !== undefined) {
-    filterParts.push(`price_per_day_aud:<=${filters.maxPrice}`);
+    filterParts.push(`price:<=${filters.maxPrice}`);
   }
   if (filters.seats) {
     filterParts.push(`seats:>=${filters.seats}`);
@@ -197,7 +193,7 @@ export async function searchVehicles(
     q: query || "*",
     query_by: "title,make,model,vendor_name,branch_name",
     filter_by: filterParts.join(" && "),
-    sort_by: sortBy ?? "price_per_day_aud:asc",
+    sort_by: sortBy ?? "price:asc",
     page,
     per_page: perPage,
     facet_by: "category,make,transmission,fuel",
@@ -298,13 +294,7 @@ async function fallbackDatabaseSearch(
       fuel,
       transmission,
       category,
-      price_per_day_aud,
-      weekly_rate_aud,
-      monthly_rate_aud,
-      daily_distance_limit_km,
-      extra_distance_fee_aud,
-      extra_distance_fee_aud,
-      instant_book,
+      price,
       status,
       organizations!inner(id, name, slug, status, logo_url, verified_at),
       branches!inner(id, name, city, state, status),
@@ -344,10 +334,10 @@ async function fallbackDatabaseSearch(
     dbQuery = dbQuery.eq("fuel", filters.fuel);
   }
   if (filters.minPrice !== undefined) {
-    dbQuery = dbQuery.gte("price_per_day_aud", filters.minPrice);
+    dbQuery = dbQuery.gte("price", filters.minPrice);
   }
   if (filters.maxPrice !== undefined) {
-    dbQuery = dbQuery.lte("price_per_day_aud", filters.maxPrice);
+    dbQuery = dbQuery.lte("price", filters.maxPrice);
   }
   if (filters.seats) {
     dbQuery = dbQuery.gte("seats", filters.seats);
@@ -357,10 +347,10 @@ async function fallbackDatabaseSearch(
   const [sortField, sortDir] = sortBy.split(":");
   const ascending = sortDir !== "desc";
   const validSortFields: Record<string, string> = {
-    price_per_day_aud: "price_per_day_aud",
+    price: "price",
     year: "year",
   };
-  const dbSortField = validSortFields[sortField] ?? "price_per_day_aud";
+  const dbSortField = validSortFields[sortField] ?? "price";
   const ratingSort = sortField === "avg_rating";
 
   const from = (page - 1) * perPage;
@@ -429,12 +419,7 @@ async function fallbackDatabaseSearch(
         fuel: v.fuel,
         transmission: v.transmission,
         category: v.category,
-        pricePerDayAud: v.price_per_day_aud,
-        weeklyRateAud: v.weekly_rate_aud,
-        monthlyRateAud: v.monthly_rate_aud,
-        dailyDistanceLimitKm: v.daily_distance_limit_km,
-        extraDistanceFeeAud: v.extra_distance_fee_aud,
-        instantBook: v.instant_book,
+        price: v.price,
         city: branch.city,
         state: branch.state,
         imageUrl,
@@ -446,8 +431,6 @@ async function fallbackDatabaseSearch(
         avgRating,
         reviewCount,
         features,
-        freeDelivery: false,
-        freeCancellation: false,
         noHiddenFees: false,
         superHost: computeSuperHost({ verified, avgRating, reviewCount }),
       };
@@ -520,8 +503,8 @@ export async function processSearchIndexJobs(limit = 10): Promise<{
           .select(
             `
             id, slug, title, make, model, year, seats, fuel, transmission, category,
-            price_per_day_aud, weekly_rate_aud, monthly_rate_aud, daily_distance_limit_km, extra_distance_fee_aud,
-            instant_book, status, organization_id,
+            price,
+            status, organization_id,
             organizations(name, slug, status, logo_url, verified_at),
             branches(name, city, state, status),
             vehicle_features(feature)
@@ -550,14 +533,7 @@ export async function processSearchIndexJobs(limit = 10): Promise<{
               fuel: vehicle.fuel,
               transmission: vehicle.transmission,
               category: vehicle.category,
-              price_per_day_aud: vehicle.price_per_day_aud,
-              weekly_rate_aud: vehicle.weekly_rate_aud,
-              monthly_rate_aud: vehicle.monthly_rate_aud,
-              daily_distance_limit_km: vehicle.daily_distance_limit_km,
-              extra_distance_fee_aud: vehicle.extra_distance_fee_aud,
-              instant_book: vehicle.instant_book,
-              free_delivery: false,
-              free_cancellation: false,
+              price: vehicle.price,
               no_hidden_fees: false,
               city: branch.city,
               state: branch.state,

@@ -14,329 +14,132 @@ type Policy = {
   sections: PolicySection[];
 };
 
-const updatedAt = "5 June 2026";
+const updatedAt = "14 July 2026";
 
 const policies: Record<string, Policy> = {
   terms: {
     title: "Terms of Service",
     summary:
-      "These terms govern use of Hire Car, a marketplace that helps customers discover and contact independent rental vendors.",
+      "These terms govern your use of the Cars365 website, where we advertise quality used vehicles for sale and invite you to enquire about them.",
     sections: [
       {
-        heading: "Platform role",
+        heading: "About Cars365",
         body: [
-          "Hire Car provides listing, search, lead, messaging, review, and subscription tools. Hire Car is not the rental operator, vehicle owner, insurer, finance provider, broker, or travel agent for any customer rental unless expressly stated in writing.",
-          "Vendors set their own availability, rental prices, deposits, identification requirements, insurance conditions, cancellation rules, and rental agreements. Customers must review and accept the vendor's direct rental terms before hiring a vehicle.",
+          "Cars365 is a used-vehicle dealership. We list vehicles we hold or can source for sale, publish their details and pricing, and provide ways for you to contact us with an enquiry, finance request, trade-in request, or inspection booking.",
+          "The website is an advertisement and an invitation to enquire. It is not an offer capable of acceptance, and submitting an enquiry does not create a contract of sale. A sale is formed only when we and the buyer agree the terms of that specific vehicle in writing.",
         ],
       },
       {
-        heading: "Accounts and eligibility",
+        heading: "Vehicle information and pricing",
         body: [
-          "You must provide accurate account, contact, billing, and business information. You are responsible for activity under your account and for keeping login credentials secure.",
-          "Vendor accounts may be approved, rejected, suspended, or removed where Hire Car reasonably considers this necessary for fraud prevention, marketplace quality, legal compliance, payment risk, or customer safety.",
+          "We take care to describe each vehicle accurately, including make, model, year, odometer, body type, fuel, transmission, and features. Occasionally details may contain errors or become out of date, and a vehicle may sell before a listing is removed.",
+          "Advertised prices are in Australian dollars and may exclude government charges such as stamp duty, registration, and transfer fees unless stated otherwise. We may correct pricing or availability errors at any time before a sale is agreed.",
         ],
       },
       {
-        heading: "Customer enquiries",
+        heading: "Enquiries and finance",
         body: [
-          "Submitting an enquiry does not guarantee a booking. A booking is formed only when the customer and vendor agree the rental terms directly.",
-          "Customers must provide accurate contact details, pickup information, dates, and messages. Vendors must handle enquiries promptly and must not use customer contact details for unrelated marketing without a lawful basis.",
+          "When you submit an enquiry you must provide accurate contact details. We use those details to respond to your request about the relevant vehicle and related services.",
+          "Any finance repayment figures shown are indicative estimates only, are not an offer of finance, and are subject to lender approval, fees, and your circumstances. Trade-in figures are estimates only until we inspect your vehicle.",
         ],
       },
       {
         heading: "Australian Consumer Law",
         body: [
-          "Nothing in these terms excludes, restricts, or modifies rights, guarantees, remedies, or protections that cannot lawfully be excluded under the Australian Consumer Law or other applicable law.",
-          "Where a vendor supplies rental services to a customer, the vendor remains responsible for consumer guarantees and other obligations that apply to that supply.",
+          "Nothing in these terms excludes, restricts, or modifies any consumer guarantee, right, or remedy that cannot lawfully be excluded under the Australian Consumer Law or other applicable law.",
+          "Where we sell a vehicle to you, statutory guarantees and any applicable statutory warranty apply to that sale in addition to any warranty we expressly provide.",
         ],
       },
       {
-        heading: "Reviews and marketplace content",
+        heading: "Acceptable use of the website",
         body: [
-          "Reviews must reflect genuine customer experiences. Hire Car may moderate, reject, remove, or investigate reviews and listings that appear fake, misleading, abusive, incentivised without disclosure, or unrelated to an actual marketplace interaction.",
-          "Users must not post content that is unlawful, misleading, defamatory, discriminatory, abusive, sexually explicit, spam, malware, or designed to interfere with the platform.",
+          "You must not use the website to break the law, submit false or spam enquiries, impersonate others, scrape data, bypass security controls, distribute malware, or interfere with its availability.",
         ],
       },
       {
-        heading: "Service changes and availability",
+        heading: "Service changes and liability",
         body: [
-          "Hire Car may change, suspend, or discontinue platform features where reasonably required for maintenance, security, performance, legal compliance, commercial viability, or product improvement.",
-          "Hire Car aims to provide a reliable service but does not guarantee uninterrupted availability. Planned or emergency maintenance may affect access.",
-        ],
-      },
-      {
-        heading: "Liability",
-        body: [
-          "To the maximum extent permitted by law, Hire Car is not responsible for vehicle condition, vendor conduct, customer conduct, rental disputes, accidents, fines, tolls, deposits, insurance decisions, or losses arising from rental agreements between customers and vendors.",
-          "Hire Car's liability is limited to the remedies required by applicable law and, where lawful, to resupplying the affected platform service or refunding the fees paid to Hire Car for that affected service.",
+          "We may change, suspend, or discontinue parts of the website for maintenance, security, legal, or business reasons, and we do not guarantee uninterrupted availability.",
+          "To the maximum extent permitted by law, our liability for your use of the website is limited to resupplying the affected service. This does not limit rights that cannot be excluded under the Australian Consumer Law.",
         ],
       },
       {
         heading: "Contact",
         body: [
-          "Questions about these terms can be sent through the contact page. Legal notices should include your full name, contact details, account email, and enough information for Hire Car to identify the relevant listing, vendor, enquiry, or transaction.",
+          "Questions about these terms can be sent through our contact page. Please include your name, contact details, and enough information for us to identify the relevant vehicle or enquiry.",
         ],
       },
     ],
   },
-  privacy: {
+  "privacy-policy": {
     title: "Privacy Policy",
     summary:
-      "This policy explains how Hire Car collects, uses, discloses, stores, and protects personal information in connection with the marketplace.",
+      "This policy explains how Cars365 collects, uses, discloses, stores, and protects personal information when you use our website and contact us about a vehicle.",
     sections: [
       {
         heading: "Personal information we collect",
         body: [
-          "Hire Car collects information you provide directly, information generated by your use of the platform, and information received from service providers that help operate the platform.",
+          "We collect information you provide directly when you enquire, request finance or a trade-in, book an inspection, or subscribe to updates, together with information generated automatically as you use the website.",
         ],
         bullets: [
-          "Account details, including name, email, phone number, authentication identifiers, and role.",
-          "Vendor business details, including business name, ABN, branch information, billing email, website, phone, address, and membership roles.",
-          "Listing and enquiry information, including vehicle details, pickup city, requested dates, messages, lead events, reviews, and moderation notes.",
-          "Technical and security data, including IP-derived identifiers, device and browser metadata, rate-limit events, audit logs, fraud flags, and payment/webhook references.",
+          "Contact details you give us, such as your name, phone number, and email address.",
+          "Enquiry details, such as the vehicle you are interested in, your message, finance or trade-in information you choose to share, and any photos you upload.",
+          "Technical and security data, such as IP-derived identifiers, device and browser metadata, and anti-spam and rate-limit events.",
+          "Records of our communications with you and the status of your enquiry in our system.",
         ],
       },
       {
         heading: "How we use information",
         body: [
-          "Hire Car uses personal information to provide and secure the marketplace, route customer enquiries, manage vendor accounts, process subscriptions, moderate content, prevent fraud, provide support, and comply with legal obligations.",
-          "Hire Car may use aggregated or de-identified information to measure marketplace performance, improve search quality, and understand demand patterns.",
+          "We use personal information to respond to your enquiry, provide information about vehicles and related services, arrange finance or trade-in appraisals where you ask us to, complete a sale, provide support, and meet our legal obligations.",
+          "With your consent, we may send you updates about new stock or offers. You can opt out of marketing at any time. We may also use aggregated or de-identified data to understand demand and improve the website.",
         ],
       },
       {
         heading: "Disclosure",
         body: [
-          "Customer enquiry details are shared with the relevant vendor so the vendor can respond to the rental request. Vendor listing and branch details are displayed publicly when approved.",
-          "Hire Car uses service providers for hosting, database, authentication, email, payments, search, bot protection, monitoring, and analytics. These providers may process information only as needed to supply their services to Hire Car.",
+          "We may share your details with service providers who help us operate, such as hosting, database, email, finance and insurance partners (only where you have asked us to arrange finance or a trade-in), analytics, and bot protection. They may use the information only to provide their service to us.",
+          "We do not sell your personal information. We may disclose information where required or permitted by law.",
         ],
       },
       {
         heading: "Security and retention",
         body: [
-          "Hire Car uses technical and organisational controls such as role-based access, row-level security, audit logging, rate limiting, webhook verification, bot protection, and encrypted transport to protect personal information.",
-          "Hire Car keeps personal information for as long as needed to provide the platform, meet legal and accounting obligations, resolve disputes, prevent fraud, and maintain audit records. Data may be deleted, anonymised, or archived when no longer required.",
+          "We use technical and organisational controls such as role-based access, row-level security, audit logging, rate limiting, and encrypted transport to protect personal information.",
+          "We keep personal information only for as long as needed to respond to your enquiry, complete any sale, meet legal and accounting obligations, and resolve disputes. Enquiry contact details are anonymised once they are no longer required.",
         ],
       },
       {
-        heading: "Access and correction",
+        heading: "Access, correction, and complaints",
         body: [
-          "You may request access to or correction of personal information held by Hire Car. Hire Car may need to verify your identity before acting on a request.",
-          "If you believe Hire Car has mishandled personal information, contact Hire Car first so the issue can be investigated. If unresolved, you may contact the Office of the Australian Information Commissioner.",
-        ],
-      },
-      {
-        heading: "International processing",
-        body: [
-          "Some infrastructure and service providers may process information outside Australia. Hire Car takes reasonable steps to use reputable providers and contractual controls appropriate to the service being supplied.",
-        ],
-      },
-    ],
-  },
-  "vendor-agreement": {
-    title: "Vendor Agreement",
-    summary:
-      "This agreement sets baseline obligations for vendors that list vehicles and receive customer leads through Hire Car.",
-    sections: [
-      {
-        heading: "Vendor responsibilities",
-        body: [
-          "Vendors must provide accurate business, branch, vehicle, pricing, availability, insurance, rental-condition, and contact information. Listings must be kept current and must not mislead customers.",
-          "Vendors are responsible for rental agreements, customer identity checks, driver eligibility, vehicle handover, deposits, tolls, fines, damage handling, insurance disclosures, refunds, support, and dispute resolution.",
-        ],
-      },
-      {
-        heading: "Approvals and moderation",
-        body: [
-          "Hire Car may review vendor profiles, branches, vehicles, images, prices, reviews, and lead behaviour. Approval to list does not transfer rental responsibility to Hire Car.",
-          "Hire Car may suspend or remove vendors that provide inaccurate listings, mishandle customer data, avoid platform controls, fail to pay subscription fees, receive serious complaints, or create legal, safety, fraud, or reputation risk.",
-        ],
-      },
-      {
-        heading: "Lead handling",
-        body: [
-          "Customer lead details must be used only to respond to the relevant rental enquiry unless the customer has provided a separate lawful consent for another use.",
-          "Vendors must not resell, scrape, export, or misuse lead data. Vendors must respond professionally and must not pressure customers with misleading scarcity, hidden fees, or bait pricing.",
-        ],
-      },
-      {
-        heading: "Subscriptions and billing",
-        body: [
-          "Vendor access to listing features may depend on an active subscription plan. Fees, plan limits, billing cycles, and included features are shown at checkout or in the billing dashboard.",
-          "Hire Car may restrict listing creation or visibility if payment fails, the subscription is cancelled, or the account breaches marketplace rules.",
-        ],
-      },
-      {
-        heading: "Compliance",
-        body: [
-          "Vendors must comply with Australian Consumer Law, privacy obligations, spam rules, road safety requirements, insurance obligations, vehicle registration requirements, tax obligations, and all other laws that apply to their rental business.",
-        ],
-      },
-    ],
-  },
-  "billing-refunds": {
-    title: "Billing and Refund Policy",
-    summary:
-      "This policy explains subscription billing for vendors and how Hire Car handles refund requests for platform fees.",
-    sections: [
-      {
-        heading: "Subscription billing",
-        body: [
-          "Vendor subscriptions are billed through Hire Car's payment provider. The billing amount, billing interval, plan limits, and taxes are shown before checkout.",
-          "The billing portal can be used to update payment methods, view invoices, and cancel eligible subscriptions. Access may require the vendor account owner or an authorised administrator.",
-        ],
-      },
-      {
-        heading: "Platform fees",
-        body: [
-          "Hire Car platform fees pay for marketplace access, listing tools, lead capture, vendor dashboards, moderation, and related software services. They do not include customer rental charges, deposits, insurance, tolls, fines, or vendor-imposed fees.",
-        ],
-      },
-      {
-        heading: "Refunds",
-        body: [
-          "Refund requests for Hire Car subscription fees are assessed case by case, including whether the fee was charged in error, whether the service was unavailable due to Hire Car's fault, and whether applicable law requires a remedy.",
-          "A vendor's dissatisfaction with lead volume, customer conversion, or business outcomes does not automatically create a refund entitlement. Nothing in this policy limits non-excludable rights under Australian Consumer Law.",
-        ],
-      },
-      {
-        heading: "Failed payments and cancellation",
-        body: [
-          "If a payment fails, Hire Car may retry payment, notify the vendor, mark the account as past due, restrict feature access, or suspend public listing visibility.",
-          "Cancellation stops future billing at the end of the current billing period unless otherwise stated. Historical audit, invoice, moderation, and legal records may be retained.",
-        ],
-      },
-    ],
-  },
-  "listing-accuracy": {
-    title: "Listing Accuracy Policy",
-    summary:
-      "This policy defines the standards for vehicle listings, prices, availability, images, and review content.",
-    sections: [
-      {
-        heading: "Accurate listings",
-        body: [
-          "Listings must accurately describe the vehicle, make, model, year, category, seat count, fuel type, transmission, branch location, price, and material rental conditions.",
-          "Vendors must promptly update or remove listings where a vehicle is unavailable, materially different from the description, no longer roadworthy, no longer insured for rental use, or no longer available from the stated branch.",
-        ],
-      },
-      {
-        heading: "Pricing and fees",
-        body: [
-          "Daily prices and promotional claims must be genuine and must not hide unavoidable fees. If deposits, insurance excesses, delivery fees, airport fees, mileage limits, cleaning fees, or surcharges apply, vendors must disclose them before booking.",
-        ],
-      },
-      {
-        heading: "Images",
-        body: [
-          "Vehicle images should show the actual vehicle or a materially representative vehicle from the same class where this is clearly disclosed. Images must not misrepresent condition, size, age, trim, or availability.",
-        ],
-      },
-      {
-        heading: "Reviews",
-        body: [
-          "Reviews must be genuine and based on real customer experiences. Vendors must not create fake reviews, pressure customers to leave positive-only feedback, suppress genuine negative reviews, or offer incentives unless the incentive is disclosed and available regardless of sentiment.",
-        ],
-      },
-    ],
-  },
-  "acceptable-use": {
-    title: "Acceptable Use Policy",
-    summary:
-      "This policy sets minimum conduct, security, and content standards for everyone using Hire Car.",
-    sections: [
-      {
-        heading: "Prohibited conduct",
-        body: [
-          "You must not use Hire Car to break the law, mislead users, infringe rights, harass others, distribute malware, scrape data, bypass security controls, interfere with service availability, or access accounts or data without permission.",
-        ],
-      },
-      {
-        heading: "Marketplace abuse",
-        body: [
-          "You must not submit spam enquiries, fake leads, fake reviews, fraudulent vendor details, misleading listings, manipulated ratings, abusive messages, or content that impersonates another person or business.",
-          "Automated traffic, bulk account creation, credential stuffing, rate-limit evasion, and attempts to probe private APIs are prohibited unless Hire Car has provided written authorisation for security testing.",
-        ],
-      },
-      {
-        heading: "Enforcement",
-        body: [
-          "Hire Car may throttle, block, suspend, remove content, close accounts, preserve evidence, notify affected users, or report activity to service providers or authorities where reasonably necessary to protect users and the platform.",
-        ],
-      },
-    ],
-  },
-  rules: {
-    title: "Rules and Guidelines",
-    summary:
-      "These rules and guidelines help ensure a safe, legal, and respectful experience for both customers and vendors across the Hire Car marketplace, in accordance with Australian law.",
-    sections: [
-      {
-        heading: "Driver Eligibility & Licensing",
-        body: [
-          "Customers must hold a valid, unexpired, and unrestricted driver's license suitable for the class of vehicle they intend to hire.",
-          "Learner permits and provisional licenses (P-plates) may be accepted by some vendors at their sole discretion, subject to additional conditions, fees, or higher insurance excesses. Customers must disclose their license status prior to booking.",
-          "International renters must hold a valid driver's license in English or an International Driving Permit (IDP) accompanied by their original license.",
-        ],
-      },
-      {
-        heading: "Road Safety & Compliance",
-        body: [
-          "All vehicles must be driven on the left side of the road, in strict compliance with Australian road rules and speed limits.",
-          "Seatbelts must be worn by the driver and all passengers at all times. Drivers must ensure children are seated in approved, correctly fitted child restraints according to age and size regulations.",
-          "It is strictly prohibited to drive under the influence of drugs or alcohol. The legal Blood Alcohol Concentration (BAC) limit in Australia is 0.05% for fully licensed drivers, and 0.00% for provisional or commercial drivers.",
-        ],
-      },
-      {
-        heading: "Tolls, Fines, and Infringements",
-        body: [
-          "Customers are personally responsible for all tolls, parking fines, speeding tickets, and traffic infringements incurred during the rental period.",
-          "Vendors reserve the right to pass on the cost of any infringements to the customer, often accompanied by an administration fee as outlined in the vendor's specific rental agreement.",
-        ],
-      },
-      {
-        heading: "Vehicle Use and Care",
-        body: [
-          "Vehicles must be used only for their intended purpose. Off-roading, driving on unsealed roads, or beach driving is prohibited unless explicitly authorised by the vendor in writing (e.g., for specific 4WD rentals).",
-          "Smoking or vaping inside rental vehicles is strictly prohibited. Vendors may charge professional cleaning fees if evidence of smoking, excessive dirt, or pet hair (where pets are not approved) is found.",
-        ],
-      },
-      {
-        heading: "Accidents and Reporting",
-        body: [
-          "In the event of an accident, customers must stop, assist anyone injured, and report the incident to the police if required by state law (e.g., if there are injuries or significant property damage).",
-          "Customers must promptly report any accidents, theft, or mechanical issues to the vendor and must not abandon the vehicle or arrange independent repairs without the vendor's consent.",
+          "You may request access to or correction of the personal information we hold about you. We may need to verify your identity before acting on a request.",
+          "If you believe we have mishandled your personal information, please contact us first so we can investigate. If the matter is unresolved, you may contact the Office of the Australian Information Commissioner.",
         ],
       },
     ],
   },
   disclaimer: {
-    title: "Customer Disclaimer",
+    title: "Website Disclaimer",
     summary:
-      "This disclaimer explains what customers should understand before relying on listings or contacting vendors.",
+      "This disclaimer explains what to understand before relying on the vehicle information published on the Cars365 website.",
     sections: [
       {
-        heading: "Independent vendors",
+        heading: "Vehicle listings",
         body: [
-          "Hire Car helps customers discover and contact independent rental vendors. Hire Car does not own, inspect, maintain, insure, or operate the listed vehicles.",
-          "Before booking, customers should confirm price, availability, deposit, insurance cover, excess, kilometre limits, driver requirements, pickup and return rules, cancellation rules, and any extra fees directly with the vendor.",
+          "Vehicle listings are provided in good faith to help you decide whether to enquire. While we aim to keep details accurate and current, specifications, features, condition, pricing, and availability can change, and a vehicle may be sold before its listing is updated.",
+          "Before committing to buy, please confirm the vehicle's price, on-road costs, condition, service history, and any warranty directly with our team and, where relevant, arrange your own inspection.",
         ],
       },
       {
-        heading: "No booking guarantee",
+        heading: "Estimates only",
         body: [
-          "A listing or enquiry response does not guarantee that a vehicle is available or that a vendor will accept a booking. Availability can change quickly and is controlled by the vendor.",
-        ],
-      },
-      {
-        heading: "Customer responsibility",
-        body: [
-          "Customers are responsible for checking the vehicle, reading the vendor rental agreement, confirming insurance arrangements, complying with road rules, and resolving rental disputes directly with the vendor where the dispute concerns the rental service.",
+          "Finance repayment estimates and trade-in figures shown on the website are indicative only. They are not an offer, are subject to approval and inspection, and may differ from the final amount.",
         ],
       },
       {
         heading: "Consumer rights",
         body: [
-          "This disclaimer does not limit customer rights under Australian Consumer Law or other laws that cannot be excluded. If a rental service is supplied by a vendor, the vendor remains responsible for legal obligations that apply to that supply.",
+          "This disclaimer does not limit any rights you have under the Australian Consumer Law or other laws that cannot be excluded. Where we supply a vehicle to you, we remain responsible for the legal obligations that apply to that sale.",
         ],
       },
     ],

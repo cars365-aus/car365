@@ -3,8 +3,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { AboutClient } from "./about-client";
 
 export const metadata = {
-  title: "About Us | Cars365",
-  description: "Learn about Cars365's mission to solve the rental monopoly and connect customers directly with verified, independent car rental operators across Australia.",
+  title: "About Us",
+  description: "Learn about Cars365 — an Australian used-car dealership built on honest inspections, transparent pricing, and a team that helps you buy with confidence.",
 };
 
 export default function AboutPage() {

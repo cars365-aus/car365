@@ -1,6 +1,6 @@
 # SEO Strategy & Documentation
 
-Hire Car relies on programmatic SEO (PSEO) to drive organic marketplace liquidity. Pages are generated automatically from live inventory — when vendors add vehicles, branches (cities), or categories, the platform creates indexable landing pages with metadata, JSON-LD, and internal links.
+Cars365 relies on programmatic SEO (PSEO) to drive organic marketplace liquidity. Pages are generated automatically from live inventory — when vendors add vehicles, branches (cities), or categories, the platform creates indexable landing pages with metadata, JSON-LD, and internal links.
 
 ## URL Taxonomy
 
@@ -44,7 +44,7 @@ All PSEO logic lives in `src/lib/seo/`:
 
 Every public PSEO page uses Next.js `generateMetadata` with:
 
-- Transactional titles: `[Entity] – Car Hire in [City] | Hire Car`
+- Transactional titles: `[Entity] – Used Cars in [City] | Cars365`
 - Canonical URLs via `alternates.canonical`
 - OpenGraph title + description (vehicle pages include first approved image when available)
 - Dynamic `robots` for thin pages

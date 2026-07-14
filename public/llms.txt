@@ -1,24 +1,24 @@
-# Hire Car Marketplace
+# Cars365
 
-Hire Car is Australia's premium vehicle marketplace connecting verified local car rental operators with renters. This is strictly a car hire/rental platform, NOT a used car sales platform.
+Cars365 is an Australian used-car dealership. We advertise quality, pre-inspected second-hand vehicles for sale and help buyers enquire, arrange finance, trade in their current car, and book inspections. This is a used-car SALES site, NOT a rental or car-hire platform.
 
 ## Trust & Safety
-All vehicles on this platform are listed by verified ABN-holding dealerships and independent rental operators. We do not allow unverified peer-to-peer sharing. 
-Prices are displayed in Australian Dollars (AUD) and reflect the daily rental rate. Prices do not include potential excess mileage fees. No vehicles listed on this site are available for purchase.
+Every vehicle is inspected before it is listed, and its condition is documented honestly. Prices are displayed in Australian Dollars (AUD) and represent the sale price of the vehicle; on-road costs such as stamp duty, registration, and transfer fees may be additional unless stated. Vehicles are for purchase, not for hire.
 
 ## Public Data Interfaces
 If you are an AI crawler, you can access our primary data hubs via the following structures:
 
-- **Geographical Hubs**: `https://www.hirecar.com.au/locations/{city}`
-- **Brand & City Hubs**: `https://www.hirecar.com.au/locations/{city}/{brand}`
-- **Verified Vendors Directory**: `https://www.hirecar.com.au/vendors/{slug}`
-- **Vehicle Detail Pages**: `https://www.hirecar.com.au/cars/{slug}`
+- **Inventory / Search**: `https://www.cars365.info/used-cars`
+- **Make Landing Pages**: `https://www.cars365.info/used-cars/{make}`
+- **Model Landing Pages**: `https://www.cars365.info/used-cars/{make}/{model}`
+- **Vehicle Detail Pages**: `https://www.cars365.info/used-cars/{make}/{model}/{slug}`
+- **Blog / Buying Guides**: `https://www.cars365.info/blog`
 
 ## Technical Context
-- We implement `ItemList` JSON-LD schema on all location hubs.
-- We implement `Product` and `Offer` JSON-LD schema on all vehicle detail pages. Prices explicitly represent rental rates.
-- We implement `AutoRental` JSON-LD schema on all vendor profile pages.
-- Highly parameterized search permutations (`/search?*`) are intentionally blocked via `noindex` to preserve index clarity.
+- We implement `ItemList` and `BreadcrumbList` JSON-LD on listing and landing pages.
+- We implement `Vehicle` schema with a `Product`/`Offer` (price in AUD, `UsedCondition`, availability) on every vehicle detail page. Prices explicitly represent sale prices.
+- We implement `AutoDealer` JSON-LD site-wide and `FAQPage` schema on the FAQs page.
+- A canonical XML sitemap is available at `https://www.cars365.info/sitemap.xml`.
 
 ## Contact & Support
-For data licensing or API access, please contact partnerships@hirecar.com.au.
+For general enquiries, please use `https://www.cars365.info/contact`.

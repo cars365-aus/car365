@@ -18,9 +18,9 @@ export const transporter = (smtpHost && smtpUser && smtpPass)
     })
   : null;
 
-const FROM = process.env.EMAIL_FROM ?? "Hire Car Marketplace <noreply@hirecarmarketplace.com.au>";
-const REPLY_TO = process.env.REPLY_TO_EMAIL ?? process.env.CONTACT_EMAIL_TO ?? "support@hirecarmarketplace.com.au";
-const LOGO_HTML = `<img src="${getAppUrl()}/LOGO.png" alt="Hire Car Marketplace" style="height:40px;margin-bottom:24px;display:block;margin-left:auto;margin-right:auto;" />`;
+const FROM = process.env.EMAIL_FROM ?? "Cars365 <noreply@cars365.info>";
+const REPLY_TO = process.env.REPLY_TO_EMAIL ?? process.env.CONTACT_EMAIL_TO ?? "support@cars365.info";
+const LOGO_HTML = `<img src="${getAppUrl()}/LOGO.png" alt="Cars365" style="height:40px;margin-bottom:24px;display:block;margin-left:auto;margin-right:auto;" />`;
 
 export async function sendLeadAlert(input: {
   to: string;
@@ -76,18 +76,18 @@ export async function sendWelcomeEmail(input: {
     from: FROM,
     replyTo: REPLY_TO,
     to: input.to,
-    subject: "Welcome to Hire Car Marketplace! \uD83D\uDE97",
+    subject: "Welcome to Cars365! \uD83D\uDE97",
     html: `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#fff;">
       ${LOGO_HTML}
       <div style="background:linear-gradient(135deg,#ea580c,#f59e0b);border-radius:16px;padding:32px;text-align:center;margin-bottom:24px;">
-        <h1 style="color:#fff;font-size:28px;margin:0;font-weight:900;">Welcome to HireCar! \uD83C\uDF89</h1>
+        <h1 style="color:#fff;font-size:28px;margin:0;font-weight:900;">Welcome to Cars365! \uD83C\uDF89</h1>
       </div>
       <p style="color:#334155;font-size:16px;">Hi ${input.name || "there"},</p>
       <p style="color:#334155;font-size:15px;line-height:1.6;">${greeting}</p>
       <div style="text-align:center;margin:32px 0;">
         <a href="${dashboardUrl}" style="background:linear-gradient(135deg,#ea580c,#f59e0b);color:#fff;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;display:inline-block;">${ctaLabel} \u2192</a>
       </div>
-      <p style="color:#94a3b8;font-size:13px;text-align:center;">Hire Car Marketplace \u00B7 Australia</p>
+      <p style="color:#94a3b8;font-size:13px;text-align:center;">Cars365 \u00B7 Australia</p>
     </div>`,
   });
   return { skipped: false };
@@ -121,7 +121,7 @@ export async function sendMarketingEmail(input: {
       <p style="color:#334155;font-size:16px;">Hi ${input.recipientName},</p>
       <div style="color:#334155;font-size:15px;line-height:1.7;">${input.bodyHtml}</div>
       ${cta}
-      <p style="color:#94a3b8;font-size:12px;text-align:center;margin-top:32px;">You're receiving this because you have an account at hirecarmarketplace.com.au.</p>
+      <p style="color:#94a3b8;font-size:12px;text-align:center;margin-top:32px;">You're receiving this because you have an account at cars365.info.</p>
     </div>`,
   });
   return { skipped: false };
@@ -274,12 +274,12 @@ export async function sendContactMessage(input: {
   message: string;
 }) {
   if (!transporter) return { skipped: true };
-  const to = process.env.CONTACT_EMAIL_TO ?? process.env.EMAIL_FROM ?? "support@hirecarmarketplace.com.au";
+  const to = process.env.CONTACT_EMAIL_TO ?? process.env.EMAIL_FROM ?? "support@cars365.info";
   await transporter.sendMail({
-    from: process.env.EMAIL_FROM ?? "Hire Car Support <support@hirecarmarketplace.com.au>",
+    from: process.env.EMAIL_FROM ?? "Cars365 Support <support@cars365.info>",
     to,
     replyTo: input.email,
-    subject: `Hire Car contact: ${input.topic}`,
+    subject: `Cars365 contact: ${input.topic}`,
     text: [`Name: ${input.name}`, `Email: ${input.email}`, `Topic: ${input.topic}`, "", input.message].join("\n"),
   });
   return { skipped: false };

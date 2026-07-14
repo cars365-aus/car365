@@ -1,4 +1,4 @@
-﻿import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendCustomerEnquiryConfirmation, sendLeadAlert } from "@/lib/email/ses";
 import { clientIp, hashIpForStorage } from "@/lib/security/rate-limit";
@@ -95,30 +95,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // SECURITY: Validate pickup city matches one of the vendor's branch cities
-  // This prevents spam leads with fake pickup locations
-  const { data: branches } = await supabase
-    .from("branches")
-    .select("city")
-    .eq("organization_id", payload.data.vendorId)
-    .eq("status", "approved");
-
-  const validCities = new Set(branches?.map((b) => b.city.toLowerCase()) ?? []);
-  const requestedCity = payload.data.pickupCity.toLowerCase();
-
-  if (!validCities.has(requestedCity)) {
-    console.info(`[Lead API] Spam attempt detected: City ${payload.data.pickupCity} not valid for vendor ${payload.data.vendorId}`);
-    
-    // Log potential spam/fraud attempt but DO NOT block the lead 
-    // because users might type partial city names (e.g. "Syd" instead of "Sydney")
-    await supabase.from("fraud_flags").insert({
-      resource_type: "lead_attempt",
-      resource_id: payload.data.vehicleId,
-      severity: "low",
-      reason: `Pickup city "${payload.data.pickupCity}" does not strictly match vendor's branch cities: ${Array.from(validCities).join(", ")}`,
-      status: "open",
-    });
-  }
+  // City validation removed since pickupCity is no longer part of the lead schema
 
   // Check for duplicate lead within last hour (same email + vehicle)
   const { data: duplicateLead } = await supabase
@@ -140,17 +117,17 @@ export async function POST(request: NextRequest) {
   const { data: lead, error } = await supabase
     .from("leads")
     .insert({
+      type: "general",
       vehicle_id: payload.data.vehicleId,
-      vendor_id: payload.data.vendorId,
-      customer_name: payload.data.name,
-      customer_email: payload.data.email,
-      customer_phone: payload.data.phone,
-      pickup_city: payload.data.pickupCity,
-      start_date: payload.data.startDate,
-      end_date: payload.data.endDate,
+      name: payload.data.name,
+      email: payload.data.email,
+      phone: payload.data.phone,
       message: payload.data.message,
       ip_hash: ipHash,
       status: "new",
+      payload: {
+        vendor_id: payload.data.vendorId
+      },
     })
     .select("id")
     .single();

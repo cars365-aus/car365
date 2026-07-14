@@ -212,6 +212,37 @@ export type LeadEvent = {
   createdAt: string;
 };
 
+// ── Bidding & Messaging entities (buyer & staff) ─────────────────────────────
+export type BidStatus = "pending" | "accepted" | "rejected" | "countered" | "withdrawn";
+
+export type Bid = {
+  id: string;
+  vehicleId: string;
+  buyerId: string;
+  amount: number;
+  status: BidStatus;
+  message: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ChatThread = {
+  id: string;
+  vehicleId: string | null;
+  buyerId: string;
+  leadId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ChatMessage = {
+  id: string;
+  threadId: string;
+  senderId: string | null; // null = system message
+  content: string;
+  createdAt: string;
+};
+
 // ── Faceted-listing query contracts (SRS §9.2 / API §19.1) ──────────────────
 export type VehicleSort =
   | "recommended" | "price_asc" | "price_desc"

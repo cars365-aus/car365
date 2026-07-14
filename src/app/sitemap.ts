@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     supabase.from("makes").select("slug"),
     supabase.from("models").select("slug, makes:make_id ( slug )"),
     supabase.from("vehicles").select("slug, updated_at, makes:make_id ( slug ), models:model_id ( slug )").in("status", ["available", "reserved", "sold"]).limit(45000),
-    supabase.from("blog_posts").select("slug, updated_at").eq("status", "published").limit(5000),
+    supabase.from("blog_articles").select("slug, updated_at").eq("status", "published").limit(5000),
   ]);
 
   const url = (path: string, lastModified: Date | string = staticDate, priority = 0.6): MetadataRoute.Sitemap[number] =>
@@ -25,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     "/", "/used-cars", "/sell-your-car", "/trade-in", "/finance", "/about",
     "/testimonials", "/faqs", "/contact", "/blog", "/how-it-works",
-    "/success-stories", "/careers", "/press", "/privacy-policy", "/terms",
+    "/careers", "/press", "/legal/privacy-policy", "/legal/terms",
   ].map((p) => url(p, staticDate, p === "/" ? 1 : 0.7));
 
   // Programmatic landing pages.

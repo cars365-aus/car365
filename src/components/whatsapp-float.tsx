@@ -19,7 +19,7 @@ const HIDDEN_PREFIXES = ["/vendor", "/admin", "/auth", "/customer"];
 
 /**
  * A floating WhatsApp support button shown on public-facing pages only.
- * Lets any visitor reach the Hire Car support team directly.
+ * Lets any visitor reach the Cars365 support team directly.
  *
  * Context-aware positioning:
  * - Repositions above the sticky CTA bar on mobile when visible
@@ -55,7 +55,7 @@ export function WhatsAppFloat({
 
   const url = buildWhatsAppUrl(
     phone,
-    "Hi Hire Car team, I have a question about renting a vehicle."
+    "Hi Cars365 team, I have a question about a car you have for sale."
   );
 
   return (

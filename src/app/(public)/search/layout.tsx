@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Search Vehicles | Hire Car",
+  title: "Search Vehicles",
   description: "Search and filter through our nationwide inventory of verified rental vehicles.",
   // Filter UI: crawlable so bots follow links to indexable hubs, but kept out
   // of the index (query-string permutations would create thin/duplicate URLs).

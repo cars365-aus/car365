@@ -1,4 +1,4 @@
-export const SEO_BASE_URL = "https://www.hirecarmarketplace.com.au";
+export const SEO_BASE_URL = "https://www.cars365.info";
 
 export const THIN_PAGE_THRESHOLDS = {
   city: 5,

@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       fuel: input.fuel,
       transmission: input.transmission,
       category: input.category,
-      price_per_day_aud: input.pricePerDayAud,
+      price: input.price,
       status: "pending",
     })
     .select("id, slug, title, status")

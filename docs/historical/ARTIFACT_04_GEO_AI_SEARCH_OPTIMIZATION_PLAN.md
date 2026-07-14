@@ -25,7 +25,7 @@ AI Overviews trigger heavily on Question/Answer intent. We must anticipate these
 **Implementation on `/used-cars/[city]`:**
 - Add an accordion (visible text) with `FAQPage` JSON-LD behind it.
 - **Q:** "What is the average price of a used car in [City]?"
-- **A:** "Based on [Count] active listings on Hire Car, the average used car price in [City] is $[Average]."
+- **A:** "Based on [Count] active listings on Cars365, the average used car price in [City] is $[Average]."
 - **Q:** "Who are the top used car dealers in [City]?"
 - **A:** "Top rated dealers in [City] include [Dealer 1], [Dealer 2], and [Dealer 3]."
 
@@ -38,8 +38,8 @@ LLMs need authoritative opinions to cite. We should inject dynamic, data-driven 
 We will generate an `llms.txt` file at the domain root. This file provides a markdown-formatted summary of the site's purpose and points AI web-crawlers (like `OAI-SearchBot`) to our primary data hubs.
 - **Content:**
   ```markdown
-  # Hire Car Marketplace
-  Hire Car is Australia's premium vehicle marketplace connecting verified local dealers with buyers.
+  # Cars365 Marketplace
+  Cars365 is Australia's premium vehicle marketplace connecting verified local dealers with buyers.
   
   ## Public Data Interfaces
   - Search Inventory: https://www.hirecar.com.au/search

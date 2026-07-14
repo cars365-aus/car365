@@ -2,7 +2,7 @@ import type { VehicleCategory } from "./categories";
 import { getCityMeta } from "./slugs";
 
 export function vehicleTitle(title: string, city?: string) {
-  return `${title} – Car Hire${city ? ` in ${city}` : ""} | Hire Car`;
+  return `${title} – Car Hire${city ? ` in ${city}` : ""} | Cars365`;
 }
 
 export function vehicleDescription(input: {
@@ -26,7 +26,7 @@ export function vehicleDescription(input: {
 export function cityTitle(citySlug: string, state?: string, lowestPrice?: number) {
   const { title } = getCityMeta(citySlug, state);
   const priceString = lowestPrice ? ` (From $${lowestPrice}/day)` : "";
-  return `Car Hire ${title}${state ? ` ${state}` : ""}${priceString} | Hire Car`;
+  return `Car Hire ${title}${state ? ` ${state}` : ""}${priceString} | Cars365`;
 }
 
 export function cityDescription(citySlug: string, state?: string) {
@@ -34,7 +34,7 @@ export function cityDescription(citySlug: string, state?: string) {
 }
 
 export function categoryNationalTitle(category: VehicleCategory) {
-  return `${category} Car Hire Australia | Hire Car`;
+  return `${category} Car Hire Australia | Cars365`;
 }
 
 export function categoryNationalDescription(category: VehicleCategory, total: number) {
@@ -44,7 +44,7 @@ export function categoryNationalDescription(category: VehicleCategory, total: nu
 export function cityCategoryTitle(citySlug: string, category: VehicleCategory, state?: string, lowestPrice?: number) {
   const { title } = getCityMeta(citySlug, state);
   const priceString = lowestPrice ? ` (From $${lowestPrice}/day)` : "";
-  return `${category} Hire ${title}${priceString} | Hire Car`;
+  return `${category} Hire ${title}${priceString} | Cars365`;
 }
 
 export function cityCategoryDescription(
@@ -54,12 +54,12 @@ export function cityCategoryDescription(
   state?: string,
 ) {
   const { title } = getCityMeta(citySlug, state);
-  return `Find ${total} ${category} vehicles for hire in ${title}. Compare daily rates from verified local rental operators on Hire Car.`;
+  return `Find ${total} ${category} vehicles for hire in ${title}. Compare daily rates from verified local rental operators on Cars365.`;
 }
 
 export function brandCityTitle(brand: string, citySlug: string) {
   const { title } = getCityMeta(citySlug);
-  return `${brand} Car Hire in ${title} | Hire Car`;
+  return `${brand} Car Hire in ${title} | Cars365`;
 }
 
 export function brandCityDescription(brand: string, citySlug: string) {

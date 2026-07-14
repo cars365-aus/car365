@@ -1,6 +1,6 @@
 # API Documentation
 
-This outlines the structure of the Next.js API Routes and Server Actions handling the backend logic for Hire Car.
+This outlines the structure of the Next.js API Routes and Server Actions handling the backend logic for Cars365.
 
 ## Public Endpoints (REST)
 

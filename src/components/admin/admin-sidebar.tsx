@@ -30,7 +30,7 @@ export function AdminSidebar() {
     <div className="flex h-full w-64 flex-col border-r border-border bg-card px-4 py-6 text-foreground">
       <Link href="/" className="mb-8 flex items-center px-2">
         <BrandLogo className="h-[48px] w-[180px]" imageClassName="object-left mix-blend-multiply" />
-        <span className="sr-only">HireCar Marketplace Admin</span>
+        <span className="sr-only">Cars365 Admin</span>
       </Link>
 
       <nav className="flex-1 space-y-1.5">

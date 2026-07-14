@@ -2,14 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { BLOG_PAGE_SIZE, getPublishedArticles } from "@/lib/blog/queries";
+import { getPublishedArticles } from "@/lib/blog/queries";
 import { buildCollectionPageSchema, serializeSchemas } from "@/lib/seo/schema";
 import { format } from "date-fns";
 
 export const metadata = {
-  title: "Blog | Hire Car Marketplace",
+  title: "Blog",
   description:
-    "Australian car hire tips, road trip guides, city guides and rental advice from Hire Car Marketplace.",
+    "Used-car buying guides, ownership tips, finance advice and model comparisons from the Cars365 team.",
 };
 
 export const revalidate = 3600;
@@ -24,7 +24,7 @@ export default async function BlogPage({
   const { articles, totalPages } = await getPublishedArticles(page);
 
   const schema = buildCollectionPageSchema({
-    name: "Hire Car Blog",
+    name: "Cars365 Blog",
     description: metadata.description as string,
     url: "/blog",
   });
@@ -39,10 +39,10 @@ export default async function BlogPage({
       <main className="mx-auto max-w-6xl px-4 py-16 sm:py-24">
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-black text-foreground sm:text-5xl mb-4">
-            Hire Car Blog
+            Cars365 Blog
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Road trip guides, car rental tips and city advice for travellers across Australia.
+            Buying guides, ownership tips and model comparisons to help you buy your next used car with confidence.
           </p>
         </div>
 

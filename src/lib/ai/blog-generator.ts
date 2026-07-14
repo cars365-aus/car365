@@ -42,7 +42,7 @@ export async function generateBlogArticle(topic: BlogTopic): Promise<GeneratedBl
     .map((l) => `${l.label}: ${l.href}`)
     .join("\n");
 
-  const prompt = `You are an expert Australian travel and car hire content writer for Hire Car Marketplace (hirecarmarketplace.com.au).
+  const prompt = `You are an expert Australian travel and car hire content writer for Cars365 (cars365.info).
 
 Write a complete SEO blog article on this topic:
 Title idea: ${topic.title}

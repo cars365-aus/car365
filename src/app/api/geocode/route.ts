@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       {
         headers: {
           // Be a good citizen: identify our proxy to Photon.
-          "User-Agent": "Hire Car/1.0 (geocode-proxy)",
+          "User-Agent": "Cars365/1.0 (geocode-proxy)",
         },
         // Don't cache stale autocomplete results.
         cache: "no-store",

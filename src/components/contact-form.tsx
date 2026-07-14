@@ -52,7 +52,7 @@ export function ContactForm() {
 
       form.reset();
       setTurnstileToken("");
-      setMessage({ type: "success", text: "Message sent. The Hire Car team will reply by email." });
+      setMessage({ type: "success", text: "Message sent. The Cars365 team will reply by email." });
     } catch (error) {
       setTurnstileToken("");
       setMessage({

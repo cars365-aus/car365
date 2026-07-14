@@ -1,6 +1,6 @@
 # Deployment & Operations Guide
 
-Hire Car is optimized for a Serverless Edge deployment model using Vercel.
+Cars365 is optimized for a Serverless Edge deployment model using Vercel.
 
 ## Required Services
 1. **Vercel** (Hosting, CDN, CI/CD, ISR Caching)

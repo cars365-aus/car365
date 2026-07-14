@@ -70,24 +70,15 @@ export const vehicleSchema = z.object({
   fuel: z.enum(["Petrol", "Diesel", "Hybrid", "Electric"]),
   transmission: z.enum(["Automatic", "Manual"]),
   category: z.enum(["Sedan", "SUV", "People mover", "Van", "Ute", "Luxury"]),
-  pricePerDayAud: z.coerce.number().int().min(20).max(2000),
-  dailyDistanceLimitKm: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : Number(val)), z.number().int().min(50).max(1000).nullable().optional()),
-  extraDistanceFeeAud: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : Number(val)), z.number().min(0.1).max(5.0).nullable().optional()),
-  instantBook: z.boolean().default(false),
+  price: z.coerce.number().int().min(1),
   vin: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : String(val)), z.string().trim().max(100).nullable().optional()),
   licensePlate: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : String(val)), z.string().trim().max(40).nullable().optional()),
   color: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : String(val)), z.string().trim().max(60).nullable().optional()),
-  hourlyRateAud: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : Number(val)), z.number().int().min(0).max(500).nullable().optional()),
-  weeklyRateAud: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : Number(val)), z.number().int().min(0).max(10000).nullable().optional()),
-  monthlyRateAud: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : Number(val)), z.number().int().min(0).max(30000).nullable().optional()),
-  weekendRateAud: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : Number(val)), z.number().int().min(0).max(5000).nullable().optional()),
   notes: z.preprocess((val) => (val === "" || val === null || val === undefined ? null : String(val)), z.string().trim().max(1000).nullable().optional()),
   features: z.preprocess(
     (val) => (Array.isArray(val) ? val : val === undefined || val === null ? [] : [val]),
     z.array(z.enum(VEHICLE_FEATURES)).max(20).transform((arr) => Array.from(new Set(arr))),
   ).optional(),
-  freeDelivery: z.boolean().default(false),
-  freeCancellation: z.boolean().default(false),
   noHiddenFees: z.boolean().default(false),
 });
 
@@ -118,24 +109,16 @@ export const transferBranchSchema = z.object({
   approveImmediately: z.boolean().optional().default(false),
 });
 
-export const leadSchema = z
-  .object({
-    vehicleId: z.string().uuid(),
-    vendorId: z.string().uuid(),
-    name: z.string().trim().min(2).max(120),
-    email: z.string().trim().email().max(160),
-    phone: z.string().trim().min(8).max(30),
-    pickupCity: z.string().trim().min(2).max(80),
-    startDate: z.string().date(),
-    endDate: z.string().date(),
-    message: z.string().trim().max(1000).optional().default(""),
-    consent: z.literal(true),
-    turnstileToken: z.string().optional(),
-  })
-  .refine((data) => new Date(data.endDate) >= new Date(data.startDate), {
-    message: "End date must be on or after start date",
-    path: ["endDate"],
-  });
+export const leadSchema = z.object({
+  vehicleId: z.string().uuid(),
+  vendorId: z.string().uuid(),
+  name: z.string().trim().min(2).max(120),
+  email: z.string().trim().email().max(160),
+  phone: z.string().trim().min(8).max(30),
+  message: z.string().trim().max(1000).optional().default(""),
+  consent: z.boolean().optional(),
+  turnstileToken: z.string().optional(),
+});
 
 export const contactEventSchema = z.object({
   vehicleId: z.string().uuid(),
@@ -149,6 +132,17 @@ export const contactMessageSchema = z.object({
   topic: z.enum(["vendor_onboarding", "enterprise", "support", "legal_privacy"]),
   message: z.string().trim().min(10).max(2000),
   turnstileToken: z.string().optional(),
+});
+
+export const bidSchema = z.object({
+  vehicleId: z.string().uuid(),
+  amount: z.coerce.number().int().min(100),
+  message: z.string().trim().max(1000).optional(),
+});
+
+export const chatMessageCreateSchema = z.object({
+  vehicleId: z.string().uuid(),
+  content: z.string().trim().min(1).max(2000),
 });
 
 export const checkoutSchema = z.object({
@@ -177,7 +171,7 @@ export const apiVehicleCreateSchema = z.object({
   category: z
     .enum(["Sedan", "SUV", "People mover", "Van", "Ute", "Luxury"])
     .default("Sedan"),
-  pricePerDayAud: z.coerce.number().int().min(20).max(2000),
+  price: z.coerce.number().int().min(1),
 });
 
 /**

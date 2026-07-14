@@ -198,6 +198,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
                     <VdpLeadActions
                       vehicleId={v.id}
                       vehicleTitle={title}
+                      price={v.price}
                       phone={phone}
                       whatsappUrl={whatsapp ? buildWhatsAppUrl(whatsapp, waMessage) : null}
                       showInspection={v.inspectionAvailable}
@@ -237,6 +238,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
           <VdpLeadActions
             vehicleId={v.id}
             vehicleTitle={title}
+            price={v.price}
             phone={phone}
             whatsappUrl={whatsapp ? buildWhatsAppUrl(whatsapp, waMessage) : null}
             variant="sticky"

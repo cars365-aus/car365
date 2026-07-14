@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!article) return { title: "Article not found" };
 
   const baseUrl = getAppUrl();
-  const title = (article.meta_title ?? `${article.title} | Hire Car Blog`).slice(0, 60);
+  const title = (article.meta_title ?? `${article.title} | Cars365 Blog`).slice(0, 60);
   const description = (article.meta_description ?? article.excerpt).slice(0, 155);
   const url = `${baseUrl}/blog/${article.slug}`;
   const image = article.featured_image_url ?? `${baseUrl}/og-default.png`;

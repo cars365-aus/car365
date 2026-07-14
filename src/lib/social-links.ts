@@ -8,7 +8,7 @@
 
 export const SOCIAL_URLS = {
   facebook: "https://www.facebook.com/profile.php?id=61590659316054",
-  linkedin: "https://www.linkedin.com/company/hirecar-marketplace/",
+  linkedin: "https://www.linkedin.com/company/cars365/",
   instagram: "https://www.instagram.com/hire.carmarketplace",
 } as const;
 

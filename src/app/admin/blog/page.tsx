@@ -13,7 +13,7 @@ const STATUS_STYLES: Record<string, string> = {
 export default async function AdminBlogPage() {
   const supabase = createAdminClient();
   const { data: posts } = await supabase
-    .from("blog_posts")
+    .from("blog_articles")
     .select("id, title, slug, status, published_at, blog_categories:category_id ( name )")
     .order("created_at", { ascending: false })
     .limit(100);

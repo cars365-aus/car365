@@ -4,9 +4,9 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = {
-  title: "Press & Media | Hire Car Marketplace",
+  title: "Press & Media",
   description:
-    "Press and media enquiries for Hire Car Marketplace, Australia's marketplace for verified independent car rental operators.",
+    "Press and media enquiries for Cars365, an Australian used-car dealership focused on honestly inspected vehicles and transparent pricing.",
 };
 
 export default function PressPage() {
@@ -18,9 +18,9 @@ export default function PressPage() {
           Press &amp; Media
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-600">
-          Hire Car Marketplace is an Australian marketplace that connects
-          renters with verified, independent car rental operators — with no
-          booking fees charged to customers.
+          Cars365 is an Australian used-car dealership that sells quality,
+          honestly inspected vehicles with transparent pricing, finance, and
+          trade-ins — and a team that answers fast.
         </p>
         <p className="mt-4 text-lg leading-relaxed text-slate-600">
           For media enquiries, interviews, or to request brand assets, please

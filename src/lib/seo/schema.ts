@@ -56,7 +56,7 @@ export function buildCollectionPageSchema(input: {
     url: `${SEO_BASE_URL}${input.url}`,
     isPartOf: {
       "@type": "WebSite",
-      name: "Hire Car",
+      name: "Cars365",
       url: SEO_BASE_URL,
     },
   };
@@ -117,7 +117,7 @@ export function buildWebSiteSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "HireCar Marketplace",
+    name: "Cars365",
     url: SEO_BASE_URL,
     potentialAction: {
       "@type": "SearchAction",
@@ -147,8 +147,8 @@ export function buildBrandOrganizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "HireCar Marketplace",
-    alternateName: "HireCar",
+    name: "Cars365",
+    alternateName: "Cars365",
     url: SEO_BASE_URL,
     logo: `${SEO_BASE_URL}/icons/icon-512.png`,
     image: `${SEO_BASE_URL}/og-image.jpg`,
@@ -203,11 +203,11 @@ export function buildArticleSchema(input: {
     dateModified: input.dateModified,
     author: {
       "@type": "Organization",
-      name: input.authorName ?? "Hire Car Marketplace",
+      name: input.authorName ?? "Cars365",
     },
     publisher: {
       "@type": "Organization",
-      name: "Hire Car Marketplace",
+      name: "Cars365",
       logo: {
         "@type": "ImageObject",
         url: `${base}/logo.png`,
