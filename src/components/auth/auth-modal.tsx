@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
-export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export function AuthModal({ isOpen, onClose, intent = "buyer" }: { isOpen: boolean; onClose: () => void; intent?: "buyer" | "seller" }) {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [userType, setUserType] = useState<"buyer" | "seller">("buyer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // We no longer let the user pick in the modal; we lock them to the intent they clicked.
+  const userType = intent;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -69,14 +71,14 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         >
           <div className="p-8">
           <div className="mb-6 text-center">
-            <DialogTitle className="font-heading text-2xl font-bold text-foreground">
-              {mode === "signin" ? "Welcome back" : "Create an account"}
+            <DialogTitle className="text-2xl font-black text-foreground">
+              {intent === "seller" ? "Seller Portal" : "Customer Account"}
             </DialogTitle>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <DialogDescription className="text-sm text-muted-foreground">
               {mode === "signin" 
-                ? "Sign in to view prices and contact dealers." 
-                : "Register to unlock premium marketplace features."}
-            </p>
+                ? "Sign in to access your dashboard and messages." 
+                : `Create a ${intent} account to get started.`}
+            </DialogDescription>
           </div>
 
           <form onSubmit={onSubmit} className="space-y-4">
@@ -98,27 +100,16 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
                 placeholder="••••••••"
               />
             </label>
-            {mode === "signup" && (
-              <div className="flex gap-4 mb-4">
-                <label className="flex flex-1 items-center gap-2 cursor-pointer rounded-lg border border-border bg-black/50 p-3 hover:border-primary transition-colors">
-                  <input type="radio" name="userType" value="buyer" checked={userType === "buyer"} onChange={() => setUserType("buyer")} className="accent-primary" />
-                  <span className="text-sm font-medium text-foreground">I want to buy</span>
-                </label>
-                <label className="flex flex-1 items-center gap-2 cursor-pointer rounded-lg border border-border bg-black/50 p-3 hover:border-primary transition-colors">
-                  <input type="radio" name="userType" value="seller" checked={userType === "seller"} onChange={() => setUserType("seller")} className="accent-primary" />
-                  <span className="text-sm font-medium text-foreground">I want to sell</span>
-                </label>
-              </div>
-            )}
             {error ? <p className="text-sm text-danger font-medium">{error}</p> : null}
             {success ? <p className="text-sm text-success font-medium">{success}</p> : null}
-            <button
-              type="submit" disabled={loading}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 font-bold text-black hover:bg-primary-hover disabled:opacity-60 transition-transform hover:scale-[1.02] shadow-lg shadow-primary/20"
+            <Button 
+              type="submit" 
+              className="w-full h-12 text-base font-bold shadow-md rounded-xl"
+              disabled={loading}
             >
-              {loading ? <Loader2 className="size-5 animate-spin" /> : null}
-              {mode === "signin" ? "Sign In" : "Sign Up"}
-            </button>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {mode === "signin" ? "Sign In" : "Create Account"}
+            </Button>
           </form>
 
           <div className="relative my-6">

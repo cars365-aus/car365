@@ -18,12 +18,20 @@ export function AuthMenu() {
 
   if (!isLoggedIn) {
     return (
-      <button 
-        onClick={openAuthModal}
-        className="hidden items-center gap-2 rounded-lg bg-black/50 px-4 py-2 text-sm font-semibold text-white hover:bg-black/80 sm:inline-flex border border-white/10 transition-colors"
-      >
-        <User className="size-4" /> Sign In
-      </button>
+      <div className="flex items-center gap-2">
+        <button 
+          onClick={() => openAuthModal("buyer")}
+          className="hidden items-center gap-2 rounded-lg bg-black/50 px-4 py-2 text-sm font-semibold text-white hover:bg-black/80 sm:inline-flex border border-white/10 transition-colors"
+        >
+          <User className="size-4" /> Customer Login
+        </button>
+        <button 
+          onClick={() => openAuthModal("seller")}
+          className="hidden items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-black hover:bg-primary-hover sm:inline-flex shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-transform hover:scale-[1.02]"
+        >
+          Dealer / Seller Portal
+        </button>
+      </div>
     );
   }
 

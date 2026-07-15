@@ -22,7 +22,7 @@ export function GatedPrice({ price, previousPrice }: { price: number; previousPr
   return (
     <div className="mt-4">
       <button
-        onClick={openAuthModal}
+        onClick={() => openAuthModal("buyer")}
         className="inline-flex items-center gap-2 rounded-xl bg-black px-5 py-3 font-heading text-xl font-bold text-primary transition-transform hover:scale-105 hover:bg-black/80 shadow-lg"
       >
         <Lock className="size-5" /> Login to View Price
