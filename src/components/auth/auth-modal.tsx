@@ -24,7 +24,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
     setSuccess(null);
 
     if (mode === "signup") {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -33,10 +33,13 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       });
       if (error) {
         setError(error.message);
+      } else if (!data.session) {
+        setSuccess("Account created! Please check your email for a confirmation link.");
       } else {
-        setSuccess("Check your email to confirm your account.");
         if (userType === "seller") {
           window.location.href = "/sell-your-car";
+        } else {
+          window.location.reload();
         }
       }
     } else {

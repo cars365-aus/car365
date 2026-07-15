@@ -53,7 +53,7 @@ export function AdminNav({ userEmail, role }: { userEmail?: string; role?: strin
   return (
     <>
       {/* Mobile top bar */}
-      <div className="flex items-center justify-between border-b border-white/10 bg-accent-dark p-3 lg:hidden">
+      <div className="flex items-center justify-between border-b border-white/10 bg-slate-950 p-3 lg:hidden">
         <Link href="/admin" className="font-heading text-lg font-extrabold text-white">Cars<span className="text-primary">365</span> Admin</Link>
         <button onClick={() => setOpen(!open)} aria-label="Toggle menu" className="rounded-lg p-2 text-white hover:bg-card/10">
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -63,7 +63,7 @@ export function AdminNav({ userEmail, role }: { userEmail?: string; role?: strin
       {/* Sidebar (desktop) / drawer (mobile) */}
       <aside
         className={cn(
-          "flex w-64 flex-none flex-col bg-accent-dark lg:sticky lg:top-0 lg:h-screen",
+          "flex w-64 flex-none flex-col bg-slate-950 lg:sticky lg:top-0 lg:h-screen",
           open ? "block" : "hidden lg:flex",
         )}
       >
