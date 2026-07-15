@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 
 export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [userType, setUserType] = useState<"buyer" | "seller">("buyer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,14 +24,20 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
     setSuccess(null);
 
     if (mode === "signup") {
-      const { data, error: signUpError } = await supabase.auth.signUp({ 
-        email, 
+      const { error } = await supabase.auth.signUp({
+        email,
         password,
+        options: {
+          data: { user_type: userType }
+        }
       });
-      if (signUpError) {
-        setError(signUpError.message);
-      } else if (!data.session) {
-        setSuccess("Account created! Please check your email for a confirmation link.");
+      if (error) {
+        setError(error.message);
+      } else {
+        setSuccess("Check your email to confirm your account.");
+        if (userType === "seller") {
+          window.location.href = "/sell-your-car";
+        }
       }
     } else {
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
@@ -88,6 +95,18 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
                 placeholder="••••••••"
               />
             </label>
+            {mode === "signup" && (
+              <div className="flex gap-4 mb-4">
+                <label className="flex flex-1 items-center gap-2 cursor-pointer rounded-lg border border-border bg-black/50 p-3 hover:border-primary transition-colors">
+                  <input type="radio" name="userType" value="buyer" checked={userType === "buyer"} onChange={() => setUserType("buyer")} className="accent-primary" />
+                  <span className="text-sm font-medium text-foreground">I want to buy</span>
+                </label>
+                <label className="flex flex-1 items-center gap-2 cursor-pointer rounded-lg border border-border bg-black/50 p-3 hover:border-primary transition-colors">
+                  <input type="radio" name="userType" value="seller" checked={userType === "seller"} onChange={() => setUserType("seller")} className="accent-primary" />
+                  <span className="text-sm font-medium text-foreground">I want to sell</span>
+                </label>
+              </div>
+            )}
             {error ? <p className="text-sm text-danger font-medium">{error}</p> : null}
             {success ? <p className="text-sm text-success font-medium">{success}</p> : null}
             <button

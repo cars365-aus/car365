@@ -49,7 +49,7 @@ export default async function HomePage() {
   const rating = company.google_rating as number | undefined;
 
   return (
-    <>
+    <div className="dark bg-background text-foreground min-h-screen">
       <SiteHeader />
       <main>
         {/* Hero */}
@@ -100,23 +100,24 @@ export default async function HomePage() {
               <div key={t.title} className="flex items-start gap-3">
                 <t.icon className="size-6 flex-none text-primary" />
                 <div>
-                  <p className="font-semibold text-foreground">{t.title}</p>
-                  <p className="text-sm text-muted-foreground">{t.body}</p>
+                  <h3 className="font-bold text-foreground">{t.title}</h3>
+                  <p className="text-sm text-body">{t.body}</p>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-
-
         {/* Featured */}
         {featured.length > 0 ? (
-          <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-            <div className="mb-6 flex items-end justify-between">
-              <h2 className="font-heading text-2xl font-bold text-foreground sm:text-3xl">Featured cars</h2>
-              <Link href="/used-cars" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
-                View all <ArrowRight className="size-4" />
+          <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+            <div className="mb-8 flex items-end justify-between">
+              <div>
+                <h2 className="font-heading text-3xl font-bold text-foreground">Featured vehicles</h2>
+                <p className="mt-2 text-body">Hand-picked from our latest arrivals.</p>
+              </div>
+              <Link href="/used-cars" className="hidden font-semibold text-primary hover:text-primary-hover sm:block">
+                View all inventory &rarr;
               </Link>
             </div>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -124,8 +125,6 @@ export default async function HomePage() {
             </div>
           </section>
         ) : null}
-
-
 
         {/* How it works */}
         <section className="bg-black border-y border-white/5 text-white overflow-hidden py-24">
