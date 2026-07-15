@@ -18,19 +18,24 @@ export function AuthMenu() {
 
   if (!isLoggedIn) {
     return (
-      <div className="flex items-center gap-2">
-        <button 
-          onClick={() => openAuthModal("buyer")}
-          className="hidden items-center gap-2 rounded-lg bg-black/50 px-4 py-2 text-sm font-semibold text-white hover:bg-black/80 sm:inline-flex border border-white/10 transition-colors"
-        >
-          <User className="size-4" /> Customer Login
+      <div className="hidden group relative sm:inline-flex items-center">
+        <button className="flex items-center gap-2 rounded-lg bg-black/50 px-4 py-2 text-sm font-semibold text-white hover:bg-black/80 border border-white/10 transition-colors">
+          <User className="size-4" /> Login / Sign Up
         </button>
-        <button 
-          onClick={() => openAuthModal("seller")}
-          className="hidden items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-black hover:bg-primary-hover sm:inline-flex shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-transform hover:scale-[1.02]"
-        >
-          Dealer / Seller Portal
-        </button>
+        <div className="invisible absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-border bg-card p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+          <button
+            onClick={() => openAuthModal("buyer")}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted mb-1 text-left transition-colors"
+          >
+            <User className="size-4" /> Customer Login
+          </button>
+          <button
+            onClick={() => openAuthModal("seller")}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold text-black bg-primary hover:bg-primary-hover shadow-sm text-left transition-colors"
+          >
+            <span className="flex items-center justify-center size-4 rounded-full bg-black/10">S</span> Dealer / Seller Login
+          </button>
+        </div>
       </div>
     );
   }
