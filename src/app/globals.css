@@ -83,7 +83,7 @@
   --input: #262626;
   --ring: var(--primary);
 }
-
+:root {
   /* Premium Shadow Elevation Scale (Softer, deeper) */
   --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.02), 0 1px 2px -1px rgb(0 0 0 / 0.04);
   --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.05), 0 2px 6px -2px rgb(0 0 0 / 0.03);

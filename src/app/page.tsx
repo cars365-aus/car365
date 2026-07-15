@@ -215,6 +215,6 @@ export default async function HomePage() {
         ) : null}
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }
