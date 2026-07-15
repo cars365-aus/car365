@@ -140,7 +140,7 @@ export default function RootLayout({
             <MobileAnimationProvider>
               {children}
               <ScrollToTop />
-              <WhatsAppFloat phone="61434930437" />
+              <WhatsAppFloat phone="61451344477" />
             </MobileAnimationProvider>
           </MobileStateProvider>
         </AuthProvider>

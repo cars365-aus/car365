@@ -53,11 +53,8 @@ export function AuthModal({ isOpen, onClose, intent = "buyer" }: { isOpen: boole
           setError(signInError.message);
         }
       } else {
-        // Automatically switch the user's role to match the portal they chose to log into
-        if (data.user?.user_metadata?.user_type !== intent) {
-          await supabase.auth.updateUser({ data: { user_type: intent } });
-        }
-        window.location.reload();
+        // Redirect through the callback to safely update server-side role cookies
+        window.location.href = `/auth/callback?intent=${intent}&next=/account`;
       }
     }
     
@@ -133,7 +130,7 @@ export function AuthModal({ isOpen, onClose, intent = "buyer" }: { isOpen: boole
               const { error } = await supabase.auth.signInWithOAuth({
                 provider: "google",
                 options: {
-                  redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+                  redirectTo: `${window.location.origin}/auth/callback?intent=${intent}&next=${encodeURIComponent(next)}`,
                   queryParams: { prompt: "select_account" }
                 },
               });

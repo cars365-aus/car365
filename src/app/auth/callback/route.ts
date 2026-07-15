@@ -1,4 +1,4 @@
-﻿import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
   const rawNext = requestUrl.searchParams.get("next");
   const rawRole = requestUrl.searchParams.get("role");
   const plan = requestUrl.searchParams.get("plan");
+  const intent = requestUrl.searchParams.get("intent");
 
   const role: AuthRole | null =
     rawRole === "customer" || rawRole === "vendor" ? rawRole : null;
@@ -60,5 +61,25 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(new URL(next, requestUrl.origin));
+  // Handle explicit intent switching (e.g. Buyer logging into Seller portal)
+  if (intent === "buyer" || intent === "seller") {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user) {
+      // 1. Update DB metadata silently (best effort)
+      if (user.user_metadata?.user_type !== intent) {
+        console.log(`[Auth Callback] Switching intent to ${intent} for user ${user.id}`);
+        const admin = createAdminClient();
+        await admin.auth.admin.updateUserById(user.id, { user_metadata: { ...user.user_metadata, user_type: intent } });
+      }
+
+      // 2. The bulletproof fix: set an explicit active_role cookie for the UI
+      const response = NextResponse.redirect(new URL(next || "/account", requestUrl.origin));
+      response.cookies.set("active_role", intent, { path: "/", httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production" });
+      return response;
+    }
+  }
+
+  return NextResponse.redirect(new URL(next || "/account", requestUrl.origin));
 }

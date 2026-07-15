@@ -26,7 +26,10 @@ export default async function AccountLayout({ children }: { children: ReactNode 
     redirect("/auth/sign-in");
   }
 
-  const userType = user.user_metadata?.user_type === "seller" ? "seller" : "buyer";
+  const activeRole = cookieStore.get("active_role")?.value;
+  const userType = activeRole === "seller" || activeRole === "buyer" 
+    ? activeRole 
+    : (user.user_metadata?.user_type === "seller" ? "seller" : "buyer");
 
   return (
     <div className="min-h-screen bg-black flex flex-col pt-8 md:pt-16 pb-16 relative overflow-hidden bg-noise">
