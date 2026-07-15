@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { Gauge, Fuel, Settings2, Calendar, MapPin, ShieldCheck, Lock } from "lucide-react";
 import { useAuth } from "@/components/auth/auth-provider";
 import type { VehicleListItem } from "@/lib/domain";
@@ -40,22 +41,30 @@ export function VehicleCard({
   const priceDrop = v.previousPrice != null && v.previousPrice > v.price;
 
   return (
-    <article
+    <motion.article
+      whileHover={{ y: -4, scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-lg",
+        "group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm",
         className,
       )}
     >
       <Link href={vdpHref(v)} className="relative block aspect-[4/3] overflow-hidden bg-muted">
-        <Image
-          src={v.coverImageUrl ?? ""}
-          alt={v.coverImageAlt ?? title}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-          priority={priority}
-        />
-        <div className="absolute left-3 top-3 flex gap-1.5">
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="absolute inset-0 z-0"
+        >
+          <Image
+            src={v.coverImageUrl ?? ""}
+            alt={v.coverImageAlt ?? title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover"
+            priority={priority}
+          />
+        </motion.div>
+        <div className="absolute left-3 top-3 flex gap-1.5 z-10">
           <StatusBadge v={v} />
           {priceDrop ? (
             <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Price drop</span>
@@ -125,6 +134,6 @@ export function VehicleCard({
           </div>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

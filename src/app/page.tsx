@@ -15,6 +15,8 @@ import {
   NAV_BODY_TYPES, BODY_TYPE_LABELS, BUDGET_BANDS,
   bodyTypeHref, budgetHref, makeHref,
 } from "@/lib/nav";
+import { HeroParallax, FadeInStagger, FadeInItem } from "@/components/animations/hero-animations";
+import { ScrollReveal } from "@/components/animations/scroll-reveal";
 
 export const metadata: Metadata = {
   title: "Car365 — Quality Used Cars, Honestly Inspected",
@@ -51,45 +53,45 @@ export default async function HomePage() {
       <SiteHeader />
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden bg-black text-white min-h-[75vh] flex flex-col justify-center">
-          {/* Full-Width Background Image */}
-          <div className="absolute inset-0 z-0">
-            <img 
-              src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=2000&q=80" 
-              alt="Premium Used Car" 
-              className="h-full w-full object-cover object-center"
-            />
-            {/* Sleek Dark Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40"></div>
-            <div className="absolute inset-0 bg-black/20"></div> {/* Extra dimming for contrast */}
-          </div>
-
+        <HeroParallax imageUrl="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=2000&q=80">
           <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-24 relative z-10">
             <div className="max-w-2xl">
-              {rating ? (
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-4 py-2 text-sm">
-                  <Star className="size-4 fill-primary text-primary" />
-                  <span className="font-bold text-white">{rating}</span> rated by our customers
-                </div>
-              ) : null}
-              <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] text-white">
-                Dream it.<br/>Drive it.<br/>Discover it.
-              </h1>
-              <p className="mt-5 text-xl text-slate-300 font-medium">
-                Quality used cars, without the second-guessing. Inspected by us, photographed honestly, and backed by a team that answers in minutes.
-              </p>
-              <div className="mt-8"><HeroSearch makes={makes} /></div>
-              <div className="mt-6 flex flex-wrap gap-4">
-                <Link href="/used-cars" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-lg font-bold text-primary-foreground transition-transform hover:scale-105 hover:bg-primary-hover shadow-lg shadow-primary/20">
-                  Browse all cars <ArrowRight className="size-5" />
-                </Link>
-                <Link href="/sell-your-car" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border-2 border-white/20 bg-black/30 backdrop-blur-sm px-6 text-lg font-bold text-white transition-colors hover:border-white/40 hover:bg-white/10">
-                  Sell your car
-                </Link>
-              </div>
+              <FadeInStagger>
+                {rating ? (
+                  <FadeInItem>
+                    <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-4 py-2 text-sm">
+                      <Star className="size-4 fill-primary text-primary" />
+                      <span className="font-bold text-white">{rating}</span> rated by our customers
+                    </div>
+                  </FadeInItem>
+                ) : null}
+                <FadeInItem>
+                  <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] text-white">
+                    Dream it.<br/>Drive it.<br/>Discover it.
+                  </h1>
+                </FadeInItem>
+                <FadeInItem>
+                  <p className="mt-5 text-xl text-slate-300 font-medium">
+                    Quality used cars, without the second-guessing. Inspected by us, photographed honestly, and backed by a team that answers in minutes.
+                  </p>
+                </FadeInItem>
+                <FadeInItem>
+                  <div className="mt-8"><HeroSearch makes={makes} /></div>
+                </FadeInItem>
+                <FadeInItem>
+                  <div className="mt-6 flex flex-wrap gap-4">
+                    <Link href="/used-cars" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-lg font-bold text-black transition-all hover:scale-105 shadow-[0_0_30px_rgba(255,204,0,0.3)]">
+                      Browse all cars <ArrowRight className="size-5" />
+                    </Link>
+                    <Link href="/sell-your-car" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/20 bg-black/40 backdrop-blur-md px-6 text-lg font-bold text-white transition-colors hover:border-white/40 hover:bg-white/10 glass-panel">
+                      Sell your car
+                    </Link>
+                  </div>
+                </FadeInItem>
+              </FadeInStagger>
             </div>
           </div>
-        </section>
+        </HeroParallax>
 
         {/* Trust bar */}
         <section className="border-b border-border bg-card">
@@ -158,19 +160,21 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
               {STEPS.map((s, i) => (
-                <div key={s.title} className="relative group p-10 rounded-3xl border border-white/10 bg-[#0a0a0a] transition-all duration-500 hover:-translate-y-2 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(255,204,0,0.15)]">
-                  {/* Huge Watermark Number */}
-                  <div className="absolute -right-4 -top-8 text-[12rem] font-black leading-none text-white/5 transition-colors duration-500 group-hover:text-primary/10 select-none pointer-events-none">
-                    0{i + 1}
-                  </div>
-                  <div className="relative z-10">
-                    <div className="mb-8 inline-flex size-16 items-center justify-center rounded-2xl bg-primary text-black shadow-lg shadow-primary/20">
-                      <s.icon className="size-8" />
+                <ScrollReveal key={s.title} delay={i * 0.15}>
+                  <div className="relative group p-10 rounded-3xl border border-white/10 bg-[#0a0a0a] transition-all duration-500 hover:-translate-y-2 hover:border-primary/50 shadow-[0_4px_24px_rgba(0,0,0,0.5)] hover:shadow-[0_0_40px_rgba(255,204,0,0.15)]">
+                    {/* Huge Watermark Number */}
+                    <div className="absolute -right-4 -top-8 text-[12rem] font-black leading-none text-white/5 transition-colors duration-500 group-hover:text-primary/10 select-none pointer-events-none">
+                      0{i + 1}
                     </div>
-                    <h3 className="font-heading text-2xl font-bold text-white mb-4">{s.title}</h3>
-                    <p className="text-slate-400 leading-relaxed text-lg">{s.body}</p>
+                    <div className="relative z-10">
+                      <div className="mb-8 inline-flex size-16 items-center justify-center rounded-2xl bg-primary text-black shadow-[0_0_20px_rgba(255,204,0,0.4)]">
+                        <s.icon className="size-8" />
+                      </div>
+                      <h3 className="font-heading text-2xl font-bold text-white mb-4">{s.title}</h3>
+                      <p className="text-slate-400 leading-relaxed text-lg">{s.body}</p>
+                    </div>
                   </div>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -181,30 +185,34 @@ export default async function HomePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {/* Sell Banner */}
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black p-10 sm:p-14 transition-all duration-500 hover:border-primary/50 group">
-                <div className="absolute -right-20 -top-20 size-72 rounded-full bg-primary/20 blur-[100px] transition-all duration-500 group-hover:bg-primary/30"></div>
-                <div className="relative z-10">
-                  <Handshake className="size-12 text-primary mb-6" />
-                  <h3 className="font-heading text-3xl sm:text-4xl font-black text-white leading-tight">Sell or Trade In</h3>
-                  <p className="mt-4 text-lg text-slate-400 max-w-sm">Get a premium, fair-market offer on your current vehicle within 24 hours. No hassle, no games.</p>
-                  <Link href="/sell-your-car" className="mt-10 inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-xl shadow-primary/20">
-                    Get an Offer <ArrowRight className="size-5" />
-                  </Link>
+              <ScrollReveal direction="left">
+                <div className="relative h-full overflow-hidden rounded-3xl border border-white/10 bg-black p-10 sm:p-14 transition-all duration-500 hover:border-primary/50 group">
+                  <div className="absolute -right-20 -top-20 size-72 rounded-full bg-primary/20 blur-[100px] transition-all duration-500 group-hover:bg-primary/30 group-hover:scale-110"></div>
+                  <div className="relative z-10">
+                    <Handshake className="size-12 text-primary mb-6" />
+                    <h3 className="font-heading text-3xl sm:text-4xl font-black text-white leading-tight">Sell or Trade In</h3>
+                    <p className="mt-4 text-lg text-slate-400 max-w-sm">Get a premium, fair-market offer on your current vehicle within 24 hours. No hassle, no games.</p>
+                    <Link href="/sell-your-car" className="mt-10 inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-[0_0_30px_rgba(255,204,0,0.3)]">
+                      Get an Offer <ArrowRight className="size-5" />
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
 
               {/* Finance Banner */}
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black p-10 sm:p-14 transition-all duration-500 hover:border-white/40 group">
-                <div className="absolute -left-20 -bottom-20 size-72 rounded-full bg-white/10 blur-[100px] transition-all duration-500 group-hover:bg-white/20"></div>
-                <div className="relative z-10">
-                  <CircleDollarSign className="size-12 text-white mb-6" />
-                  <h3 className="font-heading text-3xl sm:text-4xl font-black text-white leading-tight">Bespoke Finance</h3>
-                  <p className="mt-4 text-lg text-slate-400 max-w-sm">Access highly competitive, tailored finance options designed to get you behind the wheel effortlessly.</p>
-                  <Link href="/finance" className="mt-10 inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-white px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-xl shadow-white/20">
-                    Explore Options <ArrowRight className="size-5" />
-                  </Link>
+              <ScrollReveal direction="right" delay={0.2}>
+                <div className="relative h-full overflow-hidden rounded-3xl border border-white/10 bg-black p-10 sm:p-14 transition-all duration-500 hover:border-white/40 group">
+                  <div className="absolute -left-20 -bottom-20 size-72 rounded-full bg-white/10 blur-[100px] transition-all duration-500 group-hover:bg-white/20 group-hover:scale-110"></div>
+                  <div className="relative z-10">
+                    <CircleDollarSign className="size-12 text-white mb-6" />
+                    <h3 className="font-heading text-3xl sm:text-4xl font-black text-white leading-tight">Bespoke Finance</h3>
+                    <p className="mt-4 text-lg text-slate-400 max-w-sm">Access highly competitive, tailored finance options designed to get you behind the wheel effortlessly.</p>
+                    <Link href="/finance" className="mt-10 inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-white px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                      Explore Options <ArrowRight className="size-5" />
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
             </div>
           </div>
         </section>

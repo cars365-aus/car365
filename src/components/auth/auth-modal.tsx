@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { motion } from "framer-motion";
 
 export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -49,8 +50,14 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-card border-border">
-        <div className="p-8">
+      <DialogContent className="sm:max-w-md p-0 overflow-visible bg-transparent border-none shadow-none">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ type: "spring", damping: 25, stiffness: 400 }}
+          className="bg-card border border-border rounded-xl shadow-[0_0_40px_rgba(255,204,0,0.1)] overflow-hidden"
+        >
+          <div className="p-8">
           <div className="mb-6 text-center">
             <DialogTitle className="font-heading text-2xl font-bold text-foreground">
               {mode === "signin" ? "Welcome back" : "Create an account"}
@@ -144,6 +151,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
             </button>
           </div>
         </div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   );
