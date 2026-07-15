@@ -24,11 +24,19 @@ export default async function AccountPage() {
     redirect("/auth/sign-in");
   }
 
-  const userType = user.user_metadata?.user_type === "seller" ? "seller" : "buyer";
+  // active_role cookie (set by /auth/callback) takes precedence over metadata
+  // so switching portals is always reflected instantly
+  const activeRole = cookieStore.get("active_role")?.value;
+  const userType =
+    activeRole === "seller" || activeRole === "buyer"
+      ? activeRole
+      : user.user_metadata?.user_type === "seller"
+        ? "seller"
+        : "buyer";
 
   if (userType === "seller") {
-    return <SellerOverview />;
+    return <SellerOverview userId={user.id} email={user.email ?? ""} />;
   }
 
-  return <BuyerOverview />;
+  return <BuyerOverview userId={user.id} email={user.email ?? ""} />;
 }

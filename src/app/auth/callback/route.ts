@@ -20,9 +20,14 @@ export async function GET(request: NextRequest) {
     rawRole === "customer" || rawRole === "vendor" ? rawRole : null;
 
   const next = resolvePostAuthDestination(role, rawNext, plan);
+  const destination = next || "/account";
 
+  const supabase = await createClient();
+
+  // ─── OAuth Code Exchange ──────────────────────────────────────────────────
+  // This block only runs when Google (or another OAuth provider) redirects back
+  // with a one-time `code`. Email/password sign-ins do NOT pass a code here.
   if (code) {
-    const supabase = await createClient();
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {
@@ -35,7 +40,7 @@ export async function GET(request: NextRequest) {
     if (data.user) {
       const admin = createAdminClient();
 
-      // Check if this is a brand-new user (no existing profile row)
+      // Upsert profile and send welcome email for brand-new users
       const { data: existingProfile } = await admin
         .from("profiles")
         .select("id")
@@ -43,10 +48,8 @@ export async function GET(request: NextRequest) {
         .maybeSingle();
 
       const isNewUser = !existingProfile;
-
       await admin.from("profiles").upsert(deriveProfileFromUser(data.user));
 
-      // Send welcome email for brand-new registrations (non-blocking)
       if (isNewUser && data.user.email) {
         const name =
           data.user.user_metadata?.full_name ??
@@ -58,28 +61,42 @@ export async function GET(request: NextRequest) {
           role: role ?? "customer",
         }).catch((err) => console.error("[Auth Callback] Welcome email failed:", err));
       }
+
+      // If intent supplied via OAuth, persist the role via admin client
+      if (
+        (intent === "buyer" || intent === "seller") &&
+        data.user.user_metadata?.user_type !== intent
+      ) {
+        await admin.auth.admin.updateUserById(data.user.id, {
+          user_metadata: { ...data.user.user_metadata, user_type: intent },
+        });
+      }
     }
   }
 
-  // Handle explicit intent switching (e.g. Buyer logging into Seller portal)
+  // ─── Set active_role cookie ───────────────────────────────────────────────
+  // This runs for BOTH OAuth (after code exchange above) and email/password
+  // (where the browser session is already established, no code needed).
+  // getUser() reads the session cookie that Supabase set on the browser.
   if (intent === "buyer" || intent === "seller") {
-    const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    
-    if (user) {
-      // 1. Update DB metadata silently (best effort)
-      if (user.user_metadata?.user_type !== intent) {
-        console.log(`[Auth Callback] Switching intent to ${intent} for user ${user.id}`);
-        const admin = createAdminClient();
-        await admin.auth.admin.updateUserById(user.id, { user_metadata: { ...user.user_metadata, user_type: intent } });
-      }
 
-      // 2. The bulletproof fix: set an explicit active_role cookie for the UI
-      const response = NextResponse.redirect(new URL(next || "/account", requestUrl.origin));
-      response.cookies.set("active_role", intent, { path: "/", httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production" });
+    if (user) {
+      const response = NextResponse.redirect(new URL(destination, requestUrl.origin));
+      response.cookies.set("active_role", intent, {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+      });
       return response;
     }
+
+    // Edge case: email/password session cookie hasn't propagated to server yet.
+    // Fall through to plain redirect; the layout will use metadata as fallback.
+    console.warn("[Auth Callback] intent set but getUser() returned null — session not yet propagated");
   }
 
-  return NextResponse.redirect(new URL(next || "/account", requestUrl.origin));
+  return NextResponse.redirect(new URL(destination, requestUrl.origin));
 }

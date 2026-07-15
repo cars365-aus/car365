@@ -2,18 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Tag, MessageSquare, User, LogOut, ChevronRight, Car, Heart, LayoutDashboard } from "lucide-react";
+import { Tag, MessageSquare, User, LogOut, ChevronRight, Heart, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const SELLER_NAV = [
   { href: "/account", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/account/listings", label: "My Listings", icon: Car },
   { href: "/account/messages", label: "Messages", icon: MessageSquare },
 ];
 
 const BUYER_NAV = [
   { href: "/account", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/account/offers", label: "My Offers", icon: Tag },
+  { href: "/account/offers", label: "My Enquiries", icon: Tag },
   { href: "/account/saved", label: "Saved Cars", icon: Heart },
   { href: "/account/messages", label: "Messages", icon: MessageSquare },
 ];
