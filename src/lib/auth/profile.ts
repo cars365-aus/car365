@@ -12,7 +12,6 @@ export interface ProfileUpsert {
   email: string | null;
   phone: string | null;
   full_name: string | null;
-  avatar_url: string | null;
   updated_at: string;
 }
 
@@ -24,7 +23,6 @@ export interface ProfileUpsert {
  * - `email`      = `user.email ?? null` (phone-only users have no email)
  * - `phone`      = `user.phone ?? null` (Google/email users have no phone)
  * - `full_name`  = `user_metadata.full_name ?? user_metadata.name ?? null`
- * - `avatar_url` = `user_metadata.avatar_url ?? user_metadata.picture ?? null`
  * - `updated_at` = current ISO-8601 timestamp
  *
  * This function is total and never throws for users lacking an email,
@@ -38,7 +36,6 @@ export function deriveProfileFromUser(user: User): ProfileUpsert {
     email: user.email ?? null,
     phone: user.phone ?? null,
     full_name: metadata.full_name ?? metadata.name ?? null,
-    avatar_url: metadata.avatar_url ?? metadata.picture ?? null,
     updated_at: new Date().toISOString(),
   };
 }
