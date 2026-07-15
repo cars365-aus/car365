@@ -9,6 +9,7 @@ import { MobileStateProvider } from "@/components/mobile-state-provider";
 import { MobileAnimationProvider } from "@/components/mobile-animation-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { WhatsAppFloat } from "@/components/whatsapp-float";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -139,7 +140,7 @@ export default function RootLayout({
             <MobileAnimationProvider>
               {children}
               <ScrollToTop />
-
+              <WhatsAppFloat phone="61434930437" />
             </MobileAnimationProvider>
           </MobileStateProvider>
         </AuthProvider>
