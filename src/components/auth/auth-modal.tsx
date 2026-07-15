@@ -45,7 +45,7 @@ export function AuthModal({ isOpen, onClose, intent = "buyer" }: { isOpen: boole
         }
       }
     } else {
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) {
         if (signInError.message === "Invalid login credentials") {
           setError("Invalid email or password. If you just signed up, please ensure you have confirmed your email address.");
@@ -53,6 +53,10 @@ export function AuthModal({ isOpen, onClose, intent = "buyer" }: { isOpen: boole
           setError(signInError.message);
         }
       } else {
+        // Automatically switch the user's role to match the portal they chose to log into
+        if (data.user?.user_metadata?.user_type !== intent) {
+          await supabase.auth.updateUser({ data: { user_type: intent } });
+        }
         window.location.reload();
       }
     }
