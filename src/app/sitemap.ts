@@ -12,11 +12,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createAdminClient();
   const staticDate = new Date("2026-01-01T00:00:00Z");
 
-  const [makesRes, modelsRes, vehiclesRes, blogRes] = await Promise.all([
+  const [makesRes, modelsRes, vehiclesRes] = await Promise.all([
     supabase.from("makes").select("slug"),
     supabase.from("models").select("slug, makes:make_id ( slug )"),
     supabase.from("vehicles").select("slug, updated_at, makes:make_id ( slug ), models:model_id ( slug )").in("status", ["available", "reserved", "sold"]).limit(45000),
-    supabase.from("blog_articles").select("slug, updated_at").eq("status", "published").limit(5000),
   ]);
 
   const url = (path: string, lastModified: Date | string = staticDate, priority = 0.6): MetadataRoute.Sitemap[number] =>
@@ -24,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes = [
     "/", "/used-cars", "/sell-your-car", "/trade-in", "/finance", "/about",
-    "/testimonials", "/faqs", "/contact", "/blog", "/how-it-works",
+    "/testimonials", "/faqs", "/contact", "/how-it-works",
     "/careers", "/press", "/legal/privacy-policy", "/legal/terms",
   ].map((p) => url(p, staticDate, p === "/" ? 1 : 0.7));
 
@@ -45,9 +44,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       0.8,
     ));
 
-  const blogRoutes = ((blogRes.data ?? []) as any[]).map((p) =>
-    url(`/blog/${p.slug}`, p.updated_at ? new Date(p.updated_at) : staticDate, 0.5),
-  );
-
-  return [...staticRoutes, ...makeRoutes, ...modelRoutes, ...bodyRoutes, ...budgetRoutes, ...vehicleRoutes, ...blogRoutes];
+  return [...staticRoutes, ...makeRoutes, ...modelRoutes, ...bodyRoutes, ...budgetRoutes, ...vehicleRoutes];
 }

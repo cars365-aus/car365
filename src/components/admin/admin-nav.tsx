@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Car, Inbox, MessageSquareQuote, HelpCircle,
-  Newspaper, Settings, Users, ScrollText, Menu, X,
+  Settings, Users, ScrollText, Menu, X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +15,6 @@ const NAV = [
   { href: "/admin/leads", label: "Leads", icon: Inbox },
   { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
-  { href: "/admin/blog", label: "Blog", icon: Newspaper },
   { href: "/admin/settings", label: "Settings", icon: Settings },
   { href: "/admin/roles", label: "Users & Roles", icon: Users },
   { href: "/admin/audit", label: "Audit Log", icon: ScrollText },

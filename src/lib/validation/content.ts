@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-/** Content admin validation: testimonials, FAQs, blog posts, CMS pages. */
+/** Content admin validation: testimonials, FAQs, CMS pages. */
 
 export const testimonialSchema = z.object({
   id: z.string().uuid().optional(),
@@ -24,20 +24,6 @@ export const faqSchema = z.object({
   isPublished: z.boolean().optional().default(true),
 });
 
-export const blogPostSchema = z.object({
-  id: z.string().uuid().optional(),
-  title: z.string().trim().min(3).max(200),
-  slug: z.string().trim().min(3).max(200).regex(/^[a-z0-9-]+$/, "lowercase, hyphenated"),
-  categoryId: z.string().uuid().optional(),
-  coverMediaId: z.string().uuid().optional(),
-  excerpt: z.string().trim().max(500).optional().or(z.literal("")),
-  body: z.string().min(0),
-  status: z.enum(["draft", "scheduled", "published"]).default("draft"),
-  publishedAt: z.string().datetime().optional().or(z.literal("")),
-  seoTitle: z.string().trim().max(160).optional().or(z.literal("")),
-  seoDescription: z.string().trim().max(320).optional().or(z.literal("")),
-  readingMinutes: z.coerce.number().int().optional(),
-});
 
 export const pageSchema = z.object({
   id: z.string().uuid().optional(),
@@ -51,5 +37,4 @@ export const pageSchema = z.object({
 
 export type TestimonialInput = z.infer<typeof testimonialSchema>;
 export type FaqInput = z.infer<typeof faqSchema>;
-export type BlogPostInput = z.infer<typeof blogPostSchema>;
 export type PageInput = z.infer<typeof pageSchema>;

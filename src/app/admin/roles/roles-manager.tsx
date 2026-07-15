@@ -12,7 +12,7 @@ import type { AdminRoleEntry, RoleActionState } from "./actions";
 
 const ROLE_OPTIONS = [
   { value: "sales", label: "Sales", description: "Work leads (view, update, assign to self) & quick-change vehicle status", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  { value: "content", label: "Content", description: "Manage blog, FAQs, testimonials & static pages", color: "bg-purple-100 text-purple-700 border-purple-200" },
+
   { value: "manager", label: "Manager", description: "Inventory, leads, content & reports (no users/settings)", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
   { value: "admin", label: "Admin", description: "Full admin access except owner-only actions", color: "bg-amber-100 text-amber-700 border-amber-200" },
   { value: "owner", label: "Owner", description: "Full control including users, settings & hard delete", color: "bg-red-100 text-red-700 border-red-200" },

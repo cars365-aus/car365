@@ -27,7 +27,7 @@ const HIDDEN_PREFIXES = ["/vendor", "/admin", "/auth", "/customer"];
  * - Respects safe area insets on modern devices
  */
 export function WhatsAppFloat({
-  phone = "61434930437",
+  phone = "61451344477",
   stickyCtaVisible = false,
   hidden = false,
 }: WhatsAppFloatProps) {

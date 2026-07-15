@@ -35,14 +35,6 @@ export async function invalidatePseo(input: PseoInvalidationInput = {}) {
   revalidatePath("/sitemap.xml");
 }
 
-export async function invalidateBlog(slug?: string) {
-  revalidatePath("/blog");
-  if (slug) {
-    revalidatePath(`/blog/${slug}`);
-  }
-  revalidatePath("/sitemap.xml");
-}
-
 /** Resolve branch city from branch id for invalidation hooks. */
 export async function getBranchCityForInvalidation(
   supabase: ReturnType<typeof import("@/lib/supabase/admin").createAdminClient>,

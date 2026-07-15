@@ -31,7 +31,6 @@ export type LeadLossReason =
 export type DeviceType = "mobile" | "desktop" | "tablet" | "unknown";
 
 export type TestimonialSource = "google" | "facebook" | "direct";
-export type BlogStatus = "draft" | "scheduled" | "published";
 export type StaffRole = "owner" | "admin" | "manager" | "sales" | "content";
 
 // ── Reference entities ──────────────────────────────────────────────────────
@@ -160,26 +159,6 @@ export type Faq = {
   sortOrder: number;
 };
 
-export type BlogCategory = { id: string; name: string; slug: string };
-
-export type BlogPostSummary = {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  coverImageUrl: string | null;
-  categoryName: string | null;
-  categorySlug: string | null;
-  authorName: string | null;
-  publishedAt: string | null;
-  readingMinutes: number | null;
-};
-
-export type BlogPost = BlogPostSummary & {
-  body: string;
-  seoTitle: string | null;
-  seoDescription: string | null;
-};
 
 // ── Lead entities (admin side) ──────────────────────────────────────────────
 export type Lead = {

@@ -173,31 +173,6 @@ export const apiVehicleCreateSchema = z.object({
     .default("Sedan"),
   price: z.coerce.number().int().min(1),
 });
-
-/**
- * Admin edit form for an existing blog article (auto-posted or manual).
- * Mirrors the `blog_articles` table CHECK constraints so invalid data is
- * rejected before it reaches Postgres.
- */
-export const blogArticleUpdateSchema = z.object({
-  title: z.string().trim().min(3).max(150),
-  slug: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .max(180)
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase letters, numbers, and hyphens"),
-  excerpt: z.string().trim().min(1).max(300),
-  body: z.string().trim().min(1),
-  status: z.enum(["draft", "published", "archived"]),
-  categoryId: z.string().uuid().nullable().optional(),
-  featuredImageUrl: z.string().trim().url().nullable().optional().or(z.literal("")),
-  featuredImageAlt: z.string().trim().max(125).nullable().optional(),
-  metaTitle: z.string().trim().max(70).nullable().optional(),
-  metaDescription: z.string().trim().max(160).nullable().optional(),
-  tags: z.array(z.string().trim().min(1).max(40)).max(20).default([]),
-});
-
 export const moderationSchema = z.object({
   resourceType: z.enum(["vendor", "branch", "vehicle", "review", "fraud_flag"]),
   resourceId: z.string().uuid(),

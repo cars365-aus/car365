@@ -6,7 +6,6 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireEnv } from "@/lib/config";
 import { buildMediaUrl } from "@/lib/media";
 import type {
-  BlogCategory,
   Faq,
   Testimonial,
 } from "@/lib/domain";
@@ -60,16 +59,4 @@ export const getPublishedFaqs = unstable_cache(
   },
   ["faqs"],
   { revalidate: 3600, tags: ["faqs", "public"] },
-);
-
-
-
-export const getBlogCategories = unstable_cache(
-  async (): Promise<BlogCategory[]> => {
-    const supabase = createAdminClient();
-    const { data } = await supabase.from("blog_categories").select("id, name, slug").order("name");
-    return ((data ?? []) as RawRow[]).map((c) => ({ id: c.id, name: c.name, slug: c.slug }));
-  },
-  ["blog-categories"],
-  { revalidate: 3600, tags: ["blog", "public"] },
 );
