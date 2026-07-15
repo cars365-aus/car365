@@ -125,31 +125,7 @@ export default async function HomePage() {
           </section>
         ) : null}
 
-        {/* Browse by body type */}
-        <section className="bg-[#131313] border-y border-white/5">
-          <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-            <h2 className="mb-8 text-center font-heading text-2xl font-bold text-white sm:text-3xl">Browse by body type</h2>
-            <div className="flex flex-wrap justify-center gap-4">
-              {NAV_BODY_TYPES.map((b) => (
-                <Link key={b} href={bodyTypeHref(b)} className="group relative flex items-center justify-center rounded-full border border-white/10 bg-black/40 px-6 py-3 font-semibold text-slate-300 transition-all hover:scale-105 hover:border-primary hover:bg-primary hover:text-black hover:shadow-[0_0_20px_rgba(255,204,0,0.3)]">
-                  {BODY_TYPE_LABELS[b]}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* Browse by make */}
-        <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-          <h2 className="mb-8 text-center font-heading text-2xl font-bold text-white sm:text-3xl">Popular makes</h2>
-          <div className="flex flex-wrap justify-center gap-4">
-            {popularMakes.map((m) => (
-              <Link key={m.slug} href={makeHref(m.slug)} className="group relative flex items-center justify-center rounded-full border border-white/10 bg-[#171717] px-8 py-3.5 text-lg font-bold text-slate-200 transition-all hover:-translate-y-1 hover:border-primary hover:text-primary hover:shadow-[0_8px_24px_rgba(255,204,0,0.15)]">
-                {m.name}
-              </Link>
-            ))}
-          </div>
-        </section>
 
         {/* How it works */}
         <section className="bg-black border-y border-white/5 text-white overflow-hidden py-24">
