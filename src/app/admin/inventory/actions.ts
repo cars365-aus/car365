@@ -69,7 +69,7 @@ export async function createVehicle(_prev: unknown, formData: FormData) {
     warranty_text: cols.warrantyText, roadworthy_included: d.roadworthyIncluded, finance_available: d.financeAvailable,
     trade_in_welcome: d.tradeInWelcome, inspection_available: d.inspectionAvailable, status: d.status,
     is_featured: d.isFeatured, featured_order: cols.featuredOrder ?? null, location_id: cols.locationId ?? null,
-    dealer_notes: cols.dealerNotes, seo_title: cols.seoTitle, seo_description: cols.seoDescription,
+    dealer_notes: cols.dealerNotes,
     published_at: d.status !== "draft" ? new Date().toISOString() : null,
   });
 
@@ -79,6 +79,39 @@ export async function createVehicle(_prev: unknown, formData: FormData) {
   if (fids.length > 0) {
     await supabase.from("vehicle_features").insert(fids.map((fid) => ({ vehicle_id: created.id, feature_id: fid })));
   }
+
+  // Handle Images
+  const imageKeysJson = formData.get("imageKeys") as string;
+  if (imageKeysJson) {
+    try {
+      const images = JSON.parse(imageKeysJson) as { path: string; url: string; isCover: boolean }[];
+      for (let i = 0; i < images.length; i++) {
+        const img = images[i];
+        
+        // Ensure media_asset exists
+        let mediaId: string;
+        const { data: existingMedia } = await supabase.from("media_assets").select("id").eq("storage_key", img.path).maybeSingle();
+        if (existingMedia) {
+          mediaId = existingMedia.id;
+        } else {
+          const mime = img.path.endsWith('.png') ? 'image/png' : img.path.endsWith('.webp') ? 'image/webp' : 'image/jpeg';
+          const { data: newMedia } = await supabase.from("media_assets").insert({ storage_key: img.path, mime, uploaded_by: user.id }).select("id").single();
+          mediaId = newMedia!.id;
+        }
+
+        // Insert into vehicle_images
+        await supabase.from("vehicle_images").insert({
+          vehicle_id: created.id,
+          media_id: mediaId,
+          sort_order: i,
+          is_cover: img.isCover
+        });
+      }
+    } catch (e) {
+      console.error("Failed to process images", e);
+    }
+  }
+
   await logActivity(user.id, "vehicle.created", created.id, { stock_id: d.stockId });
   revalidatePublic();
   redirect(`/admin/inventory/${created.id}?created=1`);
@@ -113,7 +146,7 @@ export async function updateVehicle(_prev: unknown, formData: FormData) {
     safety_rating: cols.safetyRating, warranty_text: cols.warrantyText, roadworthy_included: cols.roadworthyIncluded,
     finance_available: cols.financeAvailable, trade_in_welcome: cols.tradeInWelcome, inspection_available: cols.inspectionAvailable,
     status: cols.status, is_featured: cols.isFeatured, featured_order: cols.featuredOrder,
-    location_id: cols.locationId, dealer_notes: cols.dealerNotes, seo_title: cols.seoTitle, seo_description: cols.seoDescription,
+    location_id: cols.locationId, dealer_notes: cols.dealerNotes,
   });
 
   const { error } = await supabase.from("vehicles").update(row).eq("id", id);
@@ -123,6 +156,43 @@ export async function updateVehicle(_prev: unknown, formData: FormData) {
     await supabase.from("vehicle_features").delete().eq("vehicle_id", id);
     if (fids.length > 0) await supabase.from("vehicle_features").insert(fids.map((fid) => ({ vehicle_id: id, feature_id: fid })));
   }
+
+  // Handle Images update
+  const imageKeysJson = formData.get("imageKeys") as string;
+  if (imageKeysJson) {
+    try {
+      const images = JSON.parse(imageKeysJson) as { path: string; url: string; isCover: boolean }[];
+      
+      // Delete existing vehicle_images
+      await supabase.from("vehicle_images").delete().eq("vehicle_id", id);
+
+      for (let i = 0; i < images.length; i++) {
+        const img = images[i];
+        
+        // Ensure media_asset exists
+        let mediaId: string;
+        const { data: existingMedia } = await supabase.from("media_assets").select("id").eq("storage_key", img.path).maybeSingle();
+        if (existingMedia) {
+          mediaId = existingMedia.id;
+        } else {
+          const mime = img.path.endsWith('.png') ? 'image/png' : img.path.endsWith('.webp') ? 'image/webp' : 'image/jpeg';
+          const { data: newMedia } = await supabase.from("media_assets").insert({ storage_key: img.path, mime, uploaded_by: user.id }).select("id").single();
+          mediaId = newMedia!.id;
+        }
+
+        // Insert into vehicle_images
+        await supabase.from("vehicle_images").insert({
+          vehicle_id: id,
+          media_id: mediaId,
+          sort_order: i,
+          is_cover: img.isCover
+        });
+      }
+    } catch (e) {
+      console.error("Failed to process images", e);
+    }
+  }
+
   await logActivity(user.id, "vehicle.updated", id!);
   revalidatePublic();
   return { ok: true };

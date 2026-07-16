@@ -28,10 +28,14 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const v = await getVehicleBySlug(slug);
   if (!v) return { title: "Vehicle not found" };
-  const title = v.seoTitle || `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""} for Sale in Granville, NSW – ${formatKm(v.mileageKm)}`;
+  const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""} for Sale | Cars365`;
+  
+  const baseDesc = `Looking for a ${v.year} ${v.makeName} ${v.modelName}? ${formatKm(v.mileageKm)}, ${TRANSMISSION_LABELS[v.transmission]}, ${FUEL_LABELS[v.fuelType]}.`;
+  const extraDesc = v.description ? ` ${(v.description).slice(0, 80)}...` : " Inspected and ready to drive away.";
+  
   return {
     title,
-    description: v.seoDescription || (v.description ?? "").slice(0, 150) + " - Available now at Cars365 Granville, NSW.",
+    description: `${baseDesc}${extraDesc} Finance available at Cars365.`,
   };
 }
 

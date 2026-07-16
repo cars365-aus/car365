@@ -46,8 +46,6 @@ export const vehicleCreateSchema = z.object({
   featuredOrder: z.coerce.number().int().optional(),
   locationId: z.string().uuid().optional(),
   dealerNotes: z.string().trim().max(2000).optional().or(z.literal("")),
-  seoTitle: z.string().trim().max(160).optional().or(z.literal("")),
-  seoDescription: z.string().trim().max(320).optional().or(z.literal("")),
   featureIds: z.array(z.string().uuid()).optional().default([]),
 });
 

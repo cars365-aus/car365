@@ -6,7 +6,8 @@ import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { fuelTypes, transmissionTypes, bodyTypes, driveTypes, vehicleStatuses } from "@/lib/validation/vehicle";
 import { FUEL_LABELS, TRANSMISSION_LABELS, BODY_TYPE_LABELS, DRIVE_LABELS } from "@/lib/nav";
 import type { Make, Model, Feature, LocationBranch, FeatureCategory } from "@/lib/domain";
-import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Search, Loader2, Check as CheckIcon } from "lucide-react";
+import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Image as ImageIcon, Loader2, Check as CheckIcon } from "lucide-react";
+import { ImageUpload, UploadedImage } from "./image-upload";
 
 type ActionResult = { ok?: boolean; error?: string } | void;
 type Action = (state: ActionResult, formData: FormData) => Promise<ActionResult>;
@@ -17,11 +18,11 @@ const inputCls = "w-full rounded-lg border border-border bg-background px-3 py-2
 type VehicleData = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 const STEPS = [
-  { value: "basics",   label: "Basics",     icon: Car },
-  { value: "specs",    label: "Specs",      icon: Gauge },
-  { value: "pricing",  label: "Pricing",    icon: DollarSign },
-  { value: "features", label: "Features",   icon: Star },
-  { value: "seo",      label: "SEO & Notes",icon: Search },
+  { value: "basics",   label: "Basics",         icon: Car },
+  { value: "specs",    label: "Specs",          icon: Gauge },
+  { value: "pricing",  label: "Pricing",        icon: DollarSign },
+  { value: "features", label: "Features",       icon: Star },
+  { value: "images",   label: "Images & Notes", icon: ImageIcon },
 ] as const;
 
 type StepValue = (typeof STEPS)[number]["value"];
@@ -50,6 +51,14 @@ export function VehicleForm({
   const [activeTab, setActiveTab] = useState<StepValue>("basics");
 
   const v = vehicle ?? {};
+  
+  // Transform existing images if in edit mode
+  const initialImages: UploadedImage[] = (v.images || []).map((img: any) => ({
+    path: img.media.storage_key,
+    url: img.media.url || img.url, // fallback
+    isCover: img.is_cover
+  }));
+
   const modelsForMake = models.filter((m) => m.makeId === makeId);
   const featureGroups = (["comfort", "safety", "technology", "exterior"] as FeatureCategory[])
     .map((cat) => ({ cat, items: features.filter((f) => f.category === cat) }));
@@ -201,12 +210,17 @@ export function VehicleForm({
           </div>
         </TabsPanel>
 
-        <TabsPanel value="seo">
-          <div className="space-y-4">
-            <L label="Description"><textarea name="description" defaultValue={v.description ?? ""} rows={5} className={inputCls} /></L>
-            <L label="SEO title"><input name="seoTitle" defaultValue={v.seo_title ?? ""} className={inputCls} /></L>
-            <L label="SEO description"><textarea name="seoDescription" defaultValue={v.seo_description ?? ""} rows={2} className={inputCls} /></L>
-            <L label="Dealer notes (internal)"><textarea name="dealerNotes" defaultValue={v.dealer_notes ?? ""} rows={2} className={inputCls} /></L>
+        <TabsPanel value="images">
+          <div className="space-y-6">
+            <div>
+              <L label="Vehicle Images"><span className="text-xs text-muted-foreground mb-2 block">Upload photos of the vehicle. Set one as the cover image.</span></L>
+              <ImageUpload initialImages={initialImages} />
+            </div>
+            <hr className="border-border" />
+            <div className="space-y-4">
+              <L label="Description"><textarea name="description" defaultValue={v.description ?? ""} rows={5} className={inputCls} placeholder="Write a compelling description for this vehicle..." /></L>
+              <L label="Dealer notes (internal)"><textarea name="dealerNotes" defaultValue={v.dealer_notes ?? ""} rows={2} className={inputCls} placeholder="Private notes, e.g. trade-in details or reconditioning costs..." /></L>
+            </div>
           </div>
         </TabsPanel>
       </Tabs>
