@@ -42,6 +42,7 @@ export const getPhoneNumbers = unstable_cache(
     const supabase = createAdminClient();
     const { data } = await supabase.from("settings").select("value").eq("key", "phone_numbers").maybeSingle();
     const v = (data?.value ?? {}) as Record<string, unknown>;
+    // Return the updated phone numbers to the UI
     return { primary: String(v.primary || "+61430171809"), whatsapp: String(v.whatsapp || "+61451344477") };
   },
   ["phone-numbers"],
