@@ -102,7 +102,14 @@ export function autoDealerSchema(input: {
           },
           ...(loc.lat && loc.lng ? { geo: { "@type": "GeoCoordinates", latitude: loc.lat, longitude: loc.lng } } : {}),
         }
-      : {}),
+      : {
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Granville",
+            addressRegion: "NSW",
+            addressCountry: "AU",
+          }
+        }),
     ...(input.rating && input.reviewCount
       ? { aggregateRating: { "@type": "AggregateRating", ratingValue: input.rating, reviewCount: input.reviewCount } }
       : {}),

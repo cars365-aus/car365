@@ -118,17 +118,29 @@ export function resolveGalleryImages(
     }));
 }
 
+type FallbackVehicle = {
+  title?: string;
+  category?: string;
+  vehicle_images?: FullImageRecord[];
+  featuredImage?: string;
+  image?: string;
+  thumbnail?: string;
+  images?: unknown[];
+  gallery?: unknown[];
+  [key: string]: unknown;
+};
+
 /**
  * Resolves a list of GalleryImage objects for a vehicle.
  * Combines Supabase database images with standard and custom image fields,
  * and falls back to a category-specific stock photo placeholder if all fields are empty.
  */
-export function getVehicleImages(vehicle: any): GalleryImage[] {
+export function getVehicleImages(vehicle: FallbackVehicle): GalleryImage[] {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
   const title = vehicle.title || "Rental Car";
   
   // 1. Collect from database vehicle_images relation
-  const dbImages = (vehicle.vehicle_images as FullImageRecord[]) || [];
+  const dbImages = vehicle.vehicle_images || [];
   const galleryImages = resolveGalleryImages(supabaseUrl, dbImages, title);
   
   // 2. Collect other potential custom/standard fields defensively
@@ -143,24 +155,23 @@ export function getVehicleImages(vehicle: any): GalleryImage[] {
     rawUrls.push(vehicle.thumbnail);
   }
   
-  if (Array.isArray(vehicle.images)) {
-    vehicle.images.forEach((img: any) => {
-      if (typeof img === "string" && img.trim()) {
-        rawUrls.push(img);
-      } else if (img && typeof img.url === "string" && img.url.trim()) {
-        rawUrls.push(img.url);
+  const extractUrl = (img: unknown) => {
+    if (typeof img === "string" && img.trim()) {
+      rawUrls.push(img);
+    } else if (img && typeof img === "object" && "url" in img) {
+      const urlStr = (img as Record<string, unknown>).url;
+      if (typeof urlStr === "string" && urlStr.trim()) {
+        rawUrls.push(urlStr);
       }
-    });
+    }
+  };
+
+  if (Array.isArray(vehicle.images)) {
+    vehicle.images.forEach(extractUrl);
   }
   
   if (Array.isArray(vehicle.gallery)) {
-    vehicle.gallery.forEach((img: any) => {
-      if (typeof img === "string" && img.trim()) {
-        rawUrls.push(img);
-      } else if (img && typeof img.url === "string" && img.url.trim()) {
-        rawUrls.push(img.url);
-      }
-    });
+    vehicle.gallery.forEach(extractUrl);
   }
   
   const customImages: GalleryImage[] = rawUrls.map((url, index) => ({

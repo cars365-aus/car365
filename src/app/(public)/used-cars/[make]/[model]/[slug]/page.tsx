@@ -6,7 +6,6 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { VehicleGallery } from "@/components/vehicle-gallery";
 import { VehicleCard } from "@/components/vehicle-card";
-import { GatedPrice } from "@/components/auth/gated-price";
 import { VdpLeadActions } from "@/components/leads/vdp-lead-actions";
 import { FinanceCalculator } from "@/components/finance-calculator";
 import { getVehicleBySlug, getSimilarVehicles } from "@/lib/data/inventory";
@@ -17,7 +16,7 @@ import { JsonLd } from "@/components/json-ld";
 import { vehicleSchema, breadcrumbSchema } from "@/lib/seo/jsonld";
 import {
   BODY_TYPE_LABELS, FUEL_LABELS, TRANSMISSION_LABELS, DRIVE_LABELS,
-  formatKm,
+  formatKm, formatPrice,
 } from "@/lib/nav";
 import type { VehicleImage } from "@/lib/domain";
 
@@ -29,10 +28,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const v = await getVehicleBySlug(slug);
   if (!v) return { title: "Vehicle not found" };
-  const title = v.seoTitle || `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""} for Sale – ${formatKm(v.mileageKm)}`;
+  const title = v.seoTitle || `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""} for Sale in Granville, NSW – ${formatKm(v.mileageKm)}`;
   return {
     title,
-    description: v.seoDescription || (v.description ?? "").slice(0, 160),
+    description: v.seoDescription || (v.description ?? "").slice(0, 150) + " - Available now at Cars365 Granville, NSW.",
   };
 }
 
@@ -191,14 +190,27 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
                 <h1 className="font-heading text-2xl font-bold leading-tight text-foreground">{title}</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Stock #{v.stockId}</p>
 
-                <GatedPrice price={v.price} previousPrice={v.previousPrice} />
+                {v.price && v.price > 0 ? (
+                  <div className="mt-4">
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-heading text-4xl font-extrabold tabular-nums text-foreground">{formatPrice(v.price)}</span>
+                      {v.previousPrice && v.previousPrice > v.price ? (
+                        <span className="text-lg text-muted-foreground line-through tabular-nums">{formatPrice(v.previousPrice)}</span>
+                      ) : null}
+                    </div>
+                    {v.previousPrice && v.previousPrice > v.price ? (
+                      <span className="mt-2 inline-block rounded-full bg-success/10 px-3 py-1 text-sm font-semibold text-success">
+                        Price drop · {formatPrice(v.previousPrice - v.price)} off
+                      </span>
+                    ) : null}
+                  </div>
+                ) : null}
 
                 {!isSold ? (
                   <div className="mt-5">
                     <VdpLeadActions
                       vehicleId={v.id}
                       vehicleTitle={title}
-                      price={v.price}
                       phone={phone}
                       whatsappUrl={whatsapp ? buildWhatsAppUrl(whatsapp, waMessage) : null}
                       showInspection={v.inspectionAvailable}
@@ -238,7 +250,6 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
           <VdpLeadActions
             vehicleId={v.id}
             vehicleTitle={title}
-            price={v.price}
             phone={phone}
             whatsappUrl={whatsapp ? buildWhatsAppUrl(whatsapp, waMessage) : null}
             variant="sticky"

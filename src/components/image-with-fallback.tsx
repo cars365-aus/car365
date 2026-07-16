@@ -21,9 +21,12 @@ export function ImageWithFallback({ alt, onError, src, ...props }: ImageProps) {
 
   // Reset the error state if the source changes (e.g. gallery navigation),
   // so a previously-broken image doesn't keep showing the fallback.
-  useEffect(() => {
+  const [prevSrc, setPrevSrc] = useState(src);
+
+  if (prevSrc !== src) {
+    setPrevSrc(src);
     setErrored(false);
-  }, [src]);
+  }
 
   if (errored) {
     return (

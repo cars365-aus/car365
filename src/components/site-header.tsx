@@ -3,7 +3,6 @@ import { Phone, ChevronDown } from "lucide-react";
 import { getMakes } from "@/lib/data/inventory";
 import { getPhoneNumbers } from "@/lib/data/settings";
 import { MobileNav } from "@/components/mobile-nav";
-import { AuthMenu } from "@/components/auth/auth-menu";
 import {
   NAV_BODY_TYPES,
   BODY_TYPE_LABELS,
@@ -107,7 +106,6 @@ export async function SiteHeader() {
               <Phone className="size-4" /> Contact
             </Link>
           )}
-          <AuthMenu />
           <MobileNav makes={makes} phone={phone} />
         </div>
       </div>

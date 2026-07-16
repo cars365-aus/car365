@@ -7,7 +7,6 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { MobileStateProvider } from "@/components/mobile-state-provider";
 import { MobileAnimationProvider } from "@/components/mobile-animation-provider";
-import { AuthProvider } from "@/components/auth/auth-provider";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
 
@@ -34,13 +33,13 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Cars365 — Quality Used Cars, Honestly Inspected",
-    template: "%s | Cars365",
+    default: "Cars365 — Quality Used Cars in Australia",
+    template: "%s | Cars365 Australia",
   },
   description:
-    "Browse quality, inspected used cars for sale. Transparent pricing, finance available, trade-ins welcome, and a team that answers fast.",
-  keywords: ["used cars", "cars for sale", "second hand cars", "used SUV", "used ute", "car finance", "trade-in"],
-  metadataBase: new URL("https://www.cars365.example"),
+    "Browse quality, inspected used cars for sale in Australia. Transparent pricing, finance available, trade-ins welcome, and a team that answers fast in Granville, NSW.",
+  keywords: ["used cars Australia", "cars for sale NSW", "second hand cars Sydney", "used SUV", "used ute", "car finance", "trade-in Granville"],
+  metadataBase: new URL("https://www.cars-365.com.au"),
   alternates: {
     canonical: "/",
   },
@@ -68,11 +67,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_AU",
-    url: "https://www.cars365.example",
-    siteName: "Cars365",
-    title: "Cars365 — Quality Used Cars, Honestly Inspected",
+    url: "https://www.cars-365.com.au",
+    siteName: "Cars365 Australia",
+    title: "Cars365 — Quality Used Cars in Australia",
     description:
-      "Browse premium, pre-inspected used cars with transparent pricing. Every vehicle includes a PPSR check, RWC, and 3-month statutory warranty.",
+      "Browse premium, pre-inspected used cars with transparent pricing in Granville, NSW. Every vehicle includes a PPSR check, RWC, and statutory warranty.",
     images: [
       {
         url: "/og-image.jpg",
@@ -135,15 +134,13 @@ export default function RootLayout({
             </Script>
           </>
         )}
-        <AuthProvider>
-          <MobileStateProvider>
-            <MobileAnimationProvider>
-              {children}
-              <ScrollToTop />
-              <WhatsAppFloat phone="61451344477" />
-            </MobileAnimationProvider>
-          </MobileStateProvider>
-        </AuthProvider>
+        <MobileStateProvider>
+          <MobileAnimationProvider>
+            {children}
+            <ScrollToTop />
+            <WhatsAppFloat phone="61451344477" />
+          </MobileAnimationProvider>
+        </MobileStateProvider>
         <Toaster richColors position="top-right" />
 
         <SpeedInsights />

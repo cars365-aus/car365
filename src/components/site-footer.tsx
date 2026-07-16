@@ -38,7 +38,7 @@ export async function SiteFooter() {
   const tradingName = (company.trading_name as string) || "Cars365";
 
   return (
-    <footer className="border-t border-white/10 bg-black text-slate-300 pt-10">
+    <footer className="border-t border-white/10 bg-black text-slate-300 pt-10 pb-24 sm:pb-0">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         {/* Link hubs */}
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-6">
@@ -63,6 +63,29 @@ export async function SiteFooter() {
               {email ? (
                 <a href={`mailto:${email}`} className="flex items-center gap-2 hover:text-white"><Mail className="size-4" />{email}</a>
               ) : null}
+              <a 
+                href="https://maps.app.goo.gl/DDS6skBgYzMTpU916?g_st=ic" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-2 hover:text-white"
+              >
+                <MapPin className="size-4 shrink-0" />
+                <span>Cars 365, Granville NSW</span>
+              </a>
+            </div>
+
+            <div className="mt-6 overflow-hidden rounded-xl border border-white/10 bg-white/5">
+              <iframe
+                title="Cars 365 Location"
+                src="https://maps.google.com/maps?q=Cars%20365,%20Granville,%20NSW&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="160"
+                style={{ border: 0, filter: "grayscale(20%)" }}
+                allowFullScreen={false}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full"
+              />
             </div>
           </div>
 

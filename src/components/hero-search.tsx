@@ -18,8 +18,10 @@ export function HeroSearch({ makes }: { makes: Make[] }) {
 
   useEffect(() => {
     if (!make) {
-      setModels([]);
-      setModel("");
+      requestAnimationFrame(() => {
+        setModels([]);
+        setModel("");
+      });
       return;
     }
     setLoadingModels(true);

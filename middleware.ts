@@ -45,10 +45,9 @@ export async function middleware(request: NextRequest) {
 
   const isAdminRoute =
     path.startsWith("/admin") && !path.startsWith("/admin-login");
-  const isAccountRoute = path.startsWith("/account");
 
-  // Admin panel is for staff, /account is for public buyers. Both require auth.
-  const isProtectedRoute = isAdminRoute || isAccountRoute;
+  // Only the staff admin panel requires auth. The public site has no buyer login.
+  const isProtectedRoute = isAdminRoute;
 
   // OPTIMIZATION: Skip expensive auth checks on public pages
   // This drastically improves TTFB for static marketing and SEO pages

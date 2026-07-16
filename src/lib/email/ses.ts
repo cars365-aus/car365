@@ -18,8 +18,8 @@ export const transporter = (smtpHost && smtpUser && smtpPass)
     })
   : null;
 
-const FROM = process.env.EMAIL_FROM ?? "Cars365 <noreply@cars365.info>";
-const REPLY_TO = process.env.REPLY_TO_EMAIL ?? process.env.CONTACT_EMAIL_TO ?? "support@cars365.info";
+const FROM = process.env.EMAIL_FROM ?? "Cars365 <noreply@cars-365.com.au>";
+const REPLY_TO = process.env.REPLY_TO_EMAIL ?? process.env.CONTACT_EMAIL_TO ?? "support@cars-365.com.au";
 const LOGO_HTML = `<img src="${getAppUrl()}/LOGO.png" alt="Cars365" style="height:40px;margin-bottom:24px;display:block;margin-left:auto;margin-right:auto;" />`;
 
 export async function sendLeadAlert(input: {
@@ -121,7 +121,7 @@ export async function sendMarketingEmail(input: {
       <p style="color:#334155;font-size:16px;">Hi ${input.recipientName},</p>
       <div style="color:#334155;font-size:15px;line-height:1.7;">${input.bodyHtml}</div>
       ${cta}
-      <p style="color:#94a3b8;font-size:12px;text-align:center;margin-top:32px;">You're receiving this because you have an account at cars365.info.</p>
+      <p style="color:#94a3b8;font-size:12px;text-align:center;margin-top:32px;">You're receiving this because you have an account at cars-365.com.au.</p>
     </div>`,
   });
   return { skipped: false };
@@ -274,9 +274,9 @@ export async function sendContactMessage(input: {
   message: string;
 }) {
   if (!transporter) return { skipped: true };
-  const to = process.env.CONTACT_EMAIL_TO ?? process.env.EMAIL_FROM ?? "support@cars365.info";
+  const to = process.env.CONTACT_EMAIL_TO ?? process.env.EMAIL_FROM ?? "support@cars-365.com.au";
   await transporter.sendMail({
-    from: process.env.EMAIL_FROM ?? "Cars365 Support <support@cars365.info>",
+    from: process.env.EMAIL_FROM ?? "Cars365 Support <support@cars-365.com.au>",
     to,
     replyTo: input.email,
     subject: `Cars365 contact: ${input.topic}`,

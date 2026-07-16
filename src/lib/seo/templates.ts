@@ -1,68 +1,33 @@
-import type { VehicleCategory } from "./categories";
-import { getCityMeta } from "./slugs";
+import { formatPrice } from "@/lib/nav";
 
-export function vehicleTitle(title: string, city?: string) {
-  return `${title} – Car Hire${city ? ` in ${city}` : ""} | Cars365`;
+export function makeTitle(make: string) {
+  return `Used ${make} for Sale in Granville, NSW`;
 }
 
-export function vehicleDescription(input: {
-  year: number;
-  make: string;
-  model: string;
-  category: string;
-  pricePerDayAud: number;
-  city?: string;
-  state?: string;
-}) {
-  const location =
-    input.city && input.state
-      ? ` in ${input.city}, ${input.state}`
-      : input.city
-        ? ` in ${input.city}`
-        : "";
-  return `Hire a ${input.year} ${input.make} ${input.model} (${input.category}) for $${input.pricePerDayAud}/day${location}. Verified local rental operator.`;
+export function makeDescription(make: string) {
+  return `Browse our range of quality used ${make} vehicles for sale in Granville, NSW. Inspected, priced honestly, with finance and trade-ins available across Australia.`;
 }
 
-export function cityTitle(citySlug: string, state?: string, lowestPrice?: number) {
-  const { title } = getCityMeta(citySlug, state);
-  const priceString = lowestPrice ? ` (From $${lowestPrice}/day)` : "";
-  return `Car Hire ${title}${state ? ` ${state}` : ""}${priceString} | Cars365`;
+export function makeModelTitle(make: string, model: string) {
+  return `Used ${make} ${model} for Sale in Granville, NSW`;
 }
 
-export function cityDescription(citySlug: string, state?: string) {
-  return getCityMeta(citySlug, state).description;
+export function makeModelDescription(make: string, model: string) {
+  return `Find the best deals on used ${make} ${model} cars in Granville, Sydney. Every car is fully inspected and comes with a roadworthy certificate.`;
 }
 
-export function categoryNationalTitle(category: VehicleCategory) {
-  return `${category} Car Hire Australia | Cars365`;
+export function budgetTitle(budget: number) {
+  return `Used Cars Under ${formatPrice(budget)} in Sydney, NSW`;
 }
 
-export function categoryNationalDescription(category: VehicleCategory, total: number) {
-  return `Compare ${total} ${category} rental vehicles across Australia from verified local operators. No booking fees — contact vendors directly.`;
+export function budgetDescription(budget: number) {
+  return `Looking for reliable used cars under ${formatPrice(budget)}? Browse our inspected inventory in Granville, NSW. Finance and trade-ins welcome.`;
 }
 
-export function cityCategoryTitle(citySlug: string, category: VehicleCategory, state?: string, lowestPrice?: number) {
-  const { title } = getCityMeta(citySlug, state);
-  const priceString = lowestPrice ? ` (From $${lowestPrice}/day)` : "";
-  return `${category} Hire ${title}${priceString} | Cars365`;
+export function bodyTypeTitle(body: string) {
+  return `Used ${body}s for Sale in Granville, NSW`;
 }
 
-export function cityCategoryDescription(
-  citySlug: string,
-  category: VehicleCategory,
-  total: number,
-  state?: string,
-) {
-  const { title } = getCityMeta(citySlug, state);
-  return `Find ${total} ${category} vehicles for hire in ${title}. Compare daily rates from verified local rental operators on Cars365.`;
-}
-
-export function brandCityTitle(brand: string, citySlug: string) {
-  const { title } = getCityMeta(citySlug);
-  return `${brand} Car Hire in ${title} | Cars365`;
-}
-
-export function brandCityDescription(brand: string, citySlug: string) {
-  const { title } = getCityMeta(citySlug);
-  return `Looking for ${brand} car hire in ${title}? Compare local rental operators, find the best daily prices, and book directly.`;
+export function bodyTypeDescription(body: string) {
+  return `Browse quality used ${body} vehicles in Granville, Sydney. Find your next car with transparent pricing and fast approvals.`;
 }

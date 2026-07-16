@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Camera, PhoneCall, BadgeDollarSign } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -33,16 +32,6 @@ export default async function SellYourCarPage() {
           <h1 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">Sell your car the easy way</h1>
           <p className="mt-3 text-body">No strangers at your home, no haggling. Tell us about your car and we&apos;ll come back with a fair offer.</p>
         </header>
-
-        <div className="mb-10 rounded-xl bg-primary/10 border border-primary/20 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <h3 className="font-bold text-foreground text-lg">Want to list it yourself?</h3>
-            <p className="text-sm text-body">Create a Seller account to list your own vehicles directly on our peer-to-peer marketplace.</p>
-          </div>
-          <Link href="/account" className="inline-flex h-11 flex-none items-center justify-center rounded-lg bg-primary px-6 font-bold text-black transition-colors hover:bg-primary-hover shadow-lg shadow-primary/20">
-            Sign up as a Seller
-          </Link>
-        </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
           <div>

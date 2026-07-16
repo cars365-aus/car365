@@ -55,13 +55,13 @@ export function VehicleEnquiryForm({
     <form onSubmit={onSubmit} className="space-y-3">
       <Honeypot value={website} onChange={setWebsite} />
       <Field label="Name" required>
-        <TextInput value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" placeholder="Your name" />
+        <TextInput value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" placeholder="Your name" disabled={loading} />
       </Field>
       <Field label="Phone" required>
-        <TextInput value={phoneVal} onChange={(e) => setPhoneVal(e.target.value)} required type="tel" inputMode="tel" autoComplete="tel" placeholder="04XX XXX XXX" />
+        <TextInput value={phoneVal} onChange={(e) => setPhoneVal(e.target.value)} required type="tel" inputMode="tel" autoComplete="tel" placeholder="04XX XXX XXX" pattern="[0-9\s\+\-\(\)]+" disabled={loading} />
       </Field>
       <Field label="Message">
-        <TextArea value={message} onChange={(e) => setMessage(e.target.value)} />
+        <TextArea value={message} onChange={(e) => setMessage(e.target.value)} disabled={loading} />
       </Field>
       <TurnstileField onToken={setToken} />
       {error ? <p className="text-sm text-danger">{error}</p> : null}

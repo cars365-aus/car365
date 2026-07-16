@@ -42,10 +42,10 @@ export default async function AdminRolesPage() {
       {/* Role permissions reference */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { role: "Moderator", desc: "Manage inventory, upload photos, close fraud flags", icon: "🛡️", color: "border-blue-200 bg-blue-50/50" },
-          { role: "Support", desc: "View leads, moderate reviews, reply to enquiries", icon: "🎧", color: "border-purple-200 bg-purple-50/50" },
-          { role: "Finance", desc: "View billing, subscriptions, revenue", icon: "💰", color: "border-emerald-200 bg-emerald-50/50" },
-          { role: "Admin / Owner", desc: "Full access including role management", icon: "👑", color: "border-amber-200 bg-amber-50/50" },
+          { role: "Sales", desc: "Work leads, assign to self, quick-change vehicle status", icon: "💬", color: "border-blue-200 bg-blue-50/50" },
+          { role: "Content", desc: "Manage FAQs and testimonials", icon: "📝", color: "border-purple-200 bg-purple-50/50" },
+          { role: "Manager", desc: "Manage inventory, leads, content & view reports", icon: "📊", color: "border-emerald-200 bg-emerald-50/50" },
+          { role: "Admin / Owner", desc: "Full control including settings and role management", icon: "👑", color: "border-amber-200 bg-amber-50/50" },
         ].map((item) => (
           <div key={item.role} className={`rounded-2xl border p-4 ${item.color}`}>
             <div className="text-2xl mb-2">{item.icon}</div>

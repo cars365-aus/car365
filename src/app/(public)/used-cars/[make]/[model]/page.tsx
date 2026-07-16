@@ -18,13 +18,15 @@ async function resolve(makeSlug: string, modelSlug: string) {
   return { make, model };
 }
 
+import { makeModelTitle, makeModelDescription } from "@/lib/seo/templates";
+
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { make, model } = await params;
   const r = await resolve(make, model);
   if (!r.make || !r.model) return { title: "Used Cars" };
   return {
-    title: `Used ${r.make.name} ${r.model.name} for Sale`,
-    description: `Browse quality used ${r.make.name} ${r.model.name} vehicles for sale — inspected, honestly priced, with finance and trade-ins available.`,
+    title: makeModelTitle(r.make.name, r.model.name),
+    description: makeModelDescription(r.make.name, r.model.name),
   };
 }
 

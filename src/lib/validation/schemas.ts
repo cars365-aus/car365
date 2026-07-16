@@ -116,7 +116,9 @@ export const leadSchema = z.object({
   email: z.string().trim().email().max(160),
   phone: z.string().trim().min(8).max(30),
   message: z.string().trim().max(1000).optional().default(""),
-  consent: z.boolean().optional(),
+  consent: z.literal(true, {
+    message: "You must consent to the privacy policy",
+  }),
   turnstileToken: z.string().optional(),
 });
 
@@ -132,52 +134,6 @@ export const contactMessageSchema = z.object({
   topic: z.enum(["vendor_onboarding", "enterprise", "support", "legal_privacy"]),
   message: z.string().trim().min(10).max(2000),
   turnstileToken: z.string().optional(),
-});
-
-export const bidSchema = z.object({
-  vehicleId: z.string().uuid(),
-  amount: z.coerce.number().int().min(100),
-  message: z.string().trim().max(1000).optional(),
-});
-
-export const chatMessageCreateSchema = z.object({
-  vehicleId: z.string().uuid(),
-  content: z.string().trim().min(1).max(2000),
-});
-
-export const checkoutSchema = z.object({
-  plan: z.enum(["starter", "growth", "pro"]),
-  interval: z.enum(["monthly", "annual"]).optional(),
-  organizationId: z.string().uuid(),
-});
-
-/**
- * Public API (`POST /api/v1/vehicles`) vehicle creation payload. JSON body with
- * camelCase fields. Optional fields default to the same values the route
- * previously hardcoded, preserving backward compatibility while enforcing
- * types/ranges. `branchId` ownership is verified separately against the
- * authenticated API key's organization.
- */
-export const apiVehicleCreateSchema = z.object({
-  branchId: z.string().uuid(),
-  slug: z.string().trim().min(1).max(200).optional(),
-  title: z.string().trim().min(3).max(140),
-  make: z.string().trim().min(2).max(80),
-  model: z.string().trim().min(1).max(80),
-  year: z.coerce.number().int().min(1990).max(2030),
-  seats: z.coerce.number().int().min(2).max(12).default(5),
-  fuel: z.enum(["Petrol", "Diesel", "Hybrid", "Electric"]).default("Petrol"),
-  transmission: z.enum(["Automatic", "Manual"]).default("Automatic"),
-  category: z
-    .enum(["Sedan", "SUV", "People mover", "Van", "Ute", "Luxury"])
-    .default("Sedan"),
-  price: z.coerce.number().int().min(1),
-});
-export const moderationSchema = z.object({
-  resourceType: z.enum(["vendor", "branch", "vehicle", "review", "fraud_flag"]),
-  resourceId: z.string().uuid(),
-  action: z.enum(["approve", "reject", "suspend", "restore", "verify"]),
-  reason: z.string().trim().min(3).max(500),
 });
 
 // ---------------------------------------------------------------------------

@@ -59,17 +59,17 @@ export function InspectionForm({
     <form onSubmit={onSubmit} className="space-y-3">
       <Honeypot value={website} onChange={setWebsite} />
       <Field label="Name" required>
-        <TextInput value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" />
+        <TextInput value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" disabled={loading} />
       </Field>
       <Field label="Phone" required>
-        <TextInput value={phoneVal} onChange={(e) => setPhoneVal(e.target.value)} required type="tel" inputMode="tel" autoComplete="tel" placeholder="04XX XXX XXX" />
+        <TextInput value={phoneVal} onChange={(e) => setPhoneVal(e.target.value)} required type="tel" inputMode="tel" autoComplete="tel" placeholder="04XX XXX XXX" pattern="[0-9\s\+\-\(\)]+" disabled={loading} />
       </Field>
       <div className="grid grid-cols-2 gap-3">
         <Field label="Preferred date" required>
-          <TextInput type="date" min={minDate} max={maxDate} value={preferredDate} onChange={(e) => setPreferredDate(e.target.value)} required />
+          <TextInput type="date" min={minDate} max={maxDate} value={preferredDate} onChange={(e) => setPreferredDate(e.target.value)} required disabled={loading} />
         </Field>
         <Field label="Time" required>
-          <Select value={preferredTime} onChange={(e) => setPreferredTime(e.target.value)}>
+          <Select value={preferredTime} onChange={(e) => setPreferredTime(e.target.value)} disabled={loading}>
             <option value="morning">Morning</option>
             <option value="afternoon">Afternoon</option>
             <option value="evening">Evening</option>
@@ -77,7 +77,7 @@ export function InspectionForm({
         </Field>
       </div>
       <Field label="Notes">
-        <TextArea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Anything we should know?" />
+        <TextArea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Anything we should know?" disabled={loading} />
       </Field>
       <TurnstileField onToken={setToken} />
       {error ? <p className="text-sm text-danger">{error}</p> : null}

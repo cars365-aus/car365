@@ -48,18 +48,20 @@ export function MotionScroll({
   useEffect(() => {
     if (!inView || granted !== null) return;
 
-    // Reduced motion: never animate, jump straight to the visible state.
-    if (prefersReducedMotion) {
-      setGranted(false);
-      return;
-    }
+    requestAnimationFrame(() => {
+      // Reduced motion: never animate, jump straight to the visible state.
+      if (prefersReducedMotion) {
+        setGranted(false);
+        return;
+      }
 
-    // Concurrency governance: only animate if a slot is available.
-    const ok = acquireSlot();
-    setGranted(ok);
-    if (ok) {
-      setWillChange(true);
-    }
+      // Concurrency governance: only animate if a slot is available.
+      const ok = acquireSlot();
+      setGranted(ok);
+      if (ok) {
+        setWillChange(true);
+      }
+    });
     // When not granted we never acquired a slot, so there is nothing to release.
   }, [inView, granted, prefersReducedMotion, acquireSlot]);
 

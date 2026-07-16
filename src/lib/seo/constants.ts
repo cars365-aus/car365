@@ -1,4 +1,4 @@
-export const SEO_BASE_URL = "https://www.cars365.info";
+export const SEO_BASE_URL = "https://www.cars-365.com.au";
 
 export const THIN_PAGE_THRESHOLDS = {
   city: 5,

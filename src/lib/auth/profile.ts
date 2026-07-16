@@ -12,6 +12,7 @@ export interface ProfileUpsert {
   email: string | null;
   phone: string | null;
   full_name: string | null;
+  avatar_url: string | null;
   updated_at: string;
 }
 
@@ -36,6 +37,7 @@ export function deriveProfileFromUser(user: User): ProfileUpsert {
     email: user.email ?? null,
     phone: user.phone ?? null,
     full_name: metadata.full_name ?? metadata.name ?? null,
+    avatar_url: metadata.avatar_url ?? metadata.picture ?? null,
     updated_at: new Date().toISOString(),
   };
 }

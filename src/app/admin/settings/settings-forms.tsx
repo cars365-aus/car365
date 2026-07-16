@@ -55,7 +55,7 @@ export function SettingsForms({ company, phones, finance, recipients }: { compan
       </Card>
 
       <Card title="Lead notifications" action={saveNotificationRecipients}>
-        <L label="Recipient emails (one per line)"><textarea name="emails" rows={4} defaultValue={recipients.join("\n")} className={input} placeholder="sales@cars365.info" /></L>
+        <L label="Recipient emails (one per line)"><textarea name="emails" rows={4} defaultValue={recipients.join("\n")} className={input} placeholder="sales@cars-365.com.au" /></L>
         <p className="text-xs text-muted-foreground">New leads are emailed to these addresses.</p>
       </Card>
     </div>

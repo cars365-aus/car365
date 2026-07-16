@@ -73,7 +73,6 @@ function useIsMobileViewport(): boolean {
     if (typeof window === "undefined" || !window.matchMedia) return;
 
     const mediaQuery = window.matchMedia(MOBILE_QUERY);
-    setIsMobile(mediaQuery.matches);
 
     const handleChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mediaQuery.addEventListener("change", handleChange);

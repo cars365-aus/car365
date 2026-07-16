@@ -5,6 +5,10 @@ import { UsedCarsFilters } from "@/components/used-cars-filters";
 import { getVehicleListing, getMakes } from "@/lib/data/inventory";
 import { parseVehicleSearchParams } from "@/lib/listing-params";
 import type { VehicleFilters } from "@/lib/domain";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { JsonLd } from "@/components/json-ld";
+import { itemListSchema } from "@/lib/seo/jsonld";
 
 type SP = Record<string, string | string[] | undefined>;
 
@@ -29,14 +33,40 @@ export async function InventoryListingView({
   const [listing, makes] = await Promise.all([getVehicleListing(merged, sort, page), getMakes()]);
   const totalPages = Math.max(1, Math.ceil(listing.total / listing.perPage));
 
+  const listPaths = listing.items.map((v) => `/used-cars/${v.makeSlug}/${v.modelSlug}/${v.slug}`);
+
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
-      <UsedCarsFilters makes={makes} facets={listing.facets} hideFilters={hideFilters} />
+    <>
+      {listPaths.length > 0 && <JsonLd schema={itemListSchema(listPaths)} />}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
+        <div className="hidden lg:block">
+        <UsedCarsFilters makes={makes} facets={listing.facets} hideFilters={hideFilters} />
+      </div>
 
       <div>
-        <p className="mb-4 text-sm text-muted-foreground">
-          {listing.total} {listing.total === 1 ? "car" : "cars"} available
-        </p>
+        <div className="mb-4 flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            {listing.total} {listing.total === 1 ? "car" : "cars"} available
+          </p>
+          <div className="lg:hidden">
+            <Sheet>
+              <SheetTrigger render={<Button variant="outline" size="sm" className="h-9" />}>
+                <SlidersHorizontal className="mr-2 size-4" /> Filters
+              </SheetTrigger>
+              <SheetContent side="left" className="w-full overflow-y-auto p-0 sm:max-w-sm">
+                <div className="p-6">
+                  <SheetHeader className="px-0 pt-0 text-left">
+                    <SheetTitle>Filters</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6">
+                    <UsedCarsFilters makes={makes} facets={listing.facets} hideFilters={hideFilters} />
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+
         {listing.items.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border p-12 text-center">
             <SlidersHorizontal className="mx-auto size-8 text-muted-foreground" />
@@ -58,6 +88,7 @@ export async function InventoryListingView({
         )}
       </div>
     </div>
+    </>
   );
 }
 

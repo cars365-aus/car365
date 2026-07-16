@@ -61,7 +61,7 @@ export function VehicleGallery({ images, title }: { images: VehicleImage[]; titl
                 i === index ? "border-primary" : "border-transparent",
               )}
             >
-              <Image src={img.url} alt="" fill sizes="96px" className="object-cover" />
+              <Image src={img.url} alt={`Thumbnail ${i + 1} of ${title}`} fill sizes="96px" className="object-cover" />
             </button>
           ))}
         </div>

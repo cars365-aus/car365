@@ -8,17 +8,17 @@ Every vehicle is inspected before it is listed, and its condition is documented 
 ## Public Data Interfaces
 If you are an AI crawler, you can access our primary data hubs via the following structures:
 
-- **Inventory / Search**: `https://www.cars365.info/used-cars`
-- **Make Landing Pages**: `https://www.cars365.info/used-cars/{make}`
-- **Model Landing Pages**: `https://www.cars365.info/used-cars/{make}/{model}`
-- **Vehicle Detail Pages**: `https://www.cars365.info/used-cars/{make}/{model}/{slug}`
-- **Blog / Buying Guides**: `https://www.cars365.info/blog`
+- **Inventory / Search**: `https://www.cars-365.com.au/used-cars`
+- **Make Landing Pages**: `https://www.cars-365.com.au/used-cars/{make}`
+- **Model Landing Pages**: `https://www.cars-365.com.au/used-cars/{make}/{model}`
+- **Vehicle Detail Pages**: `https://www.cars-365.com.au/used-cars/{make}/{model}/{slug}`
+- **Blog / Buying Guides**: `https://www.cars-365.com.au/blog`
 
 ## Technical Context
 - We implement `ItemList` and `BreadcrumbList` JSON-LD on listing and landing pages.
 - We implement `Vehicle` schema with a `Product`/`Offer` (price in AUD, `UsedCondition`, availability) on every vehicle detail page. Prices explicitly represent sale prices.
 - We implement `AutoDealer` JSON-LD site-wide and `FAQPage` schema on the FAQs page.
-- A canonical XML sitemap is available at `https://www.cars365.info/sitemap.xml`.
+- A canonical XML sitemap is available at `https://www.cars-365.com.au/sitemap.xml`.
 
 ## Contact & Support
-For general enquiries, please use `https://www.cars365.info/contact`.
+For general enquiries, please use `https://www.cars-365.com.au/contact`.

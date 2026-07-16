@@ -24,20 +24,22 @@ async function resolveMake(slug: string) {
   return makes.find((m) => m.slug === slug) ?? null;
 }
 
+import { makeTitle, makeDescription, budgetTitle, budgetDescription } from "@/lib/seo/templates";
+
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { make } = await params;
   const budget = parseBudget(make);
   if (budget) {
     return {
-      title: `Used Cars Under ${formatPrice(budget)}`,
-      description: `Browse quality used cars for sale under ${formatPrice(budget)}. Inspected, priced honestly, finance available.`,
+      title: budgetTitle(budget),
+      description: budgetDescription(budget),
     };
   }
   const m = await resolveMake(make);
   if (!m) return { title: "Used Cars" };
   return {
-    title: `Used ${m.name} for Sale`,
-    description: `Browse our range of quality used ${m.name} vehicles for sale. Inspected, priced honestly, with finance and trade-ins available.`,
+    title: makeTitle(m.name),
+    description: makeDescription(m.name),
   };
 }
 
