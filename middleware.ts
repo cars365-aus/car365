@@ -33,6 +33,15 @@ export async function middleware(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
+  // When Supabase redirects OAuth back to the Site URL (root) with a ?code=,
+  // we forward it to the real callback handler. This happens when the browser
+  // lands on / instead of /auth/callback after Google sign-in.
+  if (path === "/" && request.nextUrl.searchParams.has("code")) {
+    const callbackUrl = request.nextUrl.clone();
+    callbackUrl.pathname = "/auth/callback";
+    return NextResponse.redirect(callbackUrl);
+  }
+
   // Strict SEO canonical lowercasing for programmatic routes
   if (
     (path.startsWith("/locations/") || path.startsWith("/categories/")) &&
@@ -40,7 +49,7 @@ export async function middleware(request: NextRequest) {
   ) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = path.toLowerCase();
-    return NextResponse.redirect(redirectUrl, 301); // 301 Permanent Redirect for SEO
+    return NextResponse.redirect(redirectUrl, 301);
   }
 
   const isAdminRoute =
