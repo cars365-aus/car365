@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { updateLeadStatus, addLeadNote, assignLeadToMe, markLeadSpam } from "./actions";
+import { updateLeadStatus, addLeadNote, assignLeadToMe, markLeadSpam, deleteLead } from "./actions";
 import { LEAD_STATUS_ORDER, LEAD_STATUS_LABELS, LOSS_REASONS, LOSS_REASON_LABELS } from "@/lib/leads/status";
 import type { LeadStatus } from "@/lib/domain";
 
@@ -64,7 +64,18 @@ export function LeadActions({ leadId, status }: { leadId: string; status: LeadSt
 
       <div className="flex flex-wrap gap-2 border-t border-border pt-4">
         <button disabled={pending} onClick={() => run(() => assignLeadToMe(leadId))} className="rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50">Assign to me</button>
-        <button disabled={pending} onClick={() => run(() => markLeadSpam(leadId))} className="rounded-lg border border-danger/40 px-3 py-2 text-sm font-medium text-danger hover:bg-danger/10 disabled:opacity-50">Mark as spam</button>
+        <button disabled={pending} onClick={() => run(() => markLeadSpam(leadId))} className="rounded-lg border border-warning/40 px-3 py-2 text-sm font-medium text-warning hover:bg-warning/10 disabled:opacity-50">Mark as spam</button>
+        <button
+          disabled={pending}
+          onClick={() => {
+            if (confirm("Are you sure you want to delete this lead? This action cannot be undone.")) {
+              run(() => deleteLead(leadId));
+            }
+          }}
+          className="rounded-lg border border-danger/40 px-3 py-2 text-sm font-medium text-danger hover:bg-danger/10 disabled:opacity-50"
+        >
+          Delete
+        </button>
       </div>
 
       {error ? <p className="text-sm text-danger">{error}</p> : null}

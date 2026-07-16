@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/security/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { leadStatusUpdateSchema, leadNoteSchema } from "@/lib/validation/admin";
@@ -52,9 +53,19 @@ export async function assignLeadToMe(leadId: string) {
 export async function markLeadSpam(leadId: string) {
   const user = await requireAdmin();
   const supabase = createAdminClient();
-  const { error } = await supabase.from("leads").update({ status: "spam" }).eq("id", leadId);
+  const { error } = await supabase.from("leads").update({ status: "lost" }).eq("id", leadId);
   if (error) return { error: error.message };
-  await logEvent(leadId, user.id, "status_changed", { status: "spam" });
+  await logEvent(leadId, user.id, "status_changed", { status: "lost", reason: "spam" });
   revalidatePath("/admin/leads");
   return { ok: true };
+}
+
+export async function deleteLead(leadId: string): Promise<{ error?: string; ok?: boolean }> {
+  const user = await requireAdmin();
+  const supabase = createAdminClient();
+  const { error } = await supabase.from("leads").delete().eq("id", leadId);
+  if (error) return { error: error.message };
+  
+  revalidatePath("/admin/leads");
+  redirect("/admin/leads");
 }

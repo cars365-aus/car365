@@ -231,7 +231,7 @@ export function VehicleForm({
 
       {/* Navigation buttons */}
       <div className="flex items-center justify-between border-t border-border pt-4">
-        <div>
+        <div className="flex items-center gap-3">
           {mode === "create" && !isFirst && (
             <button
               type="button"
@@ -239,6 +239,21 @@ export function VehicleForm({
               className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
             >
               <ChevronLeft className="size-4" /> Back
+            </button>
+          )}
+          
+          {mode === "edit" && (
+            <button
+              type="button"
+              onClick={async () => {
+                if (confirm("Are you sure you want to delete this vehicle? This action cannot be undone.")) {
+                  const { deleteVehicle } = await import("@/app/admin/inventory/actions");
+                  await deleteVehicle(v.id);
+                }
+              }}
+              className="inline-flex items-center gap-2 rounded-lg border border-danger/40 bg-card px-4 py-2.5 text-sm font-medium text-danger hover:bg-danger/10 transition-colors"
+            >
+              Delete vehicle
             </button>
           )}
         </div>

@@ -218,3 +218,13 @@ export async function toggleFeatured(id: string, isFeatured: boolean) {
   revalidatePublic();
   return { ok: true };
 }
+
+export async function deleteVehicle(id: string) {
+  const user = await requireAdmin();
+  const supabase = createAdminClient();
+  const { error } = await supabase.from("vehicles").delete().eq("id", id);
+  if (error) return { error: error.message };
+  await logActivity(user.id, "vehicle.deleted", id);
+  revalidatePublic();
+  redirect("/admin/inventory");
+}
