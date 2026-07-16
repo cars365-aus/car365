@@ -1,13 +1,14 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useRef } from "react";
 import Link from "next/link";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { fuelTypes, transmissionTypes, bodyTypes, driveTypes, vehicleStatuses } from "@/lib/validation/vehicle";
 import { FUEL_LABELS, TRANSMISSION_LABELS, BODY_TYPE_LABELS, DRIVE_LABELS } from "@/lib/nav";
 import type { Make, Model, Feature, LocationBranch, FeatureCategory } from "@/lib/domain";
-import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Image as ImageIcon, Loader2, Check as CheckIcon } from "lucide-react";
+import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Image as ImageIcon, Loader2, Check as CheckIcon, Plus } from "lucide-react";
 import { ImageUpload, UploadedImage } from "./image-upload";
+import { createMake, createModel } from "@/app/admin/catalogue/actions";
 
 type ActionResult = { ok?: boolean; error?: string } | void;
 type Action = (state: ActionResult, formData: FormData) => Promise<ActionResult>;
@@ -29,8 +30,8 @@ type StepValue = (typeof STEPS)[number]["value"];
 
 export function VehicleForm({
   action,
-  makes,
-  models,
+  makes: initialMakes,
+  models: initialModels,
   features,
   locations,
   vehicle,
@@ -47,8 +48,22 @@ export function VehicleForm({
   mode: "create" | "edit";
 }) {
   const [state, formAction, pending] = useActionState(action, undefined);
+  
+  // Local state for dynamic Makes/Models
+  const [makes, setMakes] = useState<Make[]>(initialMakes);
+  const [models, setModels] = useState<Model[]>(initialModels);
+  
   const [makeId, setMakeId] = useState<string>(vehicle?.make_id ?? "");
+  const [modelId, setModelId] = useState<string>(vehicle?.model_id ?? "");
   const [activeTab, setActiveTab] = useState<StepValue>("basics");
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Inline creation states
+  const [isAddingMake, setIsAddingMake] = useState(false);
+  const [newMakeName, setNewMakeName] = useState("");
+  const [isAddingModel, setIsAddingModel] = useState(false);
+  const [newModelName, setNewModelName] = useState("");
+  const [isCreatingInline, setIsCreatingInline] = useState(false);
 
   const v = vehicle ?? {};
   
@@ -67,15 +82,90 @@ export function VehicleForm({
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === STEPS.length - 1;
 
-  function goNext() {
-    if (!isLast) setActiveTab(STEPS[currentIndex + 1].value);
+  function validateCurrentStep(): boolean {
+    if (!formRef.current) return true;
+    const panel = formRef.current.querySelector(`[data-step="${activeTab}"]`);
+    if (panel) {
+      const inputs = panel.querySelectorAll('input[required], select[required], textarea[required]');
+      for (const input of Array.from(inputs)) {
+        if (!(input as any).checkValidity()) {
+          (input as any).reportValidity();
+          return false; // Stop and show HTML5 error on the specific input
+        }
+      }
+    }
+    return true;
   }
+
+  function goNext() {
+    if (validateCurrentStep() && !isLast) {
+      setActiveTab(STEPS[currentIndex + 1].value);
+    }
+  }
+  
   function goPrev() {
     if (!isFirst) setActiveTab(STEPS[currentIndex - 1].value);
   }
 
+  async function handleAddMake() {
+    if (!newMakeName.trim()) return;
+    setIsCreatingInline(true);
+    const fd = new FormData();
+    fd.append("name", newMakeName);
+    const res = await createMake(null, fd);
+    if (res.ok && res.id) {
+      setMakes([...makes, { id: res.id, name: newMakeName.trim(), slug: "", isPopular: false }]);
+      setMakeId(res.id);
+      setIsAddingMake(false);
+      setNewMakeName("");
+    } else {
+      alert(res.error || "Failed to create make");
+    }
+    setIsCreatingInline(false);
+  }
+
+  async function handleAddModel() {
+    if (!newModelName.trim() || !makeId) return;
+    setIsCreatingInline(true);
+    const fd = new FormData();
+    fd.append("name", newModelName);
+    fd.append("makeId", makeId);
+    const res = await createModel(null, fd);
+    if (res.ok && res.id) {
+      setModels([...models, { id: res.id, makeId, name: newModelName.trim(), slug: "" }]);
+      setModelId(res.id);
+      setIsAddingModel(false);
+      setNewModelName("");
+    } else {
+      alert(res.error || "Failed to create model");
+    }
+    setIsCreatingInline(false);
+  }
+
+  // Intercept form submission to validate all fields (especially for edit mode where tabs can be skipped)
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    if (mode === "create" && !validateCurrentStep()) {
+      e.preventDefault();
+      return;
+    }
+    
+    // In edit mode, if they click save but a hidden tab is invalid, find it and switch to it
+    if (mode === "edit" && formRef.current && !formRef.current.checkValidity()) {
+      e.preventDefault();
+      const firstInvalid = formRef.current.querySelector(':invalid');
+      if (firstInvalid) {
+        const panel = firstInvalid.closest('[data-step]');
+        if (panel) {
+          const stepValue = panel.getAttribute('data-step') as StepValue;
+          setActiveTab(stepValue);
+          setTimeout(() => (firstInvalid as HTMLElement).focus(), 100);
+        }
+      }
+    }
+  }
+
   return (
-    <form action={formAction} className="space-y-6">
+    <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="space-y-6">
       {mode === "edit" ? <input type="hidden" name="id" value={v.id} /> : null}
 
       {/* Step progress bar — create mode only */}
@@ -87,15 +177,13 @@ export function VehicleForm({
             const isDone = i < currentIndex;
             return (
               <div key={step.value} className="flex flex-1 items-center">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab(step.value)}
+                <div
                   className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
                     isActive
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : isDone
                       ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-muted-foreground"
                   }`}
                 >
                   {isDone ? (
@@ -104,7 +192,7 @@ export function VehicleForm({
                     <Icon className="size-3.5 shrink-0" />
                   )}
                   <span className="hidden sm:inline">{step.label}</span>
-                </button>
+                </div>
                 {i < STEPS.length - 1 && (
                   <div className={`h-px flex-1 transition-colors ${i < currentIndex ? "bg-primary/40" : "bg-border"}`} />
                 )}
@@ -114,7 +202,10 @@ export function VehicleForm({
         </div>
       )}
 
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as StepValue)}>
+      <Tabs value={activeTab} onValueChange={(v) => {
+        if (mode === "edit") setActiveTab(v as StepValue);
+        // In create mode, we disable clicking tabs directly to enforce the wizard flow
+      }}>
         {/* Tab list — edit mode only (create mode uses the step bar above) */}
         {mode === "edit" && (
           <TabsList>
@@ -124,23 +215,54 @@ export function VehicleForm({
           </TabsList>
         )}
 
-        <TabsPanel value="basics">
+        <TabsPanel value="basics" data-step="basics">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <L label="Stock ID *"><input name="stockId" required defaultValue={v.stock_id} disabled={mode === "edit"} className={inputCls} placeholder="A1042" /></L>
             <L label="Year *"><input name="year" required type="number" defaultValue={v.year} className={inputCls} /></L>
+            
             <L label="Make *">
-              <select name="makeId" required value={makeId} onChange={(e) => setMakeId(e.target.value)} className={inputCls}>
-                <option value="">Select make…</option>
-                {makes.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
-              </select>
-              <Link href="/admin/catalogue" target="_blank" className="mt-1 inline-block text-xs text-primary hover:underline">Can't find the make? Add it →</Link>
+              {!isAddingMake ? (
+                <>
+                  <select name="makeId" required value={makeId} onChange={(e) => {
+                    if (e.target.value === "new") setIsAddingMake(true);
+                    else {
+                      setMakeId(e.target.value);
+                      setModelId(""); // reset model when make changes
+                    }
+                  }} className={inputCls}>
+                    <option value="">Select make…</option>
+                    {makes.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
+                    <option value="new" className="font-semibold text-primary">+ Add New Make...</option>
+                  </select>
+                </>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <input type="hidden" name="makeId" value={makeId} />
+                  <input autoFocus placeholder="New make name" value={newMakeName} onChange={(e) => setNewMakeName(e.target.value)} className={inputCls} />
+                  <button type="button" disabled={isCreatingInline} onClick={handleAddMake} className="rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">Save</button>
+                  <button type="button" onClick={() => setIsAddingMake(false)} className="rounded-lg border px-3 py-2 text-sm text-muted-foreground">Cancel</button>
+                </div>
+              )}
             </L>
+
             <L label="Model *">
-              <select name="modelId" required defaultValue={v.model_id} className={inputCls} disabled={!makeId}>
-                <option value="">Select model…</option>
-                {modelsForMake.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
-              </select>
-              {makeId && <Link href="/admin/catalogue" target="_blank" className="mt-1 inline-block text-xs text-primary hover:underline">Can't find the model? Add it →</Link>}
+              {!isAddingModel ? (
+                <select name="modelId" required value={modelId} onChange={(e) => {
+                  if (e.target.value === "new") setIsAddingModel(true);
+                  else setModelId(e.target.value);
+                }} className={inputCls} disabled={!makeId || isAddingMake}>
+                  <option value="">Select model…</option>
+                  {modelsForMake.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
+                  {makeId && <option value="new" className="font-semibold text-primary">+ Add New Model...</option>}
+                </select>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <input type="hidden" name="modelId" value={modelId} />
+                  <input autoFocus placeholder="New model name" value={newModelName} onChange={(e) => setNewModelName(e.target.value)} className={inputCls} />
+                  <button type="button" disabled={isCreatingInline} onClick={handleAddModel} className="rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">Save</button>
+                  <button type="button" onClick={() => setIsAddingModel(false)} className="rounded-lg border px-3 py-2 text-sm text-muted-foreground">Cancel</button>
+                </div>
+              )}
             </L>
             <L label="Variant"><input name="variant" defaultValue={v.variant ?? ""} className={inputCls} placeholder="GXL" /></L>
             <L label="Mileage (km) *"><input name="mileageKm" required type="number" defaultValue={v.mileage_km} className={inputCls} /></L>
@@ -158,7 +280,7 @@ export function VehicleForm({
           </div>
         </TabsPanel>
 
-        <TabsPanel value="specs">
+        <TabsPanel value="specs" data-step="specs">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <L label="Fuel *"><select name="fuelType" required defaultValue={v.fuel_type ?? fuelTypes[0]} className={inputCls}>{fuelTypes.map((f) => <option key={f} value={f}>{FUEL_LABELS[f]}</option>)}</select></L>
             <L label="Transmission *"><select name="transmission" required defaultValue={v.transmission ?? transmissionTypes[0]} className={inputCls}>{transmissionTypes.map((t) => <option key={t} value={t}>{TRANSMISSION_LABELS[t]}</option>)}</select></L>
@@ -177,7 +299,7 @@ export function VehicleForm({
           </div>
         </TabsPanel>
 
-        <TabsPanel value="pricing">
+        <TabsPanel value="pricing" data-step="pricing">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <L label="Price ($) *"><input name="price" required type="number" step="0.01" defaultValue={v.price} className={inputCls} /></L>
             <L label="Weekly estimate ($)"><input name="weeklyEstimate" type="number" defaultValue={v.weekly_estimate ?? ""} className={inputCls} placeholder="auto if blank" /></L>
@@ -192,7 +314,7 @@ export function VehicleForm({
           </div>
         </TabsPanel>
 
-        <TabsPanel value="features">
+        <TabsPanel value="features" data-step="features">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             {featureGroups.map((g) => (
               <div key={g.cat}>
@@ -210,7 +332,7 @@ export function VehicleForm({
           </div>
         </TabsPanel>
 
-        <TabsPanel value="images">
+        <TabsPanel value="images" data-step="images">
           <div className="space-y-6">
             <div>
               <L label="Vehicle Images"><span className="text-xs text-muted-foreground mb-2 block">Upload photos of the vehicle. Set one as the cover image.</span></L>
@@ -281,7 +403,7 @@ export function VehicleForm({
           {(mode === "edit" || isLast) && (
             <button
               type="submit"
-              disabled={pending}
+              disabled={pending || isCreatingInline}
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60 transition-colors shadow-sm"
             >
               {pending ? (

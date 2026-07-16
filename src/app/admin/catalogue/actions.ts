@@ -29,11 +29,11 @@ export async function createMake(_prev: unknown, formData: FormData) {
 
   const supabase = createAdminClient();
   const slug = slugify(parsed.data.name);
-  const { error } = await supabase.from("makes").insert({
+  const { data, error } = await supabase.from("makes").insert({
     name: parsed.data.name,
     slug,
     is_popular: parsed.data.isPopular ?? false,
-  });
+  }).select("id").single();
 
   if (error) {
     if (error.code === "23505") return { error: `"${parsed.data.name}" already exists.` };
@@ -41,7 +41,7 @@ export async function createMake(_prev: unknown, formData: FormData) {
   }
 
   revalidatePath("/admin/catalogue");
-  return { ok: true };
+  return { ok: true, id: data.id };
 }
 
 export async function deleteMake(_prev: unknown, formData: FormData) {
@@ -65,11 +65,11 @@ export async function createModel(_prev: unknown, formData: FormData) {
 
   const supabase = createAdminClient();
   const slug = slugify(parsed.data.name);
-  const { error } = await supabase.from("models").insert({
+  const { data, error } = await supabase.from("models").insert({
     make_id: parsed.data.makeId,
     name: parsed.data.name,
     slug,
-  });
+  }).select("id").single();
 
   if (error) {
     if (error.code === "23505") return { error: `Model "${parsed.data.name}" already exists for this make.` };
@@ -77,7 +77,7 @@ export async function createModel(_prev: unknown, formData: FormData) {
   }
 
   revalidatePath("/admin/catalogue");
-  return { ok: true };
+  return { ok: true, id: data.id };
 }
 
 export async function deleteModel(_prev: unknown, formData: FormData) {
