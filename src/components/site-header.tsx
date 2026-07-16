@@ -22,9 +22,9 @@ const PRIMARY = [
 /** Brand wordmark. Swap for a logo asset when supplied. */
 function Wordmark() {
   return (
-    <Link href="/" className="flex items-center gap-2 font-heading text-xl font-extrabold tracking-tight text-foreground">
+    <a href="/" className="flex items-center gap-2 font-heading text-xl font-extrabold tracking-tight text-foreground">
       <img src="/LOGO.png" alt="Cars365" className="h-10 w-auto object-contain" />
-    </Link>
+    </a>
   );
 }
 
