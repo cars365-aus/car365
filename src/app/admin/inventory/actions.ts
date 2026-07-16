@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/security/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -208,6 +208,7 @@ export async function setVehicleStatus(id: string, status: string) {
   if (error) return { error: error.message };
   await logActivity(user.id, `vehicle.status.${status}`, id);
   revalidatePublic();
+  revalidatePath("/admin/inventory");
   return { ok: true };
 }
 
@@ -216,15 +217,21 @@ export async function toggleFeatured(id: string, isFeatured: boolean) {
   const supabase = createAdminClient();
   await supabase.from("vehicles").update({ is_featured: isFeatured }).eq("id", id);
   revalidatePublic();
+  revalidatePath("/admin/inventory");
   return { ok: true };
 }
 
-export async function deleteVehicle(id: string) {
+export async function deleteVehicle(id: string, shouldRedirect: boolean = true) {
   const user = await requireAdmin();
   const supabase = createAdminClient();
   const { error } = await supabase.from("vehicles").delete().eq("id", id);
   if (error) return { error: error.message };
   await logActivity(user.id, "vehicle.deleted", id);
   revalidatePublic();
-  redirect("/admin/inventory");
+  revalidatePath("/admin/inventory");
+  if (shouldRedirect) {
+    redirect("/admin/inventory");
+  } else {
+    return { ok: true };
+  }
 }

@@ -12,15 +12,21 @@ export function InventoryRowActions({ vehicleId, currentStatus }: { vehicleId: s
     const newStatus = e.target.value;
     if (newStatus === currentStatus) return;
     
-    startTransition(() => {
-      setVehicleStatus(vehicleId, newStatus);
+    startTransition(async () => {
+      const res = await setVehicleStatus(vehicleId, newStatus);
+      if (res?.error) {
+        alert("Failed to change status: " + res.error);
+      }
     });
   }
 
   function handleDelete() {
     if (confirm("Are you sure you want to delete this vehicle?")) {
-      startTransition(() => {
-        deleteVehicle(vehicleId);
+      startTransition(async () => {
+        const res = await deleteVehicle(vehicleId, false);
+        if (res?.error) {
+          alert("Failed to delete vehicle: " + res.error);
+        }
       });
     }
   }
