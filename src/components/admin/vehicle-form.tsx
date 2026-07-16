@@ -5,14 +5,25 @@ import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { fuelTypes, transmissionTypes, bodyTypes, driveTypes, vehicleStatuses } from "@/lib/validation/vehicle";
 import { FUEL_LABELS, TRANSMISSION_LABELS, BODY_TYPE_LABELS, DRIVE_LABELS } from "@/lib/nav";
 import type { Make, Model, Feature, LocationBranch, FeatureCategory } from "@/lib/domain";
+import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Search, Loader2, Check as CheckIcon } from "lucide-react";
 
 type ActionResult = { ok?: boolean; error?: string } | void;
 type Action = (state: ActionResult, formData: FormData) => Promise<ActionResult>;
 
-const inputCls = "w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground";
+const inputCls = "w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow";
 
 // A vehicle row (snake_case) for edit mode, loosely typed.
 type VehicleData = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+const STEPS = [
+  { value: "basics",   label: "Basics",     icon: Car },
+  { value: "specs",    label: "Specs",      icon: Gauge },
+  { value: "pricing",  label: "Pricing",    icon: DollarSign },
+  { value: "features", label: "Features",   icon: Star },
+  { value: "seo",      label: "SEO & Notes",icon: Search },
+] as const;
+
+type StepValue = (typeof STEPS)[number]["value"];
 
 export function VehicleForm({
   action,
@@ -35,23 +46,73 @@ export function VehicleForm({
 }) {
   const [state, formAction, pending] = useActionState(action, undefined);
   const [makeId, setMakeId] = useState<string>(vehicle?.make_id ?? "");
+  const [activeTab, setActiveTab] = useState<StepValue>("basics");
+
   const v = vehicle ?? {};
   const modelsForMake = models.filter((m) => m.makeId === makeId);
   const featureGroups = (["comfort", "safety", "technology", "exterior"] as FeatureCategory[])
     .map((cat) => ({ cat, items: features.filter((f) => f.category === cat) }));
 
+  const currentIndex = STEPS.findIndex((s) => s.value === activeTab);
+  const isFirst = currentIndex === 0;
+  const isLast = currentIndex === STEPS.length - 1;
+
+  function goNext() {
+    if (!isLast) setActiveTab(STEPS[currentIndex + 1].value);
+  }
+  function goPrev() {
+    if (!isFirst) setActiveTab(STEPS[currentIndex - 1].value);
+  }
+
   return (
     <form action={formAction} className="space-y-6">
       {mode === "edit" ? <input type="hidden" name="id" value={v.id} /> : null}
 
-      <Tabs defaultValue="basics">
-        <TabsList>
-          <TabsTab value="basics">Basics</TabsTab>
-          <TabsTab value="specs">Specs</TabsTab>
-          <TabsTab value="pricing">Pricing</TabsTab>
-          <TabsTab value="features">Features</TabsTab>
-          <TabsTab value="seo">SEO & Notes</TabsTab>
-        </TabsList>
+      {/* Step progress bar — create mode only */}
+      {mode === "create" && (
+        <div className="flex items-center gap-0">
+          {STEPS.map((step, i) => {
+            const Icon = step.icon;
+            const isActive = step.value === activeTab;
+            const isDone = i < currentIndex;
+            return (
+              <div key={step.value} className="flex flex-1 items-center">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab(step.value)}
+                  className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+                    isActive
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : isDone
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {isDone ? (
+                    <CheckIcon className="size-3.5 shrink-0" />
+                  ) : (
+                    <Icon className="size-3.5 shrink-0" />
+                  )}
+                  <span className="hidden sm:inline">{step.label}</span>
+                </button>
+                {i < STEPS.length - 1 && (
+                  <div className={`h-px flex-1 transition-colors ${i < currentIndex ? "bg-primary/40" : "bg-border"}`} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as StepValue)}>
+        {/* Tab list — edit mode only (create mode uses the step bar above) */}
+        {mode === "edit" && (
+          <TabsList>
+            {STEPS.map((s) => (
+              <TabsTab key={s.value} value={s.value}>{s.label}</TabsTab>
+            ))}
+          </TabsList>
+        )}
 
         <TabsPanel value="basics">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -147,13 +208,60 @@ export function VehicleForm({
         </TabsPanel>
       </Tabs>
 
-      {state?.error ? <p className="text-sm text-danger">{state.error}</p> : null}
-      {state?.ok ? <p className="text-sm text-success">Saved.</p> : null}
+      {/* Status messages */}
+      {state?.error ? <p className="rounded-lg bg-danger/5 border border-danger/30 px-4 py-2.5 text-sm text-danger">{state.error}</p> : null}
+      {state?.ok ? <p className="rounded-lg bg-success/5 border border-success/30 px-4 py-2.5 text-sm text-success">Saved successfully.</p> : null}
 
-      <div className="flex gap-3">
-        <button type="submit" disabled={pending} className="rounded-lg bg-primary px-5 py-2.5 font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60">
-          {pending ? "Saving…" : mode === "create" ? "Create vehicle" : "Save changes"}
-        </button>
+      {/* Navigation buttons */}
+      <div className="flex items-center justify-between border-t border-border pt-4">
+        <div>
+          {mode === "create" && !isFirst && (
+            <button
+              type="button"
+              onClick={goPrev}
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+            >
+              <ChevronLeft className="size-4" /> Back
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Step counter for create mode */}
+          {mode === "create" && (
+            <span className="text-xs text-muted-foreground">
+              Step {currentIndex + 1} of {STEPS.length}
+            </span>
+          )}
+
+          {/* Next button (all steps except last in create mode) */}
+          {mode === "create" && !isLast && (
+            <button
+              type="button"
+              onClick={goNext}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover transition-colors shadow-sm"
+            >
+              Next <ChevronRight className="size-4" />
+            </button>
+          )}
+
+          {/* Submit — only on last step in create mode, always in edit mode */}
+          {(mode === "edit" || isLast) && (
+            <button
+              type="submit"
+              disabled={pending}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60 transition-colors shadow-sm"
+            >
+              {pending ? (
+                <><Loader2 className="size-4 animate-spin" /> Saving…</>
+              ) : mode === "create" ? (
+                <><CheckIcon className="size-4" /> Create vehicle</>
+              ) : (
+                "Save changes"
+              )}
+            </button>
+          )}
+        </div>
       </div>
     </form>
   );
