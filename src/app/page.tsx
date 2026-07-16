@@ -192,9 +192,46 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* FAQs Preview */}
+        <section className="bg-black py-24 border-y border-white/5">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-8 items-center">
+              <ScrollReveal direction="left">
+                <div>
+                  <h2 className="font-heading text-3xl font-black uppercase tracking-tight text-white sm:text-5xl mb-6">
+                    Common <br/><span className="text-primary">Questions</span>
+                  </h2>
+                  <p className="text-lg text-slate-400 max-w-md mb-8 leading-relaxed">
+                    Buying or selling a car doesn't have to be complicated. Here are some of the most common questions our customers ask us.
+                  </p>
+                  <Link href="/faqs" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-[0_0_20px_rgba(255,204,0,0.2)]">
+                    View all FAQs <ArrowRight className="size-5" />
+                  </Link>
+                </div>
+              </ScrollReveal>
+              
+              <ScrollReveal direction="right" delay={0.2}>
+                <div className="space-y-4">
+                  {/* Hardcoded 3 quick FAQs for the homepage that match the FAQ accordion UI */}
+                  {[
+                    { q: "Are your cars mechanically inspected?", a: "Yes. Every single vehicle undergoes a comprehensive multi-point mechanical and safety inspection before being listed for sale." },
+                    { q: "Do you offer financing?", a: "Absolutely. We work with leading lenders to provide highly competitive and bespoke finance packages tailored to your budget." },
+                    { q: "Can I trade in my current vehicle?", a: "Yes! We accept trade-ins and provide fair, transparent market valuations to make upgrading to your new car as seamless as possible." }
+                  ].map((faq, i) => (
+                    <div key={i} className="rounded-2xl border border-white/10 bg-[#0a0a0a] p-6 hover:border-primary/30 transition-colors">
+                      <h3 className="font-heading text-xl font-bold text-white mb-2">{faq.q}</h3>
+                      <p className="text-slate-400">{faq.a}</p>
+                    </div>
+                  ))}
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
         {/* Testimonials */}
         {testimonials.length > 0 ? (
-          <section className="bg-[#131313] border-y border-white/5">
+          <section className="bg-[#131313] border-b border-white/5">
             <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
               <h2 className="mb-8 font-heading text-2xl font-bold text-foreground sm:text-3xl">What our customers say</h2>
               <div className="grid grid-cols-1 gap-5 md:grid-cols-3">

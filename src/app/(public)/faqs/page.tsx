@@ -1,14 +1,17 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { HelpCircle, ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { JsonLd } from "@/components/json-ld";
 import { getPublishedFaqs } from "@/lib/data/content";
 import { faqPageSchema, breadcrumbSchema } from "@/lib/seo/jsonld";
+import { FaqAccordion } from "./faq-client";
+import { FadeInItem, FadeInStagger } from "@/components/animations/hero-animations";
 
 export const metadata: Metadata = {
-  title: "Frequently Asked Questions",
-  description: "Answers to common questions about buying, selling, financing, warranty, and inspections.",
+  title: "Frequently Asked Questions | Cars365",
+  description: "Answers to common questions about buying, selling, financing, warranty, and inspections at Cars365.",
 };
 
 export const revalidate = 3600;
@@ -16,47 +19,62 @@ export const revalidate = 3600;
 export default async function FaqsPage() {
   const faqs = await getPublishedFaqs();
 
-  // Group by category, preserving order.
-  const groups = faqs.reduce<Record<string, typeof faqs>>((acc, f) => {
-    (acc[f.category] ??= []).push(f);
-    return acc;
-  }, {});
-
   return (
-    <>
+    <div className="dark bg-background text-foreground min-h-screen">
       <JsonLd schema={[faqPageSchema(faqs), breadcrumbSchema([{ name: "Home", path: "/" }, { name: "FAQs", path: "/faqs" }])]} />
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        <nav className="mb-4 text-sm text-muted-foreground">
-          <Link href="/" className="hover:text-foreground">Home</Link> <span aria-hidden>/</span> <span className="text-foreground">FAQs</span>
-        </nav>
-        <h1 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">Frequently asked questions</h1>
-        <p className="mt-3 text-body">Can&apos;t find what you&apos;re after? <Link href="/contact" className="text-primary hover:underline">Get in touch</Link>.</p>
-
-        {faqs.length === 0 ? (
-          <p className="mt-8 text-muted-foreground">No FAQs published yet.</p>
-        ) : (
-          <div className="mt-8 space-y-8">
-            {Object.entries(groups).map(([category, items]) => (
-              <section key={category}>
-                <h2 className="mb-3 font-heading text-lg font-bold text-foreground">{category}</h2>
-                <div className="divide-y divide-border rounded-xl border border-border bg-card">
-                  {items.map((f) => (
-                    <details key={f.id} className="group p-4">
-                      <summary className="flex cursor-pointer list-none items-center justify-between font-medium text-foreground">
-                        {f.question}
-                        <span className="ml-4 text-muted-foreground transition-transform group-open:rotate-45">+</span>
-                      </summary>
-                      <p className="mt-2 text-sm text-body">{f.answer}</p>
-                    </details>
-                  ))}
+      
+      <main>
+        {/* Premium Hero Section */}
+        <section className="relative overflow-hidden bg-black py-20 sm:py-32 border-b border-white/5">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[400px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-50" />
+          
+          <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 text-center">
+            <FadeInStagger>
+              <FadeInItem>
+                <div className="mb-6 inline-flex size-16 items-center justify-center rounded-2xl bg-primary text-black shadow-[0_0_30px_rgba(255,204,0,0.3)]">
+                  <HelpCircle className="size-8" />
                 </div>
-              </section>
-            ))}
+              </FadeInItem>
+              <FadeInItem>
+                <h1 className="font-heading text-4xl font-black uppercase tracking-tight text-white sm:text-6xl mb-6">
+                  Got Questions? <br className="hidden sm:block" />
+                  <span className="text-primary">We've got answers.</span>
+                </h1>
+              </FadeInItem>
+              <FadeInItem>
+                <p className="mx-auto max-w-2xl text-lg text-slate-400">
+                  Everything you need to know about buying, selling, and financing with Cars365. 
+                  Straightforward answers for a straightforward process.
+                </p>
+              </FadeInItem>
+            </FadeInStagger>
           </div>
-        )}
+        </section>
+
+        {/* FAQs Section */}
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-32">
+          {faqs.length === 0 ? (
+            <p className="text-center text-lg text-slate-400">No FAQs published yet. Check back soon.</p>
+          ) : (
+            <FaqAccordion faqs={faqs} />
+          )}
+
+          {/* Contact Call to action */}
+          <div className="mt-32 max-w-3xl mx-auto rounded-3xl border border-white/10 bg-black p-10 sm:p-14 text-center transition-colors hover:border-primary/50 relative overflow-hidden group">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/10 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            <h3 className="relative z-10 font-heading text-3xl font-bold text-white mb-4">Still need help?</h3>
+            <p className="relative z-10 text-lg text-slate-400 mb-8 max-w-lg mx-auto">
+              If you couldn't find what you're looking for, our team is ready to assist you directly.
+            </p>
+            <Link href="/contact" className="relative z-10 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-[0_0_20px_rgba(255,204,0,0.2)]">
+              Get in touch <ArrowRight className="size-5" />
+            </Link>
+          </div>
+        </section>
       </main>
+      
       <SiteFooter />
-    </>
+    </div>
   );
 }
