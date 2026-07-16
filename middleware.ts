@@ -33,14 +33,6 @@ export async function middleware(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
-  // Supabase sometimes ignores the redirectTo path and redirects to the Site URL (root) 
-  // with the OAuth code. If we see a code on the root, forward it to the callback route.
-  if (path === "/" && request.nextUrl.searchParams.has("code")) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/auth/callback";
-    return NextResponse.redirect(redirectUrl);
-  }
-
   // Strict SEO canonical lowercasing for programmatic routes
   if (
     (path.startsWith("/locations/") || path.startsWith("/categories/")) &&
