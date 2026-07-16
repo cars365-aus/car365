@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus, Star } from "lucide-react";
 import { getInventoryList } from "@/lib/data/dashboard";
 import { formatPrice } from "@/lib/nav";
+import { InventoryRowActions } from "./inventory-row-actions";
 
 export const metadata = { title: "Inventory" };
 export const dynamic = "force-dynamic";
@@ -65,7 +66,9 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
                 <td className="p-3 tabular-nums text-foreground">{formatPrice(v.price)}</td>
                 <td className="p-3"><span className={`rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${STATUS_STYLES[v.status] ?? ""}`}>{v.status}</span></td>
                 <td className="p-3 tabular-nums text-muted-foreground">{v.viewsCount}</td>
-                <td className="p-3 text-right"><Link href={`/admin/inventory/${v.id}`} className="text-primary hover:underline">Edit</Link></td>
+                <td className="p-3 text-right">
+                  <InventoryRowActions vehicleId={v.id} currentStatus={v.status} />
+                </td>
               </tr>
             ))}
           </tbody>
