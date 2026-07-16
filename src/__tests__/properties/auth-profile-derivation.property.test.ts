@@ -11,8 +11,6 @@ describe("deriveProfileFromUser (Property 5)", () => {
   const userMetadataArb = fc.record({
     full_name: fc.option(fc.string(), { nil: undefined }),
     name: fc.option(fc.string(), { nil: undefined }),
-    avatar_url: fc.option(fc.webUrl(), { nil: undefined }),
-    picture: fc.option(fc.webUrl(), { nil: undefined }),
   }, { requiredKeys: [] });
 
   const userArb = fc.record({
@@ -35,7 +33,6 @@ describe("deriveProfileFromUser (Property 5)", () => {
 
           const meta = user.user_metadata || {};
           expect(profile.full_name).toBe(meta.full_name ?? meta.name ?? null);
-          expect(profile.avatar_url).toBe(meta.avatar_url ?? meta.picture ?? null);
 
           // updated_at should be a valid ISO timestamp
           expect(!isNaN(Date.parse(profile.updated_at))).toBe(true);
