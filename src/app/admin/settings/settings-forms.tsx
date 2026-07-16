@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { saveCompanyProfile, savePhoneNumbers, saveFinanceParams, saveNotificationRecipients } from "./actions";
+import { saveCompanyProfile, savePhoneNumbers, saveFinanceParams, saveNotificationRecipients, saveLocationHours } from "./actions";
 
 const input = "w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground";
 type V = Record<string, unknown>;
@@ -10,10 +10,12 @@ type Action = (state: { ok?: boolean; error?: string } | undefined, fd: FormData
 function Card({ title, action, children }: { title: string; action: Action; children: React.ReactNode }) {
   const [state, formAction, pending] = useActionState(action, undefined);
   return (
-    <form action={formAction} className="space-y-3 rounded-xl border border-border bg-card p-5">
+    <form action={formAction} className="space-y-3 rounded-xl border border-border bg-card p-5 flex flex-col h-full">
       <h2 className="font-heading text-lg font-bold text-foreground">{title}</h2>
-      {children}
-      <div className="flex items-center gap-3">
+      <div className="flex-1 space-y-3">
+        {children}
+      </div>
+      <div className="flex items-center gap-3 pt-3">
         <button type="submit" disabled={pending} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60">{pending ? "Saving…" : "Save"}</button>
         {state?.ok ? <span className="text-sm text-success">Saved.</span> : null}
         {state?.error ? <span className="text-sm text-danger">{state.error}</span> : null}
@@ -26,7 +28,7 @@ function L({ label, children }: { label: string; children: React.ReactNode }) {
   return <label className="block"><span className="mb-1 block text-sm font-medium text-foreground">{label}</span>{children}</label>;
 }
 
-export function SettingsForms({ company, phones, finance, recipients }: { company: V; phones: V; finance: V; recipients: string[] }) {
+export function SettingsForms({ company, phones, finance, recipients, locationHours }: { company: V; phones: V; finance: V; recipients: string[]; locationHours: Record<string, string> }) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <Card title="Company profile" action={saveCompanyProfile}>
@@ -37,6 +39,18 @@ export function SettingsForms({ company, phones, finance, recipients }: { compan
           <L label="Email"><input name="email" type="email" defaultValue={String(company.email ?? "")} className={input} /></L>
           <L label="Google rating"><input name="googleRating" type="number" step="0.1" defaultValue={String(company.google_rating ?? "")} className={input} /></L>
           <L label="Google review count"><input name="googleReviewCount" type="number" defaultValue={String(company.google_review_count ?? "")} className={input} /></L>
+        </div>
+      </Card>
+
+      <Card title="Opening Hours" action={saveLocationHours}>
+        <div className="grid grid-cols-2 gap-3">
+          <L label="Monday"><input name="mon" defaultValue={locationHours.mon ?? ""} className={input} placeholder="9:00-18:00 or closed" /></L>
+          <L label="Tuesday"><input name="tue" defaultValue={locationHours.tue ?? ""} className={input} placeholder="9:00-18:00 or closed" /></L>
+          <L label="Wednesday"><input name="wed" defaultValue={locationHours.wed ?? ""} className={input} placeholder="9:00-18:00 or closed" /></L>
+          <L label="Thursday"><input name="thu" defaultValue={locationHours.thu ?? ""} className={input} placeholder="9:00-18:00 or closed" /></L>
+          <L label="Friday"><input name="fri" defaultValue={locationHours.fri ?? ""} className={input} placeholder="9:00-18:00 or closed" /></L>
+          <L label="Saturday"><input name="sat" defaultValue={locationHours.sat ?? ""} className={input} placeholder="9:00-18:00 or closed" /></L>
+          <L label="Sunday"><input name="sun" defaultValue={locationHours.sun ?? ""} className={input} placeholder="9:00-18:00 or closed" /></L>
         </div>
       </Card>
 

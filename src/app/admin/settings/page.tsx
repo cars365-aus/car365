@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getActiveLocations } from "@/lib/data/locations";
 import { SettingsForms } from "./settings-forms";
 
 export const metadata = { title: "Settings" };
@@ -8,10 +9,14 @@ type V = Record<string, unknown>;
 
 export default async function AdminSettingsPage() {
   const supabase = createAdminClient();
-  const { data } = await supabase.from("settings").select("key, value");
+  const [{ data }, locations] = await Promise.all([
+    supabase.from("settings").select("key, value"),
+    getActiveLocations()
+  ]);
   const byKey = Object.fromEntries((data ?? []).map((r) => [r.key, r.value])) as Record<string, V>;
 
   const recipients = ((byKey.notification_recipients?.emails as string[]) ?? []).filter(Boolean);
+  const locationHours = locations[0]?.hours ?? {};
 
   return (
     <div className="space-y-6">
@@ -24,6 +29,7 @@ export default async function AdminSettingsPage() {
         phones={byKey.phone_numbers ?? {}}
         finance={byKey.finance_params ?? {}}
         recipients={recipients}
+        locationHours={locationHours}
       />
     </div>
   );

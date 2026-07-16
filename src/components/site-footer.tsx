@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Star } from "lucide-react";
+import { Phone, Mail, MapPin, Star, Clock } from "lucide-react";
 import { getMakes } from "@/lib/data/inventory";
 import { getPhoneNumbers, getCompanyProfile } from "@/lib/data/settings";
+import { getActiveLocations } from "@/lib/data/locations";
 import { NewsletterForm } from "@/components/newsletter-form";
 import {
   NAV_BODY_TYPES,
@@ -24,11 +25,17 @@ const LEGAL_LINKS = [
   { href: "/legal/terms", label: "Terms & Conditions" },
 ];
 
+const DAY_LABELS: Record<string, string> = {
+  mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu",
+  fri: "Fri", sat: "Sat", sun: "Sun",
+};
+
 export async function SiteFooter() {
-  const [makes, phones, company] = await Promise.all([
+  const [makes, phones, company, locations] = await Promise.all([
     getMakes(),
     getPhoneNumbers(),
     getCompanyProfile(),
+    getActiveLocations(),
   ]);
   const popularMakes = makes.filter((m) => m.isPopular).slice(0, 8);
   const phone = phones.primary || null;
@@ -36,13 +43,14 @@ export async function SiteFooter() {
   const rating = company.google_rating as number | undefined;
   const reviewCount = company.google_review_count as number | undefined;
   const tradingName = (company.trading_name as string) || "Cars365";
+  const branch = locations[0] ?? null;
 
   return (
     <footer className="border-t border-white/10 bg-black text-slate-300 pt-10 pb-24 sm:pb-0">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         {/* Link hubs */}
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-6">
-          <div className="col-span-2 lg:col-span-2">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 xl:grid-cols-7">
+          <div className="col-span-2 xl:col-span-2">
             <Link href="/" className="block">
               <img src="/LOGO.png" alt="Cars365" className="h-10 w-auto object-contain" />
             </Link>
@@ -124,6 +132,22 @@ export async function SiteFooter() {
               ))}
             </ul>
           </div>
+          
+          {branch && Object.keys(branch.hours).length > 0 ? (
+            <div>
+              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
+                <Clock className="size-4" /> Opening hours
+              </h3>
+              <ul className="space-y-1 text-sm text-slate-400">
+                {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].filter((d) => branch.hours[d]).map((d) => (
+                  <li key={d} className="flex justify-between max-w-[160px]">
+                    <span>{DAY_LABELS[d]}</span>
+                    <span className="text-white">{branch.hours[d] === "closed" ? "Closed" : branch.hours[d]}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
 
         {/* Newsletter */}

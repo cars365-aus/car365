@@ -55,3 +55,30 @@ export async function saveNotificationRecipients(_prev: unknown, formData: FormD
     .split(/[\n,]/).map((e) => e.trim()).filter(Boolean);
   return upsertSetting("notification_recipients", { emails });
 }
+
+export async function saveLocationHours(_prev: unknown, formData: FormData) {
+  await requireAdmin();
+  const supabase = createAdminClient();
+  const { data: locations } = await supabase.from("locations").select("id").eq("is_active", true).order("name").limit(1);
+  if (!locations || locations.length === 0) return { error: "No active locations found" };
+  
+  const id = locations[0].id;
+  const hours = {
+    mon: String(formData.get("mon") ?? ""),
+    tue: String(formData.get("tue") ?? ""),
+    wed: String(formData.get("wed") ?? ""),
+    thu: String(formData.get("thu") ?? ""),
+    fri: String(formData.get("fri") ?? ""),
+    sat: String(formData.get("sat") ?? ""),
+    sun: String(formData.get("sun") ?? ""),
+  };
+  
+  const { error } = await supabase.from("locations").update({ hours }).eq("id", id);
+  if (error) return { error: error.message };
+  
+  revalidate("locations");
+  revalidate("public");
+  revalidatePath("/admin/settings");
+  revalidatePath("/contact");
+  return { ok: true };
+}
