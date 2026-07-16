@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import Link from "next/link";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { fuelTypes, transmissionTypes, bodyTypes, driveTypes, vehicleStatuses } from "@/lib/validation/vehicle";
 import { FUEL_LABELS, TRANSMISSION_LABELS, BODY_TYPE_LABELS, DRIVE_LABELS } from "@/lib/nav";
@@ -123,12 +124,14 @@ export function VehicleForm({
                 <option value="">Select make…</option>
                 {makes.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
               </select>
+              <Link href="/admin/catalogue" target="_blank" className="mt-1 inline-block text-xs text-primary hover:underline">Can't find the make? Add it →</Link>
             </L>
             <L label="Model *">
               <select name="modelId" required defaultValue={v.model_id} className={inputCls} disabled={!makeId}>
                 <option value="">Select model…</option>
                 {modelsForMake.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
               </select>
+              {makeId && <Link href="/admin/catalogue" target="_blank" className="mt-1 inline-block text-xs text-primary hover:underline">Can't find the model? Add it →</Link>}
             </L>
             <L label="Variant"><input name="variant" defaultValue={v.variant ?? ""} className={inputCls} placeholder="GXL" /></L>
             <L label="Mileage (km) *"><input name="mileageKm" required type="number" defaultValue={v.mileage_km} className={inputCls} /></L>
