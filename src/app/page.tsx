@@ -74,11 +74,11 @@ export default async function HomePage() {
       <main>
         {/* Hero Section */}
         <div className="relative bg-[#0b1320] pb-28 lg:pb-36">
-          {/* Background Image - Stunning Unsplash Sports Car */}
+          {/* Background Image - Affordable Sensible Car */}
           <div className="absolute inset-0 z-0">
             <img 
-              src="https://images.unsplash.com/photo-1614200179396-2bdb77ebf81b?auto=format&fit=crop&w=2500&q=80" 
-              alt="Premium Yellow Sports Car" 
+              src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=2500&q=80" 
+              alt="Affordable Reliable Used Car" 
               className="w-full h-full object-cover object-center"
             />
             {/* Elegant dark gradients for perfect text readability and blending */}

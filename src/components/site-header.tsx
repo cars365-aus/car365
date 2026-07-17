@@ -35,7 +35,7 @@ export async function SiteHeader() {
   const phone = phones.primary || null;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full bg-slate-50 border-b border-slate-200 shadow-sm transition-all duration-300">
       <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-8">
         <Wordmark />
 
