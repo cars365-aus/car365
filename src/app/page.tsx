@@ -75,36 +75,37 @@ export default async function HomePage() {
       
       <main>
         {/* Hero Section */}
-        <div className="relative bg-[#0b1320] pb-24 lg:pb-32">
-          {/* Background Image - Sports Car */}
-          <div className="absolute inset-0 z-0 opacity-100 overflow-hidden">
+        <div className="relative bg-[#0b1320] pb-28 lg:pb-36">
+          {/* Background Image - Stunning Unsplash Sports Car */}
+          <div className="absolute inset-0 z-0">
             <img 
-              src="/images/hero-sydney.png" 
-              alt="Yellow Sports Car in Sydney" 
-              className="w-full h-full object-cover object-[75%_center] scale-[1.05]"
+              src="https://images.unsplash.com/photo-1614200179396-2bdb77ebf81b?auto=format&fit=crop&w=2500&q=80" 
+              alt="Premium Yellow Sports Car" 
+              className="w-full h-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0b1320] via-[#0b1320]/60 to-transparent w-full md:w-2/3"></div>
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0b1320] to-transparent"></div>
+            {/* Elegant dark gradients for perfect text readability and blending */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0b1320] via-[#0b1320]/80 to-transparent w-full md:w-3/4"></div>
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0b1320] via-[#0b1320]/50 to-transparent"></div>
           </div>
           
-          <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:pt-32">
+          <div className="relative z-10 mx-auto max-w-7xl px-4 pt-24 sm:px-6 lg:pt-36">
             <div className="max-w-xl">
               {rating ? (
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-3 py-1.5 text-sm text-white">
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/30 backdrop-blur-md px-4 py-1.5 text-sm text-white shadow-lg">
                   <Star className="size-4 fill-primary text-primary" />
                   <span className="font-bold">{rating}/5</span> from verified customers
                 </div>
               ) : null}
               
-              <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] text-white mb-4">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter leading-[1.05] text-white mb-6 drop-shadow-sm">
                 Find the right car.<br/>Drive away confident.
               </h1>
               
-              <p className="text-lg text-slate-300 font-medium mb-8">
+              <p className="text-lg sm:text-xl text-slate-300 font-medium mb-10 max-w-lg leading-relaxed drop-shadow">
                 Quality used cars, carefully inspected and ready for Sydney roads.
               </p>
               
-              <div className="flex flex-wrap gap-4 mb-20">
+              <div className="flex flex-wrap gap-4 mb-24">
                 <Link href="/used-cars" className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-primary px-8 font-bold text-black hover:bg-primary-hover transition-colors">
                   Browse Cars
                 </Link>
