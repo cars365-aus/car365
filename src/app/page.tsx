@@ -268,8 +268,8 @@ export default async function HomePage() {
             </div>
             <div className="lg:w-1/2 w-full h-[350px]">
               <img 
-                src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80" 
-                alt="Handing over car keys" 
+                src="/images/finance-keys.png" 
+                alt="Car key handover" 
                 className="w-full h-full object-cover rounded-2xl shadow-xl"
               />
             </div>
