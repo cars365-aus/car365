@@ -9,6 +9,7 @@ import type { FinanceParams } from "@/lib/domain";
 
 export type RepaymentEstimate = {
   weekly: number;
+  fortnightly: number;
   monthly: number;
   principal: number;
   deposit: number;
@@ -44,6 +45,17 @@ export function estimateRepayments(
     monthly = (principal * monthlyRate * factorM) / (factorM - 1);
   }
 
+  // Fortnightly Calculation
+  const termFortnights = Math.round(termMonths * (26 / 12));
+  const fortnightlyRate = annualRateDec / 26;
+  let fortnightly: number;
+  if (fortnightlyRate === 0) {
+    fortnightly = principal / termFortnights;
+  } else {
+    const factorF = Math.pow(1 + fortnightlyRate, termFortnights);
+    fortnightly = (principal * fortnightlyRate * factorF) / (factorF - 1);
+  }
+
   // Weekly Calculation (Standard Australian Practice)
   const termWeeks = Math.round(termMonths * (52 / 12));
   const weeklyRate = annualRateDec / 52;
@@ -57,6 +69,7 @@ export function estimateRepayments(
 
   return {
     weekly: Math.round(weekly),
+    fortnightly: Math.round(fortnightly),
     monthly: Math.round(monthly),
     principal,
     deposit,
