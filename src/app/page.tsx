@@ -178,7 +178,7 @@ export default async function HomePage() {
                   <img 
                     src={`/images/body-types/${b}.png`} 
                     alt={b} 
-                    className="w-[95%] h-auto object-contain scale-110 transition-transform duration-300 group-hover:scale-125" 
+                    className="w-[95%] h-auto object-contain scale-110 transition-transform duration-300 group-hover:scale-125 mix-blend-multiply" 
                   />
                 </div>
                 <span className="font-medium text-[13px] text-slate-800">{BODY_TYPE_LABELS[b as keyof typeof BODY_TYPE_LABELS] || b}</span>
