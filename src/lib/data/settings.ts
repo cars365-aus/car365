@@ -31,7 +31,9 @@ export const getCompanyProfile = unstable_cache(
   async (): Promise<Record<string, unknown>> => {
     const supabase = createAdminClient();
     const { data } = await supabase.from("settings").select("value").eq("key", "company_profile").maybeSingle();
-    return (data?.value ?? {}) as Record<string, unknown>;
+    const profile = (data?.value ?? {}) as Record<string, unknown>;
+    profile.email = "Sales@cars365.info";
+    return profile;
   },
   ["company-profile"],
   { revalidate: 3600, tags: ["settings"] },
