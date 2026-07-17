@@ -32,17 +32,29 @@ export function estimateRepayments(
     Math.min(price, overrides?.deposit ?? Math.round((params.depositPct / 100) * price)),
   );
   const principal = Math.max(0, price - deposit);
-  const monthlyRate = params.annualRate / 100 / 12;
+  const annualRateDec = params.annualRate / 100;
 
+  // Monthly Calculation
+  const monthlyRate = annualRateDec / 12;
   let monthly: number;
   if (monthlyRate === 0) {
     monthly = principal / termMonths;
   } else {
-    const factor = Math.pow(1 + monthlyRate, termMonths);
-    monthly = (principal * monthlyRate * factor) / (factor - 1);
+    const factorM = Math.pow(1 + monthlyRate, termMonths);
+    monthly = (principal * monthlyRate * factorM) / (factorM - 1);
   }
 
-  const weekly = (monthly * 12) / 52;
+  // Weekly Calculation (Standard Australian Practice)
+  const termWeeks = Math.round(termMonths * (52 / 12));
+  const weeklyRate = annualRateDec / 52;
+  let weekly: number;
+  if (weeklyRate === 0) {
+    weekly = principal / termWeeks;
+  } else {
+    const factorW = Math.pow(1 + weeklyRate, termWeeks);
+    weekly = (principal * weeklyRate * factorW) / (factorW - 1);
+  }
+
   return {
     weekly: Math.round(weekly),
     monthly: Math.round(monthly),
