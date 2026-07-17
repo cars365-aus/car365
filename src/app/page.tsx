@@ -347,9 +347,9 @@ export default async function HomePage() {
             <div className="flex flex-col lg:flex-row gap-12 items-center rounded-2xl bg-white overflow-hidden shadow-sm border border-slate-100">
               <div className="w-full lg:w-1/2 h-[300px] lg:h-[450px]">
                 <img 
-                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80" 
-                  alt="Cars 365 Team" 
-                  className="w-full h-full object-cover"
+                  src="/images/dealership-team.png" 
+                  alt="Cars 365 Dealership Team" 
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               <div className="w-full lg:w-1/2 p-8 lg:p-12">
