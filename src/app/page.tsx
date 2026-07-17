@@ -179,12 +179,7 @@ export default async function HomePage() {
                     src={`/images/body-types/${b}.png`} 
                     alt={b} 
                     className="w-full h-auto object-contain max-h-[65px] transition-transform group-hover:scale-105" 
-                    onError={(e) => { 
-                      e.currentTarget.style.display = 'none'; 
-                      e.currentTarget.nextElementSibling!.classList.remove('hidden'); 
-                    }} 
                   />
-                  <Car className="size-10 text-slate-300 stroke-1 hidden" />
                 </div>
                 <span className="font-medium text-[13px] text-slate-800">{BODY_TYPE_LABELS[b as keyof typeof BODY_TYPE_LABELS] || b}</span>
               </Link>
