@@ -69,9 +69,7 @@ export default async function HomePage() {
 
   return (
     <div className="bg-white text-slate-900 min-h-screen font-sans">
-      <div className="dark">
-        <SiteHeader />
-      </div>
+      <SiteHeader />
       
       <main>
         {/* Hero Section */}
@@ -156,10 +154,8 @@ export default async function HomePage() {
                   View all cars <ArrowRight className="size-4" />
                 </Link>
               </div>
-              <div className="dark">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                  {featured.map((v, i) => <VehicleCard key={v.id} vehicle={v} priority={i < 4} />)}
-                </div>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {featured.map((v, i) => <VehicleCard key={v.id} vehicle={v} priority={i < 4} />)}
               </div>
               <div className="mt-10 flex justify-center">
                 <Link href="/used-cars" className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 font-bold text-black hover:bg-primary-hover transition-colors">
@@ -441,9 +437,7 @@ export default async function HomePage() {
 
       </main>
       
-      <div className="dark">
-        <SiteFooter />
-      </div>
+      <SiteFooter />
     </div>
   );
 }

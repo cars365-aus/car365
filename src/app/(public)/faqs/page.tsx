@@ -20,7 +20,7 @@ export default async function FaqsPage() {
   const faqs = await getPublishedFaqs();
 
   return (
-    <div className="dark bg-background text-foreground min-h-screen">
+    <div className="bg-background text-foreground min-h-screen">
       <JsonLd schema={[faqPageSchema(faqs), breadcrumbSchema([{ name: "Home", path: "/" }, { name: "FAQs", path: "/faqs" }])]} />
       <SiteHeader />
       

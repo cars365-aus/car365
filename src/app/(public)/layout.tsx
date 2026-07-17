@@ -18,7 +18,7 @@ export default async function PublicLayout({ children }: { children: React.React
   return (
     <>
       <JsonLd schema={dealer} />
-      <div className="dark bg-background text-foreground min-h-screen">
+      <div className="bg-background text-foreground min-h-screen">
         {children}
       </div>
     </>
