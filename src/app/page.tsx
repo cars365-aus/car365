@@ -2,7 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import {
   ShieldCheck, BadgeCheck, Handshake, CircleDollarSign, ArrowRight, Star,
-  Search, Car, Phone,
+  Search, Car, Phone, MapPin, ChevronDown, CheckCircle2, ChevronRight,
+  TrendingUp, Award, CalendarCheck, HelpCircle, Key, FileText, Check
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -27,15 +28,33 @@ export const revalidate = 900;
 
 const TRUST = [
   { icon: ShieldCheck, title: "Every car inspected", body: "Multi-point inspection before it's listed." },
-  { icon: BadgeCheck, title: "Roadworthy included", body: "Ready to drive away with paperwork sorted." },
-  { icon: CircleDollarSign, title: "Finance available", body: "We'll help arrange competitive repayments." },
-  { icon: Handshake, title: "Trade-ins welcome", body: "Fair offers on your current car." },
+  { icon: BadgeCheck, title: "Roadworthy included", body: "All vehicles come with roadworthy certificate." },
+  { icon: CircleDollarSign, title: "Finance available", body: "Competitive rates from trusted lenders." },
+  { icon: Handshake, title: "Trade-ins welcome", body: "Get a fair offer on your current car." },
 ];
 
 const STEPS = [
-  { icon: Search, title: "Browse & shortlist", body: "Filter our inventory to find cars that fit your needs and budget." },
-  { icon: Phone, title: "Enquire in seconds", body: "Call, WhatsApp or send a quick enquiry — a specialist replies fast." },
-  { icon: Car, title: "Inspect & drive away", body: "Book a viewing, arrange finance, and drive home with confidence." },
+  { icon: Search, title: "Search cars", body: "Find the right car to suit your needs." },
+  { icon: CalendarCheck, title: "Book a test drive", body: "Experience it in person at a time that suits you." },
+  { icon: CircleDollarSign, title: "Arrange finance", body: "We'll help you find the best finance options." },
+  { icon: Key, title: "Drive away", body: "Complete the paperwork and enjoy your new car." },
+];
+
+const CONFIDENCE_ICONS = [
+  { icon: ShieldCheck, title: "Multi-point inspection", body: "Every car is thoroughly inspected." },
+  { icon: FileText, title: "Clear vehicle history", body: "Full history checks for peace of mind." },
+  { icon: CircleDollarSign, title: "Transparent pricing", body: "No hidden fees, no surprises." },
+  { icon: Award, title: "Warranty options", body: "Extended warranty available." },
+  { icon: Handshake, title: "Friendly local team", body: "Helpful advice from locals who care." },
+];
+
+const FAQS = [
+  { q: "Can I book a test drive?", a: "Yes, absolutely! You can book a test drive directly through any vehicle page, or by calling our friendly team." },
+  { q: "Are your cars inspected?", a: "Yes. Every single vehicle undergoes a comprehensive multi-point mechanical and safety inspection before being listed for sale." },
+  { q: "Do you accept trade-ins?", a: "Yes! We accept trade-ins and provide fair, transparent market valuations to make upgrading to your new car as seamless as possible." },
+  { q: "Can I sell my car without buying one?", a: "Definitely. We are always looking for quality used cars and can offer you a competitive price even if you don't buy from us." },
+  { q: "Is finance available?", a: "Absolutely. We work with leading lenders to provide highly competitive and bespoke finance packages tailored to your budget." },
+  { q: "Where are you located?", a: "We are located at 12-14 Parramatta Rd, Granville NSW 2142." },
 ];
 
 export default async function HomePage() {
@@ -49,209 +68,379 @@ export default async function HomePage() {
   const rating = company.google_rating as number | undefined;
 
   return (
-    <div className="dark bg-background text-foreground min-h-screen">
-      <SiteHeader />
+    <div className="bg-white text-slate-900 min-h-screen font-sans">
+      <div className="dark">
+        <SiteHeader />
+      </div>
+      
       <main>
-        {/* Hero */}
-        <HeroParallax imageUrl="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=2000&q=80">
-          <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-24 relative z-10">
-            <div className="max-w-2xl">
-              <FadeInStagger>
-                {rating ? (
-                  <FadeInItem>
-                    <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-4 py-2 text-sm">
-                      <Star className="size-4 fill-primary text-primary" />
-                      <span className="font-bold text-white">{rating}</span> rated by our customers
-                    </div>
-                  </FadeInItem>
-                ) : null}
-                <FadeInItem>
-                  <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] text-white">
-                    Dream it.<br/>Drive it.<br/>Discover it.
-                  </h1>
-                </FadeInItem>
-                <FadeInItem>
-                  <p className="mt-5 text-xl text-slate-300 font-medium">
-                    Quality used cars, without the second-guessing. Inspected by us, photographed honestly, and backed by a team that answers in minutes.
-                  </p>
-                </FadeInItem>
-                <FadeInItem>
-                  <div className="mt-8"><HeroSearch makes={makes} /></div>
-                </FadeInItem>
-                <FadeInItem>
-                  <div className="mt-6 flex flex-wrap gap-4">
-                    <Link href="/used-cars" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-lg font-bold text-black transition-all hover:scale-105 shadow-[0_0_30px_rgba(255,204,0,0.3)]">
-                      Browse all cars <ArrowRight className="size-5" />
-                    </Link>
-                    <Link href="/sell-your-car" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/20 bg-black/40 backdrop-blur-md px-6 text-lg font-bold text-white transition-colors hover:border-white/40 hover:bg-white/10 glass-panel">
-                      Sell your car
-                    </Link>
-                  </div>
-                </FadeInItem>
-              </FadeInStagger>
+        {/* Hero Section */}
+        <div className="relative bg-[#0b1320] pb-24 lg:pb-32">
+          {/* Background Image - Sydney Skyline + Yellow Car placeholder */}
+          <div className="absolute inset-0 z-0 opacity-40">
+            <img 
+              src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=2000&q=80" 
+              alt="Sydney Skyline Background" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0b1320] via-transparent to-[#0b1320]/80"></div>
+          </div>
+          
+          <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:pt-32">
+            <div className="max-w-xl">
+              {rating ? (
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-3 py-1.5 text-sm text-white">
+                  <Star className="size-4 fill-primary text-primary" />
+                  <span className="font-bold">{rating}/5</span> from verified customers
+                </div>
+              ) : null}
+              
+              <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] text-white mb-4">
+                Find the right car.<br/>Drive away confident.
+              </h1>
+              
+              <p className="text-lg text-slate-300 font-medium mb-8">
+                Quality used cars, carefully inspected and ready for Sydney roads.
+              </p>
+              
+              <div className="flex flex-wrap gap-4 mb-20">
+                <Link href="/used-cars" className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-primary px-8 font-bold text-black hover:bg-primary-hover transition-colors">
+                  Browse Cars
+                </Link>
+                <Link href="/sell-your-car" className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/30 bg-transparent px-8 font-bold text-white hover:bg-white/10 transition-colors">
+                  Sell Your Car
+                </Link>
+              </div>
             </div>
           </div>
-        </HeroParallax>
+        </div>
 
-        {/* Trust bar */}
-        <section className="border-b border-border bg-card">
-          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-8 sm:px-6 lg:grid-cols-4">
+        {/* Search Bar (Overlapping Hero) */}
+        <div className="relative z-20 -mt-16 mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="rounded-xl bg-white p-4 shadow-xl border border-slate-100">
+            <div className="dark">
+              <HeroSearch makes={makes} />
+            </div>
+          </div>
+        </div>
+
+        {/* Trust Bar */}
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 divide-x divide-slate-100">
             {TRUST.map((t) => (
-              <div key={t.title} className="flex items-start gap-3">
-                <t.icon className="size-6 flex-none text-primary" />
-                <div>
-                  <h3 className="font-bold text-foreground">{t.title}</h3>
-                  <p className="text-sm text-body">{t.body}</p>
+              <div key={t.title} className="flex flex-col items-center text-center px-4">
+                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-full bg-[#0b1320] text-primary outline outline-offset-4 outline-slate-100">
+                  <t.icon className="size-7" />
                 </div>
+                <h3 className="font-bold text-slate-900 mb-1">{t.title}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed max-w-[200px] mx-auto">{t.body}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Featured */}
+        {/* Featured Cars */}
         {featured.length > 0 ? (
-          <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-            <div className="mb-8 flex items-end justify-between">
-              <div>
-                <h2 className="font-heading text-3xl font-bold text-foreground">Featured vehicles</h2>
-                <p className="mt-2 text-body">Hand-picked from our latest arrivals.</p>
+          <section className="bg-slate-50 py-16">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6">
+              <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900 mb-6">Featured Cars</h2>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="cursor-pointer rounded-full bg-[#0b1320] px-5 py-2 text-sm font-semibold text-white">All Cars</span>
+                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">SUV</span>
+                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Sedan</span>
+                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Hatchback</span>
+                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Ute</span>
+                  </div>
+                </div>
+                <Link href="/used-cars" className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
+                  View all cars <ArrowRight className="size-4" />
+                </Link>
               </div>
-              <Link href="/used-cars" className="hidden font-semibold text-primary hover:text-primary-hover sm:block">
-                View all inventory &rarr;
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {featured.map((v, i) => <VehicleCard key={v.id} vehicle={v} priority={i < 4} />)}
+              <div className="dark">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                  {featured.map((v, i) => <VehicleCard key={v.id} vehicle={v} priority={i < 4} />)}
+                </div>
+              </div>
+              <div className="mt-10 flex justify-center">
+                <Link href="/used-cars" className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 font-bold text-black hover:bg-primary-hover transition-colors">
+                  View all cars
+                </Link>
+              </div>
             </div>
           </section>
         ) : null}
 
-        {/* How it works */}
-        <section className="bg-black border-y border-white/5 text-white overflow-hidden py-24">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="text-center mb-20">
-              <h2 className="font-heading text-4xl font-black uppercase tracking-tight text-white sm:text-5xl">How it Works</h2>
-              <div className="mx-auto mt-6 h-1.5 w-24 bg-primary rounded-full"></div>
+        {/* Browse by body type */}
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 border-b border-slate-100">
+          <h2 className="text-2xl font-bold text-slate-900 mb-8">Browse by body type</h2>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {NAV_BODY_TYPES.slice(0, 6).map((b) => (
+              <Link key={b} href={bodyTypeHref(b)} className="group flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-slate-900 hover:shadow-md">
+                <div className="mb-4 h-12 w-24 opacity-60 transition-opacity group-hover:opacity-100">
+                  {/* Since we don't have SVGs, we use lucide icons as placeholders for now */}
+                  <Car className="size-full text-slate-700" strokeWidth={1} />
+                </div>
+                <span className="font-semibold text-slate-900">{BODY_TYPE_LABELS[b]}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Sell Banner */}
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+          <div className="relative overflow-hidden rounded-2xl bg-[#0b1320] text-white shadow-xl">
+            <div className="absolute inset-y-0 right-0 w-1/2 opacity-30 sm:opacity-100">
+              <img 
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80" 
+                alt="Man crossing arms" 
+                className="h-full w-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0b1320] via-[#0b1320]/80 to-transparent"></div>
             </div>
-            <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
+            
+            <div className="relative z-10 px-8 py-16 sm:px-12 sm:w-2/3 lg:w-1/2">
+              <h2 className="text-4xl font-black mb-4">Ready to sell your car?</h2>
+              <p className="text-lg text-slate-300 mb-8">Get a fair, no-obligation offer without the usual hassle.</p>
+              
+              <ul className="space-y-3 mb-10">
+                <li className="flex items-center gap-3 text-slate-200 font-medium">
+                  <CheckCircle2 className="size-5 text-primary" /> Free valuation
+                </li>
+                <li className="flex items-center gap-3 text-slate-200 font-medium">
+                  <CheckCircle2 className="size-5 text-primary" /> Fast inspection
+                </li>
+                <li className="flex items-center gap-3 text-slate-200 font-medium">
+                  <CheckCircle2 className="size-5 text-primary" /> Secure payment
+                </li>
+              </ul>
+              
+              <Link href="/sell-your-car" className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 font-bold text-black hover:bg-primary-hover transition-colors">
+                Get My Car Valuation
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Steps */}
+        <section className="bg-slate-50 py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <h2 className="text-3xl font-bold text-slate-900 mb-12">Buying your next car is simple</h2>
+            <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
               {STEPS.map((s, i) => (
-                <ScrollReveal key={s.title} delay={i * 0.15}>
-                  <div className="relative group p-10 rounded-3xl border border-white/10 bg-[#0a0a0a] transition-all duration-500 hover:-translate-y-2 hover:border-primary/50 shadow-[0_4px_24px_rgba(0,0,0,0.5)] hover:shadow-[0_0_40px_rgba(255,204,0,0.15)]">
-                    {/* Huge Watermark Number */}
-                    <div className="absolute -right-4 -top-8 text-[12rem] font-black leading-none text-white/5 transition-colors duration-500 group-hover:text-primary/10 select-none pointer-events-none">
-                      0{i + 1}
-                    </div>
-                    <div className="relative z-10">
-                      <div className="mb-8 inline-flex size-16 items-center justify-center rounded-2xl bg-primary text-black shadow-[0_0_20px_rgba(255,204,0,0.4)]">
-                        <s.icon className="size-8" />
-                      </div>
-                      <h3 className="font-heading text-2xl font-bold text-white mb-4">{s.title}</h3>
-                      <p className="text-slate-400 leading-relaxed text-lg">{s.body}</p>
-                    </div>
+                <div key={s.title} className="relative">
+                  <div className="mb-6 flex size-8 items-center justify-center rounded-full bg-primary font-bold text-black">
+                    {i + 1}
                   </div>
-                </ScrollReveal>
+                  <s.icon className="size-8 text-slate-900 mb-4" />
+                  <h3 className="font-bold text-slate-900 mb-2">{s.title}</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed">{s.body}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Sell / Finance banners */}
-        <section className="bg-[#131313] py-24">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-              {/* Sell Banner */}
-              <ScrollReveal direction="left">
-                <div className="relative h-full overflow-hidden rounded-3xl border border-white/10 bg-black p-10 sm:p-14 transition-all duration-500 hover:border-primary/50 group">
-                  <div className="absolute -right-20 -top-20 size-72 rounded-full bg-primary/20 blur-[100px] transition-all duration-500 group-hover:bg-primary/30 group-hover:scale-110"></div>
-                  <div className="relative z-10">
-                    <Handshake className="size-12 text-primary mb-6" />
-                    <h3 className="font-heading text-3xl sm:text-4xl font-black text-white leading-tight">Sell or Trade In</h3>
-                    <p className="mt-4 text-lg text-slate-400 max-w-sm">Get a premium, fair-market offer on your current vehicle within 24 hours. No hassle, no games.</p>
-                    <Link href="/sell-your-car" className="mt-10 inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-[0_0_30px_rgba(255,204,0,0.3)]">
-                      Get an Offer <ArrowRight className="size-5" />
-                    </Link>
-                  </div>
+        {/* Finance Split */}
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 border-b border-slate-100">
+          <div className="flex flex-col lg:flex-row gap-12 items-center">
+            <div className="lg:w-1/2">
+              <h2 className="text-4xl font-black text-slate-900 mb-6">Flexible car finance made simple</h2>
+              <p className="text-lg text-slate-600 mb-10 leading-relaxed">
+                Our finance partners make it easier to get behind the wheel with competitive rates and fast approvals.
+              </p>
+              <div className="grid grid-cols-2 gap-6 mb-10">
+                <div className="flex items-start gap-3">
+                  <BadgeCheck className="size-6 text-slate-900 shrink-0" />
+                  <span className="font-semibold text-slate-900">Competitive rates</span>
                 </div>
-              </ScrollReveal>
-
-              {/* Finance Banner */}
-              <ScrollReveal direction="right" delay={0.2}>
-                <div className="relative h-full overflow-hidden rounded-3xl border border-white/10 bg-black p-10 sm:p-14 transition-all duration-500 hover:border-white/40 group">
-                  <div className="absolute -left-20 -bottom-20 size-72 rounded-full bg-white/10 blur-[100px] transition-all duration-500 group-hover:bg-white/20 group-hover:scale-110"></div>
-                  <div className="relative z-10">
-                    <CircleDollarSign className="size-12 text-white mb-6" />
-                    <h3 className="font-heading text-3xl sm:text-4xl font-black text-white leading-tight">Bespoke Finance</h3>
-                    <p className="mt-4 text-lg text-slate-400 max-w-sm">Access highly competitive, tailored finance options designed to get you behind the wheel effortlessly.</p>
-                    <Link href="/finance" className="mt-10 inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-white px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-                      Explore Options <ArrowRight className="size-5" />
-                    </Link>
-                  </div>
+                <div className="flex items-start gap-3">
+                  <CircleDollarSign className="size-6 text-slate-900 shrink-0" />
+                  <span className="font-semibold text-slate-900">Fast decisions</span>
                 </div>
-              </ScrollReveal>
+                <div className="flex items-start gap-3">
+                  <Handshake className="size-6 text-slate-900 shrink-0" />
+                  <span className="font-semibold text-slate-900">Trusted lenders</span>
+                </div>
+              </div>
+              <Link href="/finance" className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 font-bold text-black hover:bg-primary-hover transition-colors mb-4">
+                Explore Finance Options
+              </Link>
+              <p className="text-xs text-slate-500">Credit criteria, fees and charges apply. Australian Credit Licence 282145.</p>
+            </div>
+            <div className="lg:w-1/2 w-full h-[350px]">
+              <img 
+                src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80" 
+                alt="Handing over car keys" 
+                className="w-full h-full object-cover rounded-2xl shadow-xl"
+              />
             </div>
           </div>
         </section>
 
-        {/* FAQs Preview */}
-        <section className="bg-black py-24 border-y border-white/5">
+        {/* Confidence Comes Standard */}
+        <section className="bg-[#0b1320] py-16 text-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-8 items-center">
-              <ScrollReveal direction="left">
-                <div>
-                  <h2 className="font-heading text-3xl font-black uppercase tracking-tight text-white sm:text-5xl mb-6">
-                    Common <br/><span className="text-primary">Questions</span>
-                  </h2>
-                  <p className="text-lg text-slate-400 max-w-md mb-8 leading-relaxed">
-                    Buying or selling a car doesn't have to be complicated. Here are some of the most common questions our customers ask us.
-                  </p>
-                  <Link href="/faqs" className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-[0_0_20px_rgba(255,204,0,0.2)]">
-                    View all FAQs <ArrowRight className="size-5" />
-                  </Link>
+            <h2 className="text-center text-3xl font-bold mb-12">Confidence comes standard</h2>
+            <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5 text-center">
+              {CONFIDENCE_ICONS.map((t) => (
+                <div key={t.title} className="flex flex-col items-center">
+                  <div className="mb-4 inline-flex size-14 items-center justify-center rounded-full border border-white/20 text-primary">
+                    <t.icon className="size-7" />
+                  </div>
+                  <h3 className="font-bold mb-2">{t.title}</h3>
+                  <p className="text-sm text-slate-400">{t.body}</p>
                 </div>
-              </ScrollReveal>
-              
-              <ScrollReveal direction="right" delay={0.2}>
-                <div className="space-y-4">
-                  {/* Hardcoded 3 quick FAQs for the homepage that match the FAQ accordion UI */}
-                  {[
-                    { q: "Are your cars mechanically inspected?", a: "Yes. Every single vehicle undergoes a comprehensive multi-point mechanical and safety inspection before being listed for sale." },
-                    { q: "Do you offer financing?", a: "Absolutely. We work with leading lenders to provide highly competitive and bespoke finance packages tailored to your budget." },
-                    { q: "Can I trade in my current vehicle?", a: "Yes! We accept trade-ins and provide fair, transparent market valuations to make upgrading to your new car as seamless as possible." }
-                  ].map((faq, i) => (
-                    <div key={i} className="rounded-2xl border border-white/10 bg-[#0a0a0a] p-6 hover:border-primary/30 transition-colors">
-                      <h3 className="font-heading text-xl font-bold text-white mb-2">{faq.q}</h3>
-                      <p className="text-slate-400">{faq.a}</p>
-                    </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Reviews */}
+        {testimonials.length > 0 ? (
+          <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+            <h2 className="text-3xl font-bold text-slate-900 mb-12">Trusted by Sydney drivers</h2>
+            <div className="flex flex-col lg:flex-row gap-12">
+              <div className="lg:w-1/3 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-slate-200 pb-10 lg:pb-0 lg:pr-10">
+                <div className="text-6xl font-black text-slate-900 mb-4">{rating || "4.8"}/5</div>
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="size-6 fill-primary text-primary" />
                   ))}
                 </div>
-              </ScrollReveal>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials */}
-        {testimonials.length > 0 ? (
-          <section className="bg-[#131313] border-b border-white/5">
-            <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-              <h2 className="mb-8 font-heading text-2xl font-bold text-foreground sm:text-3xl">What our customers say</h2>
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+                <p className="text-slate-600 mb-2">from <span className="font-bold text-slate-900">400+</span> verified reviews</p>
+                <p className="font-bold text-slate-900">Google</p>
+              </div>
+              <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-6">
                 {testimonials.slice(0, 3).map((t) => (
-                  <figure key={t.id} className="rounded-xl border border-border bg-card p-6">
-                    <div className="flex gap-0.5">
+                  <div key={t.id} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <div className="flex gap-0.5 mb-4">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`size-4 ${i < t.rating ? "fill-warning text-warning" : "text-border"}`} />
+                        <Star key={i} className={`size-4 ${i < t.rating ? "fill-primary text-primary" : "fill-slate-200 text-slate-200"}`} />
                       ))}
                     </div>
-                    <blockquote className="mt-3 text-body">&ldquo;{t.quote}&rdquo;</blockquote>
-                    <figcaption className="mt-3 text-sm font-semibold text-foreground">{t.customerName}</figcaption>
-                  </figure>
+                    <p className="text-sm text-slate-700 mb-6 line-clamp-4">"{t.quote}"</p>
+                    <div className="flex items-center gap-3">
+                      <div className="size-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
+                        {t.photoUrl ? <img src={t.photoUrl} alt="" className="w-full h-full object-cover"/> : <div className="w-full h-full bg-slate-300"></div>}
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm text-slate-900">{t.customerName}</p>
+                        <p className="text-xs text-slate-500">Google Review</p>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
+            <div className="mt-10 text-center">
+              <Link href="/testimonials" className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
+                Read more reviews <ArrowRight className="size-4" />
+              </Link>
+            </div>
           </section>
         ) : null}
+
+        {/* Better way to buy */}
+        <section className="bg-slate-50 py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="flex flex-col lg:flex-row gap-12 items-center rounded-2xl bg-white overflow-hidden shadow-sm border border-slate-100">
+              <div className="w-full lg:w-1/2 h-[300px] lg:h-[450px]">
+                <img 
+                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80" 
+                  alt="Cars 365 Team" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="w-full lg:w-1/2 p-8 lg:p-12">
+                <h2 className="text-3xl font-black text-slate-900 mb-6">A better way to buy used cars in Sydney</h2>
+                <p className="text-slate-600 mb-10 leading-relaxed">
+                  At CARS365, we're passionate about cars and committed to honest, straightforward service. Every vehicle is carefully inspected and roadworthy, so you can drive with confidence.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                  <div>
+                    <Car className="size-8 text-slate-900 mx-auto mb-3" strokeWidth={1.5} />
+                    <p className="font-black text-xl text-slate-900">500+</p>
+                    <p className="text-xs text-slate-500">Cars Sold</p>
+                  </div>
+                  <div>
+                    <Star className="size-8 text-primary mx-auto mb-3" strokeWidth={1.5} />
+                    <p className="font-black text-xl text-slate-900">{rating || "4.8"}/5</p>
+                    <p className="text-xs text-slate-500">Customer Rating</p>
+                  </div>
+                  <div>
+                    <CalendarCheck className="size-8 text-slate-900 mx-auto mb-3" strokeWidth={1.5} />
+                    <p className="font-black text-xl text-slate-900">7</p>
+                    <p className="text-xs text-slate-500">Days a Week</p>
+                  </div>
+                  <div>
+                    <ShieldCheck className="size-8 text-slate-900 mx-auto mb-3" strokeWidth={1.5} />
+                    <p className="font-black text-xl text-slate-900">100%</p>
+                    <p className="text-xs text-slate-500">Transparent</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Helpful guides */}
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 border-b border-slate-100">
+          <div className="flex justify-between items-end mb-10">
+            <h2 className="text-3xl font-bold text-slate-900">Helpful guides</h2>
+            <Link href="/about" className="hidden md:inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
+              View all guides <ArrowRight className="size-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            {[
+              { title: "Used Car Buying Checklist", img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80", tag: "Buying Guide" },
+              { title: "How Car Finance Works", img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80", tag: "Finance" },
+              { title: "What Is Your Car Worth?", img: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=80", tag: "Selling" }
+            ].map((g, i) => (
+              <Link key={i} href="/about" className="group block rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-all">
+                <div className="relative h-48 w-full overflow-hidden">
+                  <img src={g.img} alt={g.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <div className="absolute top-4 left-4 rounded bg-white px-2 py-1 text-xs font-bold text-slate-900">
+                    {g.tag}
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="font-bold text-lg text-slate-900 mb-4">{g.title}</h3>
+                  <div className="flex justify-between items-center text-sm font-semibold text-slate-500">
+                    <span>Read more</span>
+                    <ArrowRight className="size-4" />
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQs */}
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+          <h2 className="text-3xl font-bold text-slate-900 mb-12">Frequently asked questions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+            {FAQS.map((faq, i) => (
+              <details key={i} className="group border-b border-slate-200 pb-4 [&_summary::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer items-center justify-between font-semibold text-slate-900 hover:text-blue-600">
+                  {faq.q}
+                  <ChevronDown className="size-5 transition-transform group-open:-rotate-180 text-slate-400" />
+                </summary>
+                <div className="mt-4 text-slate-600 text-sm leading-relaxed pr-8">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+
       </main>
-      <SiteFooter />
+      
+      <div className="dark">
+        <SiteFooter />
+      </div>
     </div>
   );
 }
