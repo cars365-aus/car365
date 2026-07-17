@@ -66,7 +66,7 @@ export async function SiteFooter() {
           {/* Brand Column */}
           <div className="lg:col-span-4 flex flex-col gap-6">
             <Link href="/" className="inline-block">
-              <img src="/LOGO.png" alt="Cars365" className="h-12 w-auto object-contain brightness-0 invert opacity-90" />
+              <img src="/LOGO.png" alt="Cars365" className="h-12 w-auto object-contain" />
             </Link>
             <p className="max-w-sm text-sm text-slate-400 leading-relaxed">
               Premium used vehicles, meticulously inspected and ready for Sydney roads. We're redefining the car buying experience through transparency and trust.
@@ -132,7 +132,7 @@ export async function SiteFooter() {
                 src="https://maps.google.com/maps?q=Cars%20365,%20Granville,%20NSW&t=&z=14&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="140"
-                style={{ border: 0, filter: "grayscale(100%) invert(90%) contrast(1.2)" }}
+                style={{ border: 0 }}
                 allowFullScreen={false}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
