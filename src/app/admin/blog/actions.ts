@@ -20,13 +20,26 @@ const articleSchema = z.object({
 
 export async function saveBlogArticleAction(prevState: any, formData: FormData) {
   try {
+    const imageKeys = formData.get("imageKeys");
+    let uploadedImageUrl = null;
+    if (imageKeys && typeof imageKeys === "string") {
+      try {
+        const images = JSON.parse(imageKeys);
+        if (images && images.length > 0) {
+          uploadedImageUrl = images[0].url;
+        }
+      } catch (e) {
+        // ignore JSON parse error
+      }
+    }
+
     const rawData = {
       id: formData.get("id") as string | null,
       title: formData.get("title"),
       slug: formData.get("slug"),
       body: formData.get("body"),
       excerpt: formData.get("excerpt"),
-      featuredImageUrl: formData.get("featuredImageUrl"),
+      featuredImageUrl: uploadedImageUrl || formData.get("featuredImageUrl"),
       featuredImageAlt: formData.get("featuredImageAlt"),
       status: formData.get("status") || "draft",
       metaTitle: formData.get("metaTitle"),

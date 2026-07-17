@@ -8,6 +8,7 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import type { BlogArticle } from "@/lib/domain";
+import { ImageUpload } from "@/components/admin/image-upload";
 
 interface BlogFormProps {
   initialData?: BlogArticle | null;
@@ -121,13 +122,15 @@ export function BlogForm({ initialData }: BlogFormProps) {
 
         <div className="grid gap-6 sm:grid-cols-2 pt-6 border-t">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Featured Image URL</label>
-            <input 
-              name="featuredImageUrl" 
-              defaultValue={initialData?.featuredImageUrl || ""} 
-              placeholder="https://..."
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" 
+            <label className="text-sm font-medium">Featured Image</label>
+            <ImageUpload 
+              initialImages={initialData?.featuredImageUrl ? [{
+                path: initialData.featuredImageUrl,
+                url: initialData.featuredImageUrl,
+                isCover: true
+              }] : []}
             />
+            <p className="text-xs text-muted-foreground mt-2">Upload an engaging cover photo for your article.</p>
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Image Alt Text</label>
