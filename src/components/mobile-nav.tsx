@@ -12,6 +12,7 @@ const PRIMARY = [
   { href: "/sell-your-car", label: "Sell Your Car" },
   { href: "/finance", label: "Finance" },
   { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
 ];
 

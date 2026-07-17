@@ -400,8 +400,8 @@ h4, h5, h6 {
   padding-right: env(safe-area-inset-right);
 }
 
-/* Paragraph readability */
-p {
+/* Paragraph readability — scoped to prose containers only to avoid breaking cards and grid layouts */
+.prose p {
   max-width: 75ch;
 }
 

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { formatDate } from "date-fns";
 import { ArrowLeft, Clock } from "lucide-react";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -24,50 +26,61 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   }
 
   return (
-    <div className="bg-background min-h-screen pb-16">
-      <div className="mx-auto max-w-3xl px-4 pt-10 sm:px-6 lg:pt-16">
-        <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground mb-8">
-          <ArrowLeft className="size-4" /> Back to blog
-        </Link>
-        
-        <div className="mb-8">
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-            <time dateTime={article.publishedAt!}>
-              {article.publishedAt ? formatDate(new Date(article.publishedAt), "MMMM d, yyyy") : ""}
-            </time>
-            <span className="flex items-center gap-1">
-              <Clock className="size-4" /> {article.readingTimeMinutes} min read
-            </span>
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-foreground leading-[1.1] mb-6">
-            {article.title}
-          </h1>
-          {article.excerpt && (
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              {article.excerpt}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {article.featuredImageUrl && (
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 mb-12">
-          <div className="aspect-[21/9] w-full rounded-2xl overflow-hidden bg-muted">
-            <img 
-              src={article.featuredImageUrl} 
-              alt={article.featuredImageAlt || article.title}
-              className="w-full h-full object-cover"
-            />
+    <>
+      <SiteHeader />
+      <div className="bg-background min-h-screen pb-16">
+        <div className="mx-auto max-w-3xl px-4 pt-10 sm:px-6 lg:pt-16">
+          <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground mb-8">
+            <ArrowLeft className="size-4" /> Back to blog
+          </Link>
+          
+          <div className="mb-8">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+              <time dateTime={article.publishedAt!}>
+                {article.publishedAt ? formatDate(new Date(article.publishedAt), "MMMM d, yyyy") : ""}
+              </time>
+              <span className="flex items-center gap-1">
+                <Clock className="size-4" /> {article.readingTimeMinutes} min read
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-foreground leading-[1.1] mb-6">
+              {article.title}
+            </h1>
+            {article.excerpt && (
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                {article.excerpt}
+              </p>
+            )}
           </div>
         </div>
-      )}
 
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <article 
-          className="prose prose-slate dark:prose-invert prose-lg max-w-none"
-          dangerouslySetInnerHTML={{ __html: article.body }}
-        />
+        {article.featuredImageUrl && (
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 mb-12">
+            <div className="aspect-[21/9] w-full rounded-2xl overflow-hidden bg-muted">
+              <img 
+                src={article.featuredImageUrl} 
+                alt={article.featuredImageAlt || article.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <article 
+            className="prose prose-slate prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-blockquote:border-primary"
+            dangerouslySetInnerHTML={{ __html: article.body }}
+          />
+        </div>
+
+        {/* Back to Blog CTA */}
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 mt-16 pt-8 border-t border-border">
+          <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80">
+            <ArrowLeft className="size-4" /> Back to all articles
+          </Link>
+        </div>
       </div>
-    </div>
+      <SiteFooter />
+    </>
   );
 }

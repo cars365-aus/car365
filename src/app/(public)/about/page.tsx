@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { ArrowRight, CheckCircle2, Heart, Shield, Zap, Target, Users, Trophy } from "lucide-react";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/animations/scroll-reveal";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: "About Us | Cars365",
@@ -10,7 +12,9 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
+      <SiteHeader />
+      <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-background to-background"></div>
@@ -149,6 +153,8 @@ export default function AboutPage() {
           </ScrollReveal>
         </div>
       </section>
-    </div>
+      </div>
+      <SiteFooter />
+    </>
   );
 }
