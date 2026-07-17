@@ -173,7 +173,7 @@ export default async function HomePage() {
           <h2 className="text-[17px] font-bold text-slate-900 mb-5">Browse by body type</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {(["sedan", "suv", "hatch", "ute", "van", "coupe"] as const).map((b) => (
-              <Link key={b} href={bodyTypeHref(b as any)} className="group flex flex-col items-center justify-end rounded-lg border border-slate-200 bg-white p-3 pb-4 transition-all hover:border-slate-300 hover:shadow-sm aspect-[4/3] sm:aspect-auto sm:h-[130px]">
+              <Link key={b} href={bodyTypeHref(b as keyof typeof BODY_TYPE_LABELS)} className="group flex flex-col items-center justify-end rounded-lg border border-slate-200 bg-white p-3 pb-4 transition-all hover:border-slate-300 hover:shadow-sm aspect-[4/3] sm:aspect-auto sm:h-[130px]">
                 <div className="flex-1 flex items-center justify-center w-full px-2 mb-3">
                   <img 
                     src={`/images/body-types/${b}.png`} 
@@ -186,7 +186,7 @@ export default async function HomePage() {
                   />
                   <Car className="size-10 text-slate-300 stroke-1 hidden" />
                 </div>
-                <span className="font-medium text-[13px] text-slate-800">{BODY_TYPE_LABELS[b as any] || b}</span>
+                <span className="font-medium text-[13px] text-slate-800">{BODY_TYPE_LABELS[b as keyof typeof BODY_TYPE_LABELS] || b}</span>
               </Link>
             ))}
           </div>
