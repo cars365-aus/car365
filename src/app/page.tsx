@@ -169,16 +169,24 @@ export default async function HomePage() {
         ) : null}
 
         {/* Browse by body type */}
-        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 border-b border-slate-100">
-          <h2 className="text-2xl font-bold text-slate-900 mb-8">Browse by body type</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {NAV_BODY_TYPES.slice(0, 6).map((b) => (
-              <Link key={b} href={bodyTypeHref(b)} className="group flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-slate-900 hover:shadow-md">
-                <div className="mb-4 h-12 w-24 opacity-60 transition-opacity group-hover:opacity-100">
-                  {/* Since we don't have SVGs, we use lucide icons as placeholders for now */}
-                  <Car className="size-full text-slate-700" strokeWidth={1} />
+        <section className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6">
+          <h2 className="text-[17px] font-bold text-slate-900 mb-5">Browse by body type</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {(["sedan", "suv", "hatch", "ute", "van", "coupe"] as const).map((b) => (
+              <Link key={b} href={bodyTypeHref(b as any)} className="group flex flex-col items-center justify-end rounded-lg border border-slate-200 bg-white p-3 pb-4 transition-all hover:border-slate-300 hover:shadow-sm aspect-[4/3] sm:aspect-auto sm:h-[130px]">
+                <div className="flex-1 flex items-center justify-center w-full px-2 mb-3">
+                  <img 
+                    src={`/images/body-types/${b}.png`} 
+                    alt={b} 
+                    className="w-full h-auto object-contain max-h-[65px] transition-transform group-hover:scale-105" 
+                    onError={(e) => { 
+                      e.currentTarget.style.display = 'none'; 
+                      e.currentTarget.nextElementSibling!.classList.remove('hidden'); 
+                    }} 
+                  />
+                  <Car className="size-10 text-slate-300 stroke-1 hidden" />
                 </div>
-                <span className="font-semibold text-slate-900">{BODY_TYPE_LABELS[b]}</span>
+                <span className="font-medium text-[13px] text-slate-800">{BODY_TYPE_LABELS[b as any] || b}</span>
               </Link>
             ))}
           </div>
