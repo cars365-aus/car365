@@ -19,6 +19,11 @@ export function FinanceCalculator({ price, params }: { price: number; params: Fi
       <h3 className="font-heading text-lg font-bold text-foreground">Finance Calculator</h3>
       
       <div className="mt-5 space-y-6">
+        <div className="flex justify-between items-center border-b border-white/5 pb-4">
+          <span className="text-sm text-muted-foreground font-medium">Vehicle Price</span>
+          <span className="font-heading text-lg font-bold text-foreground">{formatPrice(price)}</span>
+        </div>
+
         <div>
           <div className="flex justify-between text-sm mb-3">
             <span className="text-muted-foreground font-medium">Deposit</span>

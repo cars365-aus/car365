@@ -229,7 +229,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
                   </Link>
                 )}
 
-                {v.financeAvailable ? (
+                {v.price && v.price > 0 ? (
                   <FinanceCalculator price={v.price} params={financeParams} />
                 ) : null}
               </div>
