@@ -19,7 +19,7 @@ export default async function UsedCarsPage({ searchParams }: { searchParams: Pro
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-7xl px-4 pt-8 pb-12 sm:px-6 lg:pt-12">
         <nav className="mb-4 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">Home</Link> <span aria-hidden>/</span>{" "}
           <span className="text-foreground">Used Cars</span>

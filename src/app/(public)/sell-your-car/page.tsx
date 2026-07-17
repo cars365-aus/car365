@@ -27,7 +27,7 @@ export default async function SellYourCarPage() {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <main className="mx-auto max-w-6xl px-4 pt-10 pb-16 sm:px-6 lg:pt-16">
         <header className="mb-8 max-w-2xl">
           <h1 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">Sell your car the easy way</h1>
           <p className="mt-3 text-body">No strangers at your home, no haggling. Tell us about your car and we&apos;ll come back with a fair offer.</p>

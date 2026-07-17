@@ -99,7 +99,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
     <>
       <JsonLd schema={jsonLd} />
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <main className="mx-auto max-w-7xl px-4 pt-8 pb-12 sm:px-6 lg:pt-12">
         {/* Breadcrumbs */}
         <nav className="mb-4 flex flex-wrap gap-1.5 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">Home</Link><span aria-hidden>/</span>
@@ -189,7 +189,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
 
           {/* Sticky enquiry card (desktop) */}
           <aside className="lg:relative">
-            <div className="lg:sticky lg:top-20">
+            <div className="lg:sticky lg:top-[88px]">
               <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
                 <h1 className="font-heading text-2xl font-bold leading-tight text-foreground">{title}</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Stock #{v.stockId}</p>

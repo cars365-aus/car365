@@ -16,7 +16,7 @@ export default function AboutPage() {
       <SiteHeader />
       <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+      <section className="relative pt-24 pb-20 md:pt-44 md:pb-32 overflow-hidden">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-background to-background"></div>
         
         {/* Abstract shapes for premium feel */}
@@ -48,7 +48,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 border-y border-border bg-black/5">
+      <section className="py-12 border-y border-border bg-slate-50">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <ScrollReveal delay={0.1} direction="up" className="space-y-2">

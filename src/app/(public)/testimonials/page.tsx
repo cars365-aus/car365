@@ -39,7 +39,7 @@ export default async function TestimonialsPage() {
     <>
       <JsonLd schema={[breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Testimonials", path: "/testimonials" }]), ...(aggregate ? [aggregate] : [])]} />
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <main className="mx-auto max-w-6xl px-4 pt-10 pb-16 sm:px-6 lg:pt-16">
         <nav className="mb-4 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">Home</Link> <span aria-hidden>/</span> <span className="text-foreground">Testimonials</span>
         </nav>

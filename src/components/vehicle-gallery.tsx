@@ -31,14 +31,14 @@ export function VehicleGallery({ images, title }: { images: VehicleImage[]; titl
             <button
               onClick={() => go(-1)}
               aria-label="Previous photo"
-              className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-card/90 p-2 text-foreground shadow-sm backdrop-blur hover:bg-card"
+              className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-card/90 p-2 text-foreground shadow-sm backdrop-blur hover:bg-card focus-visible:outline-2 focus-visible:outline-primary transition-all"
             >
               <ChevronLeft className="size-5" />
             </button>
             <button
               onClick={() => go(1)}
               aria-label="Next photo"
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-card/90 p-2 text-foreground shadow-sm backdrop-blur hover:bg-card"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-card/90 p-2 text-foreground shadow-sm backdrop-blur hover:bg-card focus-visible:outline-2 focus-visible:outline-primary transition-all"
             >
               <ChevronRight className="size-5" />
             </button>
