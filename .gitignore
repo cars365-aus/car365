@@ -45,3 +45,5 @@ supabase/.temp/
 
 # local scratch
 /scratch
+.vercel
+.env*

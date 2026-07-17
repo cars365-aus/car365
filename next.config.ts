@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "10mb",
     },
   },
+  transpilePackages: ["ckeditor5", "@ckeditor/ckeditor5-react"],
   turbopack: {
     root: process.cwd(),
   },
