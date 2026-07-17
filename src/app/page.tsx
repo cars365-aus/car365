@@ -77,13 +77,14 @@ export default async function HomePage() {
         {/* Hero Section */}
         <div className="relative bg-[#0b1320] pb-24 lg:pb-32">
           {/* Background Image - Sports Car */}
-          <div className="absolute inset-0 z-0 opacity-40">
+          <div className="absolute inset-0 z-0 opacity-100">
             <img 
-              src="https://images.unsplash.com/photo-1503376712394-6b5ca7b3a970?auto=format&fit=crop&w=2000&q=80" 
-              alt="Sports Car Background" 
-              className="w-full h-full object-cover"
+              src="/images/hero-sydney.png" 
+              alt="Yellow Sports Car in Sydney" 
+              className="w-full h-full object-cover object-right"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0b1320] via-transparent to-[#0b1320]/80"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0b1320] via-[#0b1320]/60 to-transparent w-full md:w-2/3"></div>
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0b1320] to-transparent"></div>
           </div>
           
           <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:pt-32">
