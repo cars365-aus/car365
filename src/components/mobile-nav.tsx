@@ -11,7 +11,7 @@ const PRIMARY = [
   { href: "/used-cars", label: "Buy Cars" },
   { href: "/sell-your-car", label: "Sell Your Car" },
   { href: "/finance", label: "Finance" },
-  { href: "/about", label: "About" },
+  { href: "https://example.com", label: "About Us" },
   { href: "/contact", label: "Contact" },
 ];
 

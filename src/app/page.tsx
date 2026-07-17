@@ -391,7 +391,7 @@ export default async function HomePage() {
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 border-b border-slate-100">
           <div className="flex justify-between items-end mb-10">
             <h2 className="text-3xl font-bold text-slate-900">Helpful guides</h2>
-            <Link href="/about" className="hidden md:inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
+            <Link href="https://example.com" className="hidden md:inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
               View all guides <ArrowRight className="size-4" />
             </Link>
           </div>
@@ -401,7 +401,7 @@ export default async function HomePage() {
               { title: "How Car Finance Works", img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80", tag: "Finance" },
               { title: "What Is Your Car Worth?", img: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=80", tag: "Selling" }
             ].map((g, i) => (
-              <Link key={i} href="/about" className="group block rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-all">
+              <Link key={i} href="https://example.com" className="group block rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-all">
                 <div className="relative h-48 w-full overflow-hidden">
                   <img src={g.img} alt={g.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   <div className="absolute top-4 left-4 rounded bg-white px-2 py-1 text-xs font-bold text-slate-900">
