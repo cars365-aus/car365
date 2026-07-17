@@ -6,13 +6,22 @@ import {
   Essentials,
   Bold,
   Italic,
+  Underline,
+  Strikethrough,
+  BlockQuote,
   Link,
   List,
   Heading,
   Image,
   ImageUpload,
+  ImageToolbar,
+  ImageCaption,
+  ImageStyle,
+  ImageResize,
   Table,
-  Undo
+  TableToolbar,
+  Undo,
+  Alignment
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 import { createClient } from "@/lib/supabase/client";
@@ -59,7 +68,7 @@ export default function Editor({ content, onChange }: Props) {
     <div className="w-full bg-background rounded-md overflow-hidden text-slate-900 ckeditor-custom-wrapper">
       <style>{`
         .ckeditor-custom-wrapper .ck.ck-editor__main > .ck-editor__editable {
-          min-height: 300px;
+          min-height: 400px;
           background-color: var(--background);
           color: var(--foreground);
         }
@@ -75,25 +84,45 @@ export default function Editor({ content, onChange }: Props) {
         editor={ClassicEditor}
         data={content}
         config={{
+          licenseKey: "GPL",
           plugins: [
             Essentials,
             Bold,
             Italic,
+            Underline,
+            Strikethrough,
+            BlockQuote,
             Link,
             List,
             Heading,
             Image,
             ImageUpload,
+            ImageToolbar,
+            ImageCaption,
+            ImageStyle,
+            ImageResize,
             Table,
+            TableToolbar,
             Undo,
+            Alignment,
             MyCustomUploadAdapterPlugin
           ],
           toolbar: [
             "heading", "|",
-            "bold", "italic", "link", "bulletedList", "numberedList", "|",
+            "bold", "italic", "underline", "strikethrough", "|",
+            "alignment", "link", "bulletedList", "numberedList", "blockQuote", "|",
             "imageUpload", "insertTable", "|",
             "undo", "redo"
-          ]
+          ],
+          image: {
+            toolbar: [
+              "imageStyle:inline", "imageStyle:block", "imageStyle:side", "|",
+              "toggleImageCaption", "imageTextAlternative"
+            ]
+          },
+          table: {
+            contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"]
+          }
         }}
         onChange={(event: any, editor: any) => {
           const data = editor.getData();
