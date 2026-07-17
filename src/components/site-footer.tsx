@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Star, Clock } from "lucide-react";
+import { Phone, Mail, MapPin, Star, Clock, Facebook, Instagram, Twitter, Globe } from "lucide-react";
 import { getMakes } from "@/lib/data/inventory";
 import { getPhoneNumbers, getCompanyProfile } from "@/lib/data/settings";
 import { getActiveLocations } from "@/lib/data/locations";
@@ -162,15 +162,22 @@ export async function SiteFooter() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-sm text-slate-400 md:flex-row">
-          <p className="flex items-center gap-2">
-            <MapPin className="size-4" /> © {tradingName}. All rights reserved.
-          </p>
-          <ul className="flex gap-4">
-            {LEGAL_LINKS.map((l) => (
-              <li key={l.href}><Link href={l.href} className="hover:text-white">{l.label}</Link></li>
-            ))}
-          </ul>
+        <div className="mt-10 flex flex-col items-center justify-center gap-6 border-t border-white/10 pt-6 text-sm text-slate-400">
+          <div className="flex gap-6">
+            <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-white" aria-label="Facebook"><Facebook className="size-5" /></a>
+            <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-white" aria-label="Instagram"><Instagram className="size-5" /></a>
+            <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-white" aria-label="Twitter"><Twitter className="size-5" /></a>
+            <a href="https://maps.app.goo.gl/DDS6skBgYzMTpU916?g_st=ic" target="_blank" rel="noopener noreferrer" className="hover:text-white" title="Google Business Profile" aria-label="Google Business Profile"><Globe className="size-5" /></a>
+          </div>
+
+          <div className="flex flex-col items-center gap-3 md:flex-row md:gap-6 text-center">
+            <span>© {tradingName}. All rights reserved.</span>
+            <ul className="flex flex-wrap justify-center gap-4 md:gap-6">
+              {LEGAL_LINKS.map((l) => (
+                <li key={l.href}><Link href={l.href} className="hover:text-white">{l.label}</Link></li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </footer>

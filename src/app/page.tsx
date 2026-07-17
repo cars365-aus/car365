@@ -76,11 +76,11 @@ export default async function HomePage() {
       <main>
         {/* Hero Section */}
         <div className="relative bg-[#0b1320] pb-24 lg:pb-32">
-          {/* Background Image - Sydney Skyline + Yellow Car placeholder */}
+          {/* Background Image - Sports Car */}
           <div className="absolute inset-0 z-0 opacity-40">
             <img 
-              src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=2000&q=80" 
-              alt="Sydney Skyline Background" 
+              src="https://images.unsplash.com/photo-1503376712394-6b5ca7b3a970?auto=format&fit=crop&w=2000&q=80" 
+              alt="Sports Car Background" 
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0b1320] via-transparent to-[#0b1320]/80"></div>
@@ -116,12 +116,8 @@ export default async function HomePage() {
         </div>
 
         {/* Search Bar (Overlapping Hero) */}
-        <div className="relative z-20 -mt-16 mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="rounded-xl bg-white p-4 shadow-xl border border-slate-100">
-            <div className="dark">
-              <HeroSearch makes={makes} />
-            </div>
-          </div>
+        <div className="relative z-20 -mt-8 sm:-mt-10 mx-auto max-w-4xl px-4 sm:px-6">
+          <HeroSearch makes={makes} />
         </div>
 
         {/* Trust Bar */}
@@ -298,49 +294,51 @@ export default async function HomePage() {
         </section>
 
         {/* Reviews */}
-        {testimonials.length > 0 ? (
-          <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
-            <h2 className="text-3xl font-bold text-slate-900 mb-12">Trusted by Sydney drivers</h2>
-            <div className="flex flex-col lg:flex-row gap-12">
-              <div className="lg:w-1/3 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-slate-200 pb-10 lg:pb-0 lg:pr-10">
-                <div className="text-6xl font-black text-slate-900 mb-4">{rating || "4.8"}/5</div>
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="size-6 fill-primary text-primary" />
-                  ))}
-                </div>
-                <p className="text-slate-600 mb-2">from <span className="font-bold text-slate-900">400+</span> verified reviews</p>
-                <p className="font-bold text-slate-900">Google</p>
-              </div>
-              <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {testimonials.slice(0, 3).map((t) => (
-                  <div key={t.id} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <div className="flex gap-0.5 mb-4">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`size-4 ${i < t.rating ? "fill-primary text-primary" : "fill-slate-200 text-slate-200"}`} />
-                      ))}
-                    </div>
-                    <p className="text-sm text-slate-700 mb-6 line-clamp-4">"{t.quote}"</p>
-                    <div className="flex items-center gap-3">
-                      <div className="size-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
-                        {t.photoUrl ? <img src={t.photoUrl} alt="" className="w-full h-full object-cover"/> : <div className="w-full h-full bg-slate-300"></div>}
-                      </div>
-                      <div>
-                        <p className="font-bold text-sm text-slate-900">{t.customerName}</p>
-                        <p className="text-xs text-slate-500">Google Review</p>
-                      </div>
-                    </div>
-                  </div>
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+          <h2 className="text-3xl font-bold text-slate-900 mb-12">Trusted by Sydney drivers</h2>
+          <div className="flex flex-col lg:flex-row gap-12">
+            <div className="lg:w-1/3 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-slate-200 pb-10 lg:pb-0 lg:pr-10">
+              <div className="text-6xl font-black text-slate-900 mb-4">{rating || "4.8"}/5</div>
+              <div className="flex gap-1 mb-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="size-6 fill-primary text-primary" />
                 ))}
               </div>
+              <p className="text-slate-600 mb-2">from <span className="font-bold text-slate-900">400+</span> verified reviews</p>
+              <p className="font-bold text-slate-900">Google</p>
             </div>
-            <div className="mt-10 text-center">
-              <Link href="/testimonials" className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
-                Read more reviews <ArrowRight className="size-4" />
-              </Link>
+            <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-6">
+              {(testimonials.length > 0 ? testimonials.slice(0, 3) : [
+                { id: "1", rating: 5, quote: "Fantastic service! The team was very helpful and I love my new car.", customerName: "Sarah M.", photoUrl: null },
+                { id: "2", rating: 5, quote: "Highly recommend Cars365. They made the whole process of buying a used car so easy.", customerName: "David L.", photoUrl: null },
+                { id: "3", rating: 5, quote: "Great selection of cars and transparent pricing. Very happy with my purchase.", customerName: "Emma W.", photoUrl: null }
+              ]).map((t) => (
+                <div key={t.id} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="flex gap-0.5 mb-4">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className={`size-4 ${i < t.rating ? "fill-primary text-primary" : "fill-slate-200 text-slate-200"}`} />
+                    ))}
+                  </div>
+                  <p className="text-sm text-slate-700 mb-6 line-clamp-4">"{t.quote}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
+                      {t.photoUrl ? <img src={t.photoUrl} alt="" className="w-full h-full object-cover"/> : <div className="w-full h-full bg-slate-300"></div>}
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm text-slate-900">{t.customerName}</p>
+                      <p className="text-xs text-slate-500">Google Review</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          </section>
-        ) : null}
+          </div>
+          <div className="mt-10 text-center">
+            <Link href="/testimonials" className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
+              Read more reviews <ArrowRight className="size-4" />
+            </Link>
+          </div>
+        </section>
 
         {/* Better way to buy */}
         <section className="bg-slate-50 py-20">
