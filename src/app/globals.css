@@ -5,19 +5,19 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Cars365 Logo Theme — Upgraded to Premium Vibrant Blue */
-  --primary: #2563eb;          /* Bright Blue */
-  --primary-hover: #1d4ed8;
-  --primary-foreground: #ffffff; /* White text on blue buttons */
+  /* Cars365 Logo Theme — NSW plate yellow and pure black. */
+  --primary: #FFCC00;          /* Yellow accents */
+  --primary-hover: #eab308;
+  --primary-foreground: #000000; /* Black text on yellow buttons */
 
-  --accent-dark: #1e3a8a;      /* Deep blue accent */
+  --accent-dark: #FFCC00;      /* Make accent sections pop with yellow */
 
   /* Semantic status */
   --success: #12b76a;
   --warning: #f79009;
   --danger: #e5484d;
   --error: #e5484d;
-  --info: #3b82f6;
+  --info: #FFCC00;
 
   /* Neutral Scale */
   --slate-50: #f8fafc;
