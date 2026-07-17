@@ -19,7 +19,7 @@ async function processImages() {
       const b = data[i + 2];
       // If the pixel is very light (near white/light gray), make it transparent
       // The background in the screenshot looks like a light gray studio background.
-      if (r > 240 && g > 240 && b > 240) {
+      if (r > 220 && g > 220 && b > 220) {
         data[i + 3] = 0; // set alpha to 0
       }
     }
