@@ -174,11 +174,11 @@ export default async function HomePage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {(["sedan", "suv", "hatch", "ute", "van", "coupe"] as const).map((b) => (
               <Link key={b} href={bodyTypeHref(b as keyof typeof BODY_TYPE_LABELS)} className="group flex flex-col items-center justify-end rounded-lg border border-slate-200 bg-white p-3 pb-4 transition-all hover:border-slate-300 hover:shadow-sm aspect-[4/3] sm:aspect-auto sm:h-[130px]">
-                <div className="flex-1 flex items-center justify-center w-full px-2 mb-1">
+                <div className="flex-1 flex items-center justify-center w-full px-1 mb-1">
                   <img 
                     src={`/images/body-types/${b}.png`} 
                     alt={b} 
-                    className="w-full max-h-[75px] object-contain transition-transform duration-300 group-hover:scale-110 mix-blend-multiply" 
+                    className="w-full max-h-[85px] object-contain scale-110 transition-transform duration-300 group-hover:scale-125 mix-blend-multiply" 
                   />
                 </div>
                 <span className="font-medium text-[13px] text-slate-800">{BODY_TYPE_LABELS[b as keyof typeof BODY_TYPE_LABELS] || b}</span>
