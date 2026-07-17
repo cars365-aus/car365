@@ -19,8 +19,8 @@ export default function AboutPage() {
       <section className="relative pt-32 pb-32 md:pt-48 md:pb-40 overflow-hidden bg-black">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=2500&q=80" 
-            alt="Artistic Automotive" 
+            src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=2500&q=80" 
+            alt="Car Dealership Yard" 
             className="w-full h-full object-cover object-center opacity-30 mix-blend-luminosity grayscale"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/80 to-[#050505]"></div>
