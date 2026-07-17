@@ -260,10 +260,34 @@ export type VehicleListingResult = {
   };
 };
 
-// ── Finance estimate (SRS FR-13) ────────────────────────────────────────────
 export type FinanceParams = {
   annualRate: number;
   termMonths: number;
   depositPct: number;
   disclaimer: string;
+};
+
+// ── Blog entities (SRS FR-15) ───────────────────────────────────────────────
+export type BlogArticleStatus = "draft" | "published" | "archived";
+
+export type BlogArticle = {
+  id: string;
+  title: string;
+  slug: string;
+  body: string;
+  excerpt: string | null;
+  featuredImageUrl: string | null;
+  featuredImageAlt: string | null;
+  categoryId: string | null;
+  status: BlogArticleStatus;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  readingTimeMinutes: number;
+  publishedAt: string | null;
+  updatedAt: string;
+  createdAt: string;
+  source: string;
+  topicKey: string | null;
+  primaryKeyword: string | null;
+  tags: string[];
 };

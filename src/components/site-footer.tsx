@@ -14,7 +14,7 @@ import {
 } from "@/lib/nav";
 
 const COMPANY_LINKS = [
-  { href: "https://example.com", label: "About Us" },
+  { href: "/about", label: "About Us" },
   { href: "/testimonials", label: "Testimonials" },
   { href: "/faqs", label: "FAQs" },
   { href: "/contact", label: "Contact" },

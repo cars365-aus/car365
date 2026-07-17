@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Car, Inbox, MessageSquareQuote, HelpCircle,
-  Settings, Users, ScrollText, Menu, X, BookMarked,
+  Settings, Users, ScrollText, Menu, X, BookMarked, FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ const NAV = [
   { href: "/admin/inventory", label: "Inventory", icon: Car },
   { href: "/admin/leads", label: "Leads", icon: Inbox },
   { href: "/admin/catalogue", label: "Brands & Models", icon: BookMarked },
+  { href: "/admin/blog", label: "Blog", icon: FileText },
   { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
   { href: "/admin/settings", label: "Settings", icon: Settings },
