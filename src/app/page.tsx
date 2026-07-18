@@ -9,6 +9,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { VehicleCard } from "@/components/vehicle-card";
 import { HeroSearch } from "@/components/hero-search";
+import { FeaturedCarsSection } from "@/components/featured-cars-section";
 import { getFeaturedVehicles, getMakes } from "@/lib/data/inventory";
 import { getApprovedTestimonials } from "@/lib/data/content";
 import { getCompanyProfile } from "@/lib/data/settings";
@@ -136,35 +137,7 @@ export default async function HomePage() {
         </section>
 
         {/* Featured Cars */}
-        {featured.length > 0 ? (
-          <section className="bg-slate-50 py-16">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6">
-              <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900 mb-6">Featured Cars</h2>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="cursor-pointer rounded-full bg-[#0b1320] px-5 py-2 text-sm font-semibold text-white">All Cars</span>
-                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">SUV</span>
-                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Sedan</span>
-                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Hatchback</span>
-                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Ute</span>
-                  </div>
-                </div>
-                <Link href="/used-cars" className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
-                  View all cars <ArrowRight className="size-4" />
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {featured.map((v, i) => <VehicleCard key={v.id} vehicle={v} priority={i < 4} />)}
-              </div>
-              <div className="mt-10 flex justify-center">
-                <Link href="/used-cars" className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 font-bold text-black hover:bg-primary-hover transition-colors">
-                  View all cars
-                </Link>
-              </div>
-            </div>
-          </section>
-        ) : null}
+        <FeaturedCarsSection featured={featured} />
 
         {/* Browse by body type */}
         <section className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6">
