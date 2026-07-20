@@ -13,6 +13,7 @@ export const metadata = {
 export default async function BlogIndexPage() {
   const articles = await getPublishedBlogArticles();
 
+  return (
     <>
       <SiteHeader />
       <div className="bg-background min-h-screen">
@@ -82,4 +83,5 @@ export default async function BlogIndexPage() {
       </div>
       <SiteFooter />
     </>
+  );
 }
