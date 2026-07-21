@@ -4,6 +4,8 @@ import { getInventoryList } from "@/lib/data/dashboard";
 import { formatPrice } from "@/lib/nav";
 import { InventoryRowActions } from "./inventory-row-actions";
 
+import { BulkUpload } from "./bulk-upload";
+
 export const metadata = { title: "Inventory" };
 export const dynamic = "force-dynamic";
 
@@ -28,9 +30,12 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
           <h1 className="font-heading text-2xl font-bold text-foreground">Inventory</h1>
           <p className="text-sm text-muted-foreground">{rows.length} vehicles</p>
         </div>
-        <Link href="/admin/inventory/new" className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover">
-          <Plus className="size-4" /> Add vehicle
-        </Link>
+        <div className="flex items-center gap-3">
+          <BulkUpload />
+          <Link href="/admin/inventory/new" className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover">
+            <Plus className="size-4" /> Add vehicle
+          </Link>
+        </div>
       </header>
 
       <div className="flex flex-wrap gap-2">

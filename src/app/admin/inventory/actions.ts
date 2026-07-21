@@ -4,7 +4,7 @@ import { revalidateTag, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/security/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { vehicleCreateSchema, vehicleUpdateSchema } from "@/lib/validation/vehicle";
+import { vehicleCreateSchema, vehicleUpdateSchema, vehicleCsvRowSchema } from "@/lib/validation/vehicle";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- untyped Supabase client at the DB boundary. */
 
@@ -234,4 +234,122 @@ export async function deleteVehicle(id: string, shouldRedirect: boolean = true) 
   } else {
     return { ok: true };
   }
+}
+
+export async function bulkUploadVehicles(rows: any[]) {
+  const user = await requireAdmin();
+  const supabase = createAdminClient();
+  
+  let successCount = 0;
+  const errors: { row: number; error: string }[] = [];
+
+  // Fetch all makes and models to resolve names to UUIDs
+  const { data: makesData } = await supabase.from("makes").select("id, name, slug");
+  const { data: modelsData } = await supabase.from("models").select("id, make_id, name, slug");
+  
+  const makes = (makesData ?? []) as any[];
+  const models = (modelsData ?? []) as any[];
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const parsed = vehicleCsvRowSchema.safeParse(row);
+    
+    if (!parsed.success) {
+      errors.push({ row: i + 2, error: parsed.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`).join("; ") });
+      continue;
+    }
+    
+    const d = parsed.data;
+    
+    // Resolve Make
+    let makeId: string;
+    const makeSlug = slugify(d.make);
+    const existingMake = makes.find(m => m.slug === makeSlug || m.name.toLowerCase() === d.make.toLowerCase());
+    
+    if (existingMake) {
+      makeId = existingMake.id;
+    } else {
+      const { data: newMake, error: makeError } = await supabase.from("makes")
+        .insert({ name: d.make, slug: makeSlug, is_popular: false })
+        .select("id, name, slug")
+        .single();
+        
+      if (makeError) {
+        errors.push({ row: i + 2, error: `Failed to create make '${d.make}': ${makeError.message}` });
+        continue;
+      }
+      makeId = newMake.id;
+      makes.push(newMake);
+    }
+    
+    // Resolve Model
+    let modelId: string;
+    const modelSlug = slugify(d.model);
+    const existingModel = models.find(m => m.make_id === makeId && (m.slug === modelSlug || m.name.toLowerCase() === d.model.toLowerCase()));
+    
+    if (existingModel) {
+      modelId = existingModel.id;
+    } else {
+      const { data: newModel, error: modelError } = await supabase.from("models")
+        .insert({ make_id: makeId, name: d.model, slug: modelSlug })
+        .select("id, make_id, name, slug")
+        .single();
+        
+      if (modelError) {
+        errors.push({ row: i + 2, error: `Failed to create model '${d.model}': ${modelError.message}` });
+        continue;
+      }
+      modelId = newModel.id;
+      models.push(newModel);
+    }
+
+    // Build vehicle slug
+    const vehicleSlug = slugify(`${d.year}-${makeSlug}-${modelSlug}-${d.variant ?? ""}-${d.stock_id}`);
+
+    // Insert vehicle
+    const vehicleRow = clean({
+      stock_id: d.stock_id,
+      slug: vehicleSlug,
+      make_id: makeId,
+      model_id: modelId,
+      variant: d.variant,
+      year: d.year,
+      mileage_km: d.mileage_km,
+      fuel_type: d.fuel_type,
+      transmission: d.transmission,
+      body_type: d.body_type,
+      drive_type: d.drive_type,
+      price: d.price,
+      exterior_color: d.exterior_color,
+      description: d.description,
+      status: "draft", // Start as draft when bulk imported
+      is_featured: false,
+      roadworthy_included: false,
+      finance_available: true,
+      trade_in_welcome: true,
+      inspection_available: true,
+    });
+
+    const { error: insertError } = await supabase.from("vehicles").insert(vehicleRow);
+    
+    if (insertError) {
+      // Avoid duplicate stock id errors showing up cryptically
+      if (insertError.code === "23505") {
+        errors.push({ row: i + 2, error: `Duplicate stock ID '${d.stock_id}'` });
+      } else {
+        errors.push({ row: i + 2, error: `Failed to insert vehicle: ${insertError.message}` });
+      }
+      continue;
+    }
+
+    successCount++;
+  }
+
+  if (successCount > 0) {
+    await logActivity(user.id, "vehicle.bulk_uploaded", "bulk", { successCount, errorCount: errors.length });
+    revalidatePublic();
+    revalidatePath("/admin/inventory");
+  }
+
+  return { error: null, successCount, errors };
 }
