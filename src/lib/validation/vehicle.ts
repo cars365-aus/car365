@@ -74,6 +74,22 @@ export const vehicleCsvRowSchema = z.object({
   price: z.coerce.number().positive(),
   exterior_color: z.string().trim().optional(),
   description: z.string().trim().optional(),
+  engine: z.string().trim().optional(),
+  power_kw: z.coerce.number().int().optional(),
+  seats: z.coerce.number().int().optional(),
+  doors: z.coerce.number().int().optional(),
+  interior: z.string().trim().optional(),
+  vin: z.string().trim().optional(),
+  registration: z.string().trim().optional(),
+  rego_expiry: z.string().trim().optional(),
+  weekly_estimate: z.coerce.number().nonnegative().optional(),
+  safety_rating: z.string().trim().optional(),
+  warranty_text: z.string().trim().optional(),
+  roadworthy_included: z.preprocess((val) => val === true || val === "true" || val === "TRUE" || val === 1 || val === "1", z.boolean()).optional(),
+  finance_available: z.preprocess((val) => val === true || val === "true" || val === "TRUE" || val === 1 || val === "1", z.boolean()).optional(),
+  trade_in_welcome: z.preprocess((val) => val === true || val === "true" || val === "TRUE" || val === 1 || val === "1", z.boolean()).optional(),
+  inspection_available: z.preprocess((val) => val === true || val === "true" || val === "TRUE" || val === 1 || val === "1", z.boolean()).optional(),
+  dealer_notes: z.string().trim().optional(),
 });
 
 export type VehicleCreateInput = z.infer<typeof vehicleCreateSchema>;

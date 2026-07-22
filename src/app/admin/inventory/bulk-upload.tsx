@@ -15,7 +15,11 @@ export function BulkUpload() {
     const headers = [
       "stock_id", "make", "model", "variant", "year", "mileage_km", 
       "fuel_type", "transmission", "body_type", "drive_type", "price", 
-      "exterior_color", "description"
+      "exterior_color", "description", "engine", "power_kw", "seats",
+      "doors", "interior", "vin", "registration", "rego_expiry",
+      "weekly_estimate", "safety_rating", "warranty_text",
+      "roadworthy_included", "finance_available", "trade_in_welcome",
+      "inspection_available", "dealer_notes"
     ];
     
     // Create an empty worksheet with just the headers

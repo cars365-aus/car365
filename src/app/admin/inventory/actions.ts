@@ -322,12 +322,24 @@ export async function bulkUploadVehicles(rows: any[]) {
       price: d.price,
       exterior_color: d.exterior_color,
       description: d.description,
+      engine: d.engine,
+      power_kw: d.power_kw,
+      seats: d.seats,
+      doors: d.doors,
+      interior: d.interior,
+      vin: d.vin,
+      registration: d.registration,
+      rego_expiry: d.rego_expiry,
+      weekly_estimate: d.weekly_estimate,
+      safety_rating: d.safety_rating,
+      warranty_text: d.warranty_text,
+      dealer_notes: d.dealer_notes,
       status: "draft", // Start as draft when bulk imported
       is_featured: false,
-      roadworthy_included: false,
-      finance_available: true,
-      trade_in_welcome: true,
-      inspection_available: true,
+      roadworthy_included: d.roadworthy_included ?? false,
+      finance_available: d.finance_available ?? true,
+      trade_in_welcome: d.trade_in_welcome ?? true,
+      inspection_available: d.inspection_available ?? true,
     });
 
     const { error: insertError } = await supabase.from("vehicles").insert(vehicleRow);
