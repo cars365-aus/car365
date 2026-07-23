@@ -59,8 +59,9 @@ export async function createVehicle(_prev: unknown, formData: FormData) {
   const slug = await buildSlug(supabase, d);
 
   const { featureIds: fids, ...cols } = d;
+  const finalStockId = d.stockId || `STK-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
   const row = clean({
-    stock_id: d.stockId, slug, make_id: d.makeId, model_id: d.modelId, variant: cols.variant,
+    stock_id: finalStockId, slug, make_id: d.makeId, model_id: d.modelId, variant: cols.variant,
     year: d.year, mileage_km: d.mileageKm, fuel_type: d.fuelType, transmission: d.transmission,
     body_type: d.bodyType, drive_type: cols.driveType ?? null, engine: cols.engine, power_kw: cols.powerKw ?? null,
     seats: cols.seats ?? null, doors: cols.doors ?? null, exterior_color: cols.exteriorColor, interior: cols.interior,
@@ -311,11 +312,12 @@ export async function bulkUploadVehicles(rows: any[]) {
     }
 
     // Build vehicle slug
-    const vehicleSlug = slugify(`${d.year ?? "year"}-${makeSlug}-${modelSlug}-${d.variant ?? ""}-${d.stock_id || Math.random().toString(36).slice(2, 8)}`);
+    const finalStockId = d.stock_id || `STK-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    const vehicleSlug = slugify(`${d.year ?? "year"}-${makeSlug}-${modelSlug}-${d.variant ?? ""}-${finalStockId}`);
 
     // Insert vehicle
     const vehicleRow = clean({
-      stock_id: d.stock_id,
+      stock_id: finalStockId,
       slug: vehicleSlug,
       make_id: makeId,
       model_id: modelId,
