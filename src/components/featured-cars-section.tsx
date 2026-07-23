@@ -21,7 +21,7 @@ export function FeaturedCarsSection({ featured }: { featured: VehicleListItem[] 
   const filteredVehicles = filter === "all"
     ? featured
     : featured.filter((v) => {
-        return v.bodyType.toLowerCase().includes(filter.toLowerCase());
+        return v.bodyType ? v.bodyType.toLowerCase().includes(filter.toLowerCase()) : false;
       });
 
   if (featured.length === 0) return null;

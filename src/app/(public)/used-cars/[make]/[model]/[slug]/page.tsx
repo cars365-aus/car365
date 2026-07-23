@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!v) return { title: "Vehicle not found" };
   const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""} for Sale | Cars365`;
   
-  const baseDesc = `Looking for a ${v.year} ${v.makeName} ${v.modelName}? ${formatKm(v.mileageKm)}, ${TRANSMISSION_LABELS[v.transmission]}, ${FUEL_LABELS[v.fuelType]}.`;
+  const baseDesc = `Looking for a ${v.year} ${v.makeName} ${v.modelName}? ${formatKm(v.mileageKm)}${v.transmission ? `, ${TRANSMISSION_LABELS[v.transmission]}` : ""}${v.fuelType ? `, ${FUEL_LABELS[v.fuelType]}` : ""}.`;
   const extraDesc = v.description ? ` ${(v.description).slice(0, 80)}...` : " Inspected and ready to drive away.";
   
   return {
@@ -83,9 +83,9 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
   const specs: { label: string; value: string | null }[] = [
     { label: "Kilometres", value: formatKm(v.mileageKm) },
     { label: "Year", value: String(v.year) },
-    { label: "Transmission", value: TRANSMISSION_LABELS[v.transmission] },
-    { label: "Fuel", value: FUEL_LABELS[v.fuelType] },
-    { label: "Body", value: BODY_TYPE_LABELS[v.bodyType] },
+    { label: "Transmission", value: v.transmission ? TRANSMISSION_LABELS[v.transmission] : null },
+    { label: "Fuel", value: v.fuelType ? FUEL_LABELS[v.fuelType] : null },
+    { label: "Body", value: v.bodyType ? BODY_TYPE_LABELS[v.bodyType] : null },
     { label: "Drive", value: v.driveType ? DRIVE_LABELS[v.driveType] : null },
     { label: "Engine", value: v.engine },
     { label: "Colour", value: v.exteriorColor },
