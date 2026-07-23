@@ -218,12 +218,12 @@ export function VehicleForm({
         <TabsPanel value="basics" data-step="basics">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <L label="Stock ID"><input name="stockId" defaultValue={v.stock_id} disabled={mode === "edit"} className={inputCls} placeholder="A1042" /></L>
-            <L label="Year *"><input name="year" required type="number" defaultValue={v.year} className={inputCls} /></L>
+            <L label="Year"><input name="year" type="number" defaultValue={v.year} className={inputCls} /></L>
             
-            <L label="Make *">
+            <L label="Make">
               {!isAddingMake ? (
                 <>
-                  <select name="makeId" required value={makeId} onChange={(e) => {
+                  <select name="makeId" value={makeId} onChange={(e) => {
                     if (e.target.value === "new") setIsAddingMake(true);
                     else {
                       setMakeId(e.target.value);
@@ -245,9 +245,9 @@ export function VehicleForm({
               )}
             </L>
 
-            <L label="Model *">
+            <L label="Model">
               {!isAddingModel ? (
-                <select name="modelId" required value={modelId} onChange={(e) => {
+                <select name="modelId" value={modelId} onChange={(e) => {
                   if (e.target.value === "new") setIsAddingModel(true);
                   else setModelId(e.target.value);
                 }} className={inputCls} disabled={!makeId || isAddingMake}>
@@ -265,7 +265,7 @@ export function VehicleForm({
               )}
             </L>
             <L label="Variant"><input name="variant" defaultValue={v.variant ?? ""} className={inputCls} placeholder="GXL" /></L>
-            <L label="Mileage (km) *"><input name="mileageKm" required type="number" defaultValue={v.mileage_km} className={inputCls} /></L>
+            <L label="Mileage (km)"><input name="mileageKm" type="number" defaultValue={v.mileage_km} className={inputCls} /></L>
             <L label="Status">
               <select name="status" defaultValue={v.status ?? "draft"} className={inputCls}>
                 {vehicleStatuses.map((s) => <option key={s} value={s} className="capitalize">{s}</option>)}
@@ -301,7 +301,7 @@ export function VehicleForm({
 
         <TabsPanel value="pricing" data-step="pricing">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <L label="Price ($) *"><input name="price" required type="number" step="0.01" defaultValue={v.price} className={inputCls} /></L>
+            <L label="Price ($)"><input name="price" type="number" step="0.01" defaultValue={v.price} className={inputCls} /></L>
             <L label="Weekly estimate ($)"><input name="weeklyEstimate" type="number" defaultValue={v.weekly_estimate ?? ""} className={inputCls} placeholder="auto if blank" /></L>
             <L label="Warranty"><input name="warrantyText" defaultValue={v.warranty_text ?? ""} className={inputCls} placeholder="3-month dealer warranty" /></L>
           </div>

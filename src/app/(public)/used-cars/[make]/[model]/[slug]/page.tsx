@@ -28,9 +28,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const v = await getVehicleBySlug(slug);
   if (!v) return { title: "Vehicle not found" };
-  const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""} for Sale | Cars365`;
+  const title = `${v.year ?? "Car"} ${v.makeName ?? ""} ${v.modelName ?? ""}${v.variant ? ` ${v.variant}` : ""} for Sale | Cars365`.trim();
   
-  const baseDesc = `Looking for a ${v.year} ${v.makeName} ${v.modelName}? ${formatKm(v.mileageKm)}${v.transmission ? `, ${TRANSMISSION_LABELS[v.transmission]}` : ""}${v.fuelType ? `, ${FUEL_LABELS[v.fuelType]}` : ""}.`;
+  const baseDesc = `Looking for a ${v.year ?? "Car"} ${v.makeName ?? ""} ${v.modelName ?? ""}? ${v.mileageKm != null ? formatKm(v.mileageKm) : "Great condition"}${v.transmission ? `, ${TRANSMISSION_LABELS[v.transmission]}` : ""}${v.fuelType ? `, ${FUEL_LABELS[v.fuelType]}` : ""}.`.replace(/\s+/g, " ");
   const extraDesc = v.description ? ` ${(v.description).slice(0, 80)}...` : " Inspected and ready to drive away.";
   
   return {
@@ -55,7 +55,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
   }
 
   const similar = await getSimilarVehicles({ id: v.id, bodyType: v.bodyType, price: v.price });
-  const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""}`;
+  const title = `${v.year ?? "Car"} ${v.makeName ?? ""} ${v.modelName ?? ""}${v.variant ? ` ${v.variant}` : ""}`.trim();
 
   const sellerName = (company.trading_name as string) || "Cars365";
   const vdpPath = `/used-cars/${v.makeSlug}/${v.modelSlug}/${v.slug}`;
@@ -64,8 +64,8 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
     breadcrumbSchema([
       { name: "Home", path: "/" },
       { name: "Used Cars", path: "/used-cars" },
-      { name: v.makeName, path: `/used-cars/${v.makeSlug}` },
-      { name: v.modelName, path: `/used-cars/${v.makeSlug}/${v.modelSlug}` },
+      { name: v.makeName ?? "Used Cars", path: `/used-cars/${v.makeSlug || ""}` },
+      { name: v.modelName ?? "Model", path: `/used-cars/${v.makeSlug || ""}/${v.modelSlug || ""}` },
       { name: title, path: vdpPath },
     ]),
   ];
@@ -81,8 +81,8 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
   const isSold = v.status === "sold";
 
   const specs: { label: string; value: string | null }[] = [
-    { label: "Kilometres", value: formatKm(v.mileageKm) },
-    { label: "Year", value: String(v.year) },
+    { label: "Kilometres", value: v.mileageKm != null ? formatKm(v.mileageKm) : null },
+    { label: "Year", value: v.year != null ? String(v.year) : null },
     { label: "Transmission", value: v.transmission ? TRANSMISSION_LABELS[v.transmission] : null },
     { label: "Fuel", value: v.fuelType ? FUEL_LABELS[v.fuelType] : null },
     { label: "Body", value: v.bodyType ? BODY_TYPE_LABELS[v.bodyType] : null },
@@ -104,9 +104,9 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
         <nav className="mb-4 flex flex-wrap gap-1.5 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">Home</Link><span aria-hidden>/</span>
           <Link href="/used-cars" className="hover:text-foreground">Used Cars</Link><span aria-hidden>/</span>
-          <Link href={`/used-cars/${v.makeSlug}`} className="hover:text-foreground">{v.makeName}</Link><span aria-hidden>/</span>
-          <Link href={`/used-cars/${v.makeSlug}/${v.modelSlug}`} className="hover:text-foreground">{v.modelName}</Link><span aria-hidden>/</span>
-          <span className="text-foreground">{v.year} {v.variant ?? v.modelName}</span>
+          <Link href={`/used-cars/${v.makeSlug || ""}`} className="hover:text-foreground">{v.makeName ?? "Used"}</Link><span aria-hidden>/</span>
+          <Link href={`/used-cars/${v.makeSlug || ""}/${v.modelSlug || ""}`} className="hover:text-foreground">{v.modelName ?? "Cars"}</Link><span aria-hidden>/</span>
+          <span className="text-foreground">{v.year ?? ""} {v.variant ?? v.modelName ?? ""}</span>
         </nav>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
@@ -194,7 +194,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
                 <h1 className="font-heading text-2xl font-bold leading-tight text-foreground">{title}</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Stock #{v.stockId}</p>
 
-                {v.price && v.price > 0 ? (
+                {v.price != null && v.price > 0 ? (
                   <div className="mt-4">
                     <div className="flex items-baseline gap-2">
                       <span className="font-heading text-4xl font-extrabold tabular-nums text-foreground">{formatPrice(v.price)}</span>
@@ -208,7 +208,11 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
                       </span>
                     ) : null}
                   </div>
-                ) : null}
+                ) : (
+                  <div className="mt-4">
+                    <span className="font-heading text-4xl font-extrabold tabular-nums text-foreground">POA</span>
+                  </div>
+                )}
 
                 {!isSold ? (
                   <div className="mt-5">

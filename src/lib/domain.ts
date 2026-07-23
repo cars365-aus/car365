@@ -80,17 +80,17 @@ export type VehicleListItem = {
   id: string;
   stockId: string;
   slug: string;
-  makeSlug: string;
-  modelSlug: string;
-  makeName: string;
-  modelName: string;
+  makeSlug: string | null;
+  modelSlug: string | null;
+  makeName: string | null;
+  modelName: string | null;
   variant: string | null;
-  year: number;
-  mileageKm: number;
+  year: number | null;
+  mileageKm: number | null;
   fuelType: FuelType | null;
   transmission: TransmissionType | null;
   bodyType: BodyType | null;
-  price: number;
+  price: number | null;
   previousPrice: number | null;
   weeklyEstimate: number | null;
   status: VehicleStatus;
@@ -108,8 +108,8 @@ export type VehicleListItem = {
 
 /** Full detail (VDP) projection. Extends the card with the deep fields. */
 export type VehicleDetail = VehicleListItem & {
-  makeId: string;
-  modelId: string;
+  makeId: string | null;
+  modelId: string | null;
   driveType: DriveType | null;
   engine: string | null;
   powerKw: number | null;

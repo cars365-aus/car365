@@ -70,17 +70,17 @@ function toListItem(row: RawRow, supabaseUrl: string): VehicleListItem {
     id: row.id,
     stockId: row.stock_id,
     slug: row.slug,
-    makeSlug: row.makes?.slug ?? "",
-    modelSlug: row.models?.slug ?? "",
-    makeName: row.makes?.name ?? "",
-    modelName: row.models?.name ?? "",
+    makeSlug: row.makes?.slug ?? null,
+    modelSlug: row.models?.slug ?? null,
+    makeName: row.makes?.name ?? null,
+    modelName: row.models?.name ?? null,
     variant: row.variant ?? null,
-    year: row.year,
-    mileageKm: row.mileage_km,
+    year: row.year ?? null,
+    mileageKm: row.mileage_km ?? null,
     fuelType: row.fuel_type,
     transmission: row.transmission,
     bodyType: row.body_type,
-    price: Number(row.price),
+    price: row.price != null ? Number(row.price) : null,
     previousPrice: row.previous_price != null ? Number(row.previous_price) : null,
     weeklyEstimate: row.weekly_estimate != null ? Number(row.weekly_estimate) : null,
     status: row.status,
@@ -350,7 +350,7 @@ export const getVehicleBySlug = unstable_cache(
 /** Minimal vehicle context for lead pages reached via ?vehicle={id}. */
 export async function getVehicleLeadContext(
   id: string,
-): Promise<{ id: string; title: string; price: number } | null> {
+): Promise<{ id: string; title: string; price: number | null } | null> {
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("vehicles")
@@ -361,8 +361,8 @@ export async function getVehicleLeadContext(
   const r = data as RawRow;
   return {
     id: r.id,
-    title: `${r.year} ${r.makes?.name ?? ""} ${r.models?.name ?? ""}${r.variant ? ` ${r.variant}` : ""}`.trim(),
-    price: Number(r.price),
+    title: `${r.year ?? "Car"} ${r.makes?.name ?? ""} ${r.models?.name ?? ""}${r.variant ? ` ${r.variant}` : ""}`.trim(),
+    price: r.price != null ? Number(r.price) : null,
   };
 }
 
@@ -372,15 +372,18 @@ export async function getSimilarVehicles(
 ): Promise<VehicleListItem[]> {
   const supabase = createAdminClient();
   const supabaseUrl = requireEnv("NEXT_PUBLIC_SUPABASE_URL").trim();
-  const { data } = await supabase
+  let query = supabase
     .from("vehicles")
     .select(CARD_SELECT)
     .eq("status", "available")
-    .eq("body_type", vehicle.bodyType)
-    .neq("id", vehicle.id)
-    .gte("price", vehicle.price * 0.8)
-    .lte("price", vehicle.price * 1.2)
-    .limit(limit);
+    .neq("id", vehicle.id);
+
+  if (vehicle.bodyType) query = query.eq("body_type", vehicle.bodyType);
+  if (vehicle.price != null) {
+    query = query.gte("price", vehicle.price * 0.8).lte("price", vehicle.price * 1.2);
+  }
+
+  const { data } = await query.limit(limit);
   return (data ?? []).map((r: RawRow) => toListItem(r, supabaseUrl));
 }
 

@@ -35,8 +35,8 @@ export function VehicleCard({
   priority?: boolean;
   className?: string;
 }) {
-  const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""}`;
-  const priceDrop = v.previousPrice != null && v.previousPrice > v.price;
+  const title = `${v.year ?? "Car"} ${v.makeName ?? ""} ${v.modelName ?? ""}${v.variant ? ` ${v.variant}` : ""}`.trim();
+  const priceDrop = v.previousPrice != null && v.price != null && v.previousPrice > v.price;
 
   return (
     <motion.article
@@ -83,8 +83,8 @@ export function VehicleCard({
         </Link>
 
         <dl className="mt-3 grid grid-cols-2 gap-y-2 text-sm text-body">
-          <div className="flex items-center gap-1.5"><Calendar className="size-4 text-muted-foreground" /><span>{v.year}</span></div>
-          <div className="flex items-center gap-1.5"><Gauge className="size-4 text-muted-foreground" /><span>{formatKm(v.mileageKm)}</span></div>
+          {v.year != null && <div className="flex items-center gap-1.5"><Calendar className="size-4 text-muted-foreground" /><span>{v.year}</span></div>}
+          {v.mileageKm != null && <div className="flex items-center gap-1.5"><Gauge className="size-4 text-muted-foreground" /><span>{formatKm(v.mileageKm)}</span></div>}
           {v.fuelType && <div className="flex items-center gap-1.5"><Fuel className="size-4 text-muted-foreground" /><span>{FUEL_LABELS[v.fuelType]}</span></div>}
           {v.transmission && <div className="flex items-center gap-1.5"><Settings2 className="size-4 text-muted-foreground" /><span>{TRANSMISSION_LABELS[v.transmission]}</span></div>}
         </dl>
@@ -100,7 +100,7 @@ export function VehicleCard({
           <div className="flex items-end justify-between">
             <div>
               <div className="flex items-baseline gap-2">
-                <span className="font-heading text-xl font-bold tabular-nums text-foreground">{formatPrice(v.price)}</span>
+                <span className="font-heading text-xl font-bold tabular-nums text-foreground">{v.price != null ? formatPrice(v.price) : "POA"}</span>
                 {priceDrop ? (
                   <span className="text-sm text-muted-foreground line-through tabular-nums">{formatPrice(v.previousPrice!)}</span>
                 ) : null}

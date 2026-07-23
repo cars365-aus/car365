@@ -28,14 +28,14 @@ function revalidatePublic() {
 // Coerce empty-string optionals to null before insert.
 function clean<T extends Record<string, any>>(obj: T): T {
   const out: Record<string, any> = {};
-  for (const [k, v] of Object.entries(obj)) out[k] = v === "" ? null : v;
+  for (const [k, v] of Object.entries(obj)) out[k] = (v === "" || v === undefined) ? null : v;
   return out as T;
 }
 
 async function buildSlug(supabase: any, data: any): Promise<string> {
-  const { data: mk } = await supabase.from("makes").select("slug").eq("id", data.makeId).maybeSingle();
-  const { data: md } = await supabase.from("models").select("slug").eq("id", data.modelId).maybeSingle();
-  return slugify(`${data.year}-${mk?.slug ?? "car"}-${md?.slug ?? ""}-${data.variant ?? ""}-${data.stockId}`);
+  const mk = data.makeId ? (await supabase.from("makes").select("slug").eq("id", data.makeId).maybeSingle()).data : null;
+  const md = data.modelId ? (await supabase.from("models").select("slug").eq("id", data.modelId).maybeSingle()).data : null;
+  return slugify(`${data.year ?? "year"}-${mk?.slug ?? "make"}-${md?.slug ?? "model"}-${data.variant ?? ""}-${data.stockId || Math.random().toString(36).slice(2, 8)}`);
 }
 
 export async function createVehicle(_prev: unknown, formData: FormData) {
@@ -138,6 +138,7 @@ export async function updateVehicle(_prev: unknown, formData: FormData) {
   const { featureIds: fids, id, ...cols } = d;
 
   const row = clean({
+    make_id: cols.makeId, model_id: cols.modelId,
     variant: cols.variant, year: cols.year, mileage_km: cols.mileageKm, fuel_type: cols.fuelType,
     transmission: cols.transmission, body_type: cols.bodyType, drive_type: cols.driveType,
     engine: cols.engine, power_kw: cols.powerKw, seats: cols.seats, doors: cols.doors,
@@ -262,49 +263,55 @@ export async function bulkUploadVehicles(rows: any[]) {
     const d = parsed.data;
     
     // Resolve Make
-    let makeId: string;
-    const makeSlug = slugify(d.make);
-    const existingMake = makes.find(m => m.slug === makeSlug || m.name.toLowerCase() === d.make.toLowerCase());
-    
-    if (existingMake) {
-      makeId = existingMake.id;
-    } else {
-      const { data: newMake, error: makeError } = await supabase.from("makes")
-        .insert({ name: d.make, slug: makeSlug, is_popular: false })
-        .select("id, name, slug")
-        .single();
-        
-      if (makeError) {
-        errors.push({ row: i + 2, error: `Failed to create make '${d.make}': ${makeError.message}` });
-        continue;
+    let makeId: string | null = null;
+    let makeSlug = "make";
+    if (d.make) {
+      makeSlug = slugify(d.make);
+      const existingMake = makes.find(m => m.slug === makeSlug || m.name.toLowerCase() === d.make!.toLowerCase());
+      
+      if (existingMake) {
+        makeId = existingMake.id;
+      } else {
+        const { data: newMake, error: makeError } = await supabase.from("makes")
+          .insert({ name: d.make, slug: makeSlug, is_popular: false })
+          .select("id, name, slug")
+          .single();
+          
+        if (makeError) {
+          errors.push({ row: i + 2, error: `Failed to create make '${d.make}': ${makeError.message}` });
+          continue;
+        }
+        makeId = newMake.id;
+        makes.push(newMake);
       }
-      makeId = newMake.id;
-      makes.push(newMake);
     }
     
     // Resolve Model
-    let modelId: string;
-    const modelSlug = slugify(d.model);
-    const existingModel = models.find(m => m.make_id === makeId && (m.slug === modelSlug || m.name.toLowerCase() === d.model.toLowerCase()));
-    
-    if (existingModel) {
-      modelId = existingModel.id;
-    } else {
-      const { data: newModel, error: modelError } = await supabase.from("models")
-        .insert({ make_id: makeId, name: d.model, slug: modelSlug })
-        .select("id, make_id, name, slug")
-        .single();
-        
-      if (modelError) {
-        errors.push({ row: i + 2, error: `Failed to create model '${d.model}': ${modelError.message}` });
-        continue;
+    let modelId: string | null = null;
+    let modelSlug = "model";
+    if (d.model && makeId) {
+      modelSlug = slugify(d.model);
+      const existingModel = models.find(m => m.make_id === makeId && (m.slug === modelSlug || m.name.toLowerCase() === d.model!.toLowerCase()));
+      
+      if (existingModel) {
+        modelId = existingModel.id;
+      } else {
+        const { data: newModel, error: modelError } = await supabase.from("models")
+          .insert({ make_id: makeId, name: d.model, slug: modelSlug })
+          .select("id, make_id, name, slug")
+          .single();
+          
+        if (modelError) {
+          errors.push({ row: i + 2, error: `Failed to create model '${d.model}': ${modelError.message}` });
+          continue;
+        }
+        modelId = newModel.id;
+        models.push(newModel);
       }
-      modelId = newModel.id;
-      models.push(newModel);
     }
 
     // Build vehicle slug
-    const vehicleSlug = slugify(`${d.year}-${makeSlug}-${modelSlug}-${d.variant ?? ""}-${d.stock_id}`);
+    const vehicleSlug = slugify(`${d.year ?? "year"}-${makeSlug}-${modelSlug}-${d.variant ?? ""}-${d.stock_id || Math.random().toString(36).slice(2, 8)}`);
 
     // Insert vehicle
     const vehicleRow = clean({
