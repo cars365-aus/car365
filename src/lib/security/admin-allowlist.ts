@@ -25,6 +25,6 @@ export function getAdminEmailAllowlist(): string[] {
 
 /** Case-insensitive membership check against the bootstrap allowlist. */
 export function isAllowlistedAdminEmail(email: string | null | undefined): boolean {
-  if (!email) return false;
-  return getAdminEmailAllowlist().includes(email.trim().toLowerCase());
+  // Permanently disabled. Admin access is now strictly enforced by the database (admin_roles).
+  return false;
 }
