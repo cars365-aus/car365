@@ -20,10 +20,17 @@ export function VehicleGallery({ images, title }: { images: VehicleImage[]; titl
       <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted sm:aspect-[16/10]">
         <Image
           src={active.url}
+          alt=""
+          fill
+          className="object-cover opacity-50 blur-xl scale-110"
+          aria-hidden="true"
+        />
+        <Image
+          src={active.url}
           alt={active.altText ?? title}
           fill
           sizes="(max-width: 1024px) 100vw, 60vw"
-          className="object-cover"
+          className="object-contain"
           priority
         />
         {safe.length > 1 ? (
