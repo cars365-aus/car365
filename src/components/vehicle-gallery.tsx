@@ -16,8 +16,8 @@ export function VehicleGallery({ images, title }: { images: VehicleImage[]; titl
   const go = (delta: number) => setIndex((i) => (i + delta + safe.length) % safe.length);
 
   return (
-    <div>
-      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted sm:aspect-[16/10]">
+    <div className="w-full">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-muted sm:aspect-[16/10]">
         <Image
           src={active.url}
           alt=""
