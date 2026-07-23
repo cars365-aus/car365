@@ -13,15 +13,15 @@ export const vehicleStatuses = ["draft", "available", "reserved", "sold", "archi
 const currentYear = new Date().getFullYear();
 
 export const vehicleCreateSchema = z.object({
-  stockId: z.string().trim().min(1).max(40),
+  stockId: z.string().trim().max(40).optional().or(z.literal("")),
   makeId: z.string().uuid(),
   modelId: z.string().uuid(),
   variant: z.string().trim().max(80).optional().or(z.literal("")),
   year: z.coerce.number().int().min(1980).max(currentYear + 1),
   mileageKm: z.coerce.number().int().min(0).max(1_000_000),
-  fuelType: z.enum(fuelTypes),
-  transmission: z.enum(transmissionTypes),
-  bodyType: z.enum(bodyTypes),
+  fuelType: z.enum(fuelTypes).optional().or(z.literal("")),
+  transmission: z.enum(transmissionTypes).optional().or(z.literal("")),
+  bodyType: z.enum(bodyTypes).optional().or(z.literal("")),
   driveType: z.enum(driveTypes).optional(),
   engine: z.string().trim().max(80).optional().or(z.literal("")),
   powerKw: z.coerce.number().int().min(1).max(2000).optional(),
@@ -61,16 +61,16 @@ export const vehicleUpdateSchema = vehicleCreateSchema.partial().extend({
  * row-level errors.
  */
 export const vehicleCsvRowSchema = z.object({
-  stock_id: z.string().trim().min(1),
+  stock_id: z.string().trim().optional(),
   make: z.string().trim().min(1),
   model: z.string().trim().min(1),
   variant: z.string().trim().optional(),
   year: z.coerce.number().int().min(1980).max(currentYear + 1),
   mileage_km: z.coerce.number().int().min(0),
-  fuel_type: z.enum(fuelTypes),
-  transmission: z.enum(transmissionTypes),
-  body_type: z.enum(bodyTypes),
-  drive_type: z.enum(driveTypes).optional(),
+  fuel_type: z.enum(fuelTypes).optional().or(z.literal("")),
+  transmission: z.enum(transmissionTypes).optional().or(z.literal("")),
+  body_type: z.enum(bodyTypes).optional().or(z.literal("")),
+  drive_type: z.enum(driveTypes).optional().or(z.literal("")),
   price: z.coerce.number().positive(),
   exterior_color: z.string().trim().optional(),
   description: z.string().trim().optional(),

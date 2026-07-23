@@ -87,9 +87,9 @@ export type VehicleListItem = {
   variant: string | null;
   year: number;
   mileageKm: number;
-  fuelType: FuelType;
-  transmission: TransmissionType;
-  bodyType: BodyType;
+  fuelType: FuelType | null;
+  transmission: TransmissionType | null;
+  bodyType: BodyType | null;
   price: number;
   previousPrice: number | null;
   weeklyEstimate: number | null;

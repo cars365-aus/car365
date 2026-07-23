@@ -217,7 +217,7 @@ export function VehicleForm({
 
         <TabsPanel value="basics" data-step="basics">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <L label="Stock ID *"><input name="stockId" required defaultValue={v.stock_id} disabled={mode === "edit"} className={inputCls} placeholder="A1042" /></L>
+            <L label="Stock ID"><input name="stockId" defaultValue={v.stock_id} disabled={mode === "edit"} className={inputCls} placeholder="A1042" /></L>
             <L label="Year *"><input name="year" required type="number" defaultValue={v.year} className={inputCls} /></L>
             
             <L label="Make *">
@@ -282,9 +282,9 @@ export function VehicleForm({
 
         <TabsPanel value="specs" data-step="specs">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <L label="Fuel *"><select name="fuelType" required defaultValue={v.fuel_type ?? fuelTypes[0]} className={inputCls}>{fuelTypes.map((f) => <option key={f} value={f}>{FUEL_LABELS[f]}</option>)}</select></L>
-            <L label="Transmission *"><select name="transmission" required defaultValue={v.transmission ?? transmissionTypes[0]} className={inputCls}>{transmissionTypes.map((t) => <option key={t} value={t}>{TRANSMISSION_LABELS[t]}</option>)}</select></L>
-            <L label="Body type *"><select name="bodyType" required defaultValue={v.body_type ?? bodyTypes[0]} className={inputCls}>{bodyTypes.map((b) => <option key={b} value={b}>{BODY_TYPE_LABELS[b]}</option>)}</select></L>
+            <L label="Fuel"><select name="fuelType" defaultValue={v.fuel_type ?? ""} className={inputCls}><option value="">—</option>{fuelTypes.map((f) => <option key={f} value={f}>{FUEL_LABELS[f]}</option>)}</select></L>
+            <L label="Transmission"><select name="transmission" defaultValue={v.transmission ?? ""} className={inputCls}><option value="">—</option>{transmissionTypes.map((t) => <option key={t} value={t}>{TRANSMISSION_LABELS[t]}</option>)}</select></L>
+            <L label="Body type"><select name="bodyType" defaultValue={v.body_type ?? ""} className={inputCls}><option value="">—</option>{bodyTypes.map((b) => <option key={b} value={b}>{BODY_TYPE_LABELS[b]}</option>)}</select></L>
             <L label="Drive"><select name="driveType" defaultValue={v.drive_type ?? ""} className={inputCls}><option value="">—</option>{driveTypes.map((d) => <option key={d} value={d}>{DRIVE_LABELS[d]}</option>)}</select></L>
             <L label="Engine"><input name="engine" defaultValue={v.engine ?? ""} className={inputCls} placeholder="2.0L 4-cyl turbo" /></L>
             <L label="Power (kW)"><input name="powerKw" type="number" defaultValue={v.power_kw ?? ""} className={inputCls} /></L>

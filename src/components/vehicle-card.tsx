@@ -85,12 +85,12 @@ export function VehicleCard({
         <dl className="mt-3 grid grid-cols-2 gap-y-2 text-sm text-body">
           <div className="flex items-center gap-1.5"><Calendar className="size-4 text-muted-foreground" /><span>{v.year}</span></div>
           <div className="flex items-center gap-1.5"><Gauge className="size-4 text-muted-foreground" /><span>{formatKm(v.mileageKm)}</span></div>
-          <div className="flex items-center gap-1.5"><Fuel className="size-4 text-muted-foreground" /><span>{FUEL_LABELS[v.fuelType]}</span></div>
-          <div className="flex items-center gap-1.5"><Settings2 className="size-4 text-muted-foreground" /><span>{TRANSMISSION_LABELS[v.transmission]}</span></div>
+          {v.fuelType && <div className="flex items-center gap-1.5"><Fuel className="size-4 text-muted-foreground" /><span>{FUEL_LABELS[v.fuelType]}</span></div>}
+          {v.transmission && <div className="flex items-center gap-1.5"><Settings2 className="size-4 text-muted-foreground" /><span>{TRANSMISSION_LABELS[v.transmission]}</span></div>}
         </dl>
 
         <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-          <span className="rounded-md bg-muted px-2 py-0.5">{BODY_TYPE_LABELS[v.bodyType]}</span>
+          {v.bodyType && <span className="rounded-md bg-muted px-2 py-0.5">{BODY_TYPE_LABELS[v.bodyType]}</span>}
           {v.roadworthyIncluded ? (
             <span className="inline-flex items-center gap-1"><ShieldCheck className="size-3.5 text-success" />Roadworthy</span>
           ) : null}
