@@ -111,11 +111,9 @@ export function VehicleCard({
                 </p>
               ) : null}
             </div>
-            {v.city ? (
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                <MapPin className="size-3.5" />{v.city}
-              </span>
-            ) : null}
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+              <MapPin className="size-3.5" />CARS365 Granville
+            </span>
           </div>
         </div>
       </div>

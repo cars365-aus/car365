@@ -29,7 +29,7 @@ export const vehicleCreateSchema = z.object({
   doors: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(1).max(6).optional()),
   exteriorColor: z.string().trim().max(60).optional().or(z.literal("")),
   interior: z.string().trim().max(120).optional().or(z.literal("")),
-  vin: z.string().trim().length(17).optional().or(z.literal("")),
+  vin: z.string().trim().max(20).optional().or(z.literal("")),
   registration: z.string().trim().max(20).optional().or(z.literal("")),
   regoExpiry: z.string().date().optional().or(z.literal("")),
   price: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().positive().max(100_000_000).optional()),

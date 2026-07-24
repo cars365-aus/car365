@@ -89,6 +89,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
     { label: "Drive", value: v.driveType ? DRIVE_LABELS[v.driveType] : null },
     { label: "Engine", value: v.engine },
     { label: "Colour", value: v.exteriorColor },
+    { label: "Location", value: v.city ? `${v.city} (CARS365 Granville)` : "CARS365 Granville" },
   ];
 
   const featureGroups = (["safety", "comfort", "technology", "exterior"] as const)
@@ -162,29 +163,31 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
             ) : null}
 
             {/* Condition & inspection */}
-            <section className="mt-8 rounded-xl border border-border bg-card p-5">
-              <h2 className="mb-4 font-heading text-xl font-bold text-foreground">Buy with confidence</h2>
-              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {v.roadworthyIncluded ? (
-                  <li className="flex items-center gap-2 text-sm text-body"><ShieldCheck className="size-5 text-success" />Roadworthy certificate included</li>
-                ) : null}
-                {v.warrantyText ? (
-                  <li className="flex items-center gap-2 text-sm text-body"><ShieldCheck className="size-5 text-success" />{v.warrantyText}</li>
-                ) : null}
-                {v.inspectionAvailable ? (
-                  <li className="flex items-center gap-2 text-sm text-body"><BadgeCheck className="size-5 text-success" />Inspection available</li>
-                ) : null}
-                {v.financeAvailable ? (
-                  <li className="flex items-center gap-2 text-sm text-body"><CircleDollarSign className="size-5 text-success" />Finance can be arranged</li>
-                ) : null}
-                {v.tradeInWelcome ? (
-                  <li className="flex items-center gap-2 text-sm text-body"><Handshake className="size-5 text-success" />Trade-ins welcome</li>
-                ) : null}
-                {v.safetyRating ? (
-                  <li className="flex items-center gap-2 text-sm text-body"><ShieldCheck className="size-5 text-success" />{v.safetyRating}</li>
-                ) : null}
-              </ul>
-            </section>
+            {(v.roadworthyIncluded || v.warrantyText || v.inspectionAvailable || v.financeAvailable || v.tradeInWelcome || v.safetyRating) ? (
+              <section className="mt-8 rounded-xl border border-border bg-card p-5">
+                <h2 className="mb-4 font-heading text-xl font-bold text-foreground">Buy with confidence</h2>
+                <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {v.roadworthyIncluded ? (
+                    <li className="flex items-center gap-2 text-sm text-body"><ShieldCheck className="size-5 text-success" />Roadworthy certificate included</li>
+                  ) : null}
+                  {v.warrantyText ? (
+                    <li className="flex items-center gap-2 text-sm text-body"><ShieldCheck className="size-5 text-success" />{v.warrantyText}</li>
+                  ) : null}
+                  {v.inspectionAvailable ? (
+                    <li className="flex items-center gap-2 text-sm text-body"><BadgeCheck className="size-5 text-success" />Inspection available</li>
+                  ) : null}
+                  {v.financeAvailable ? (
+                    <li className="flex items-center gap-2 text-sm text-body"><CircleDollarSign className="size-5 text-success" />Finance can be arranged</li>
+                  ) : null}
+                  {v.tradeInWelcome ? (
+                    <li className="flex items-center gap-2 text-sm text-body"><Handshake className="size-5 text-success" />Trade-ins welcome</li>
+                  ) : null}
+                  {v.safetyRating ? (
+                    <li className="flex items-center gap-2 text-sm text-body"><ShieldCheck className="size-5 text-success" />{v.safetyRating}</li>
+                  ) : null}
+                </ul>
+              </section>
+            ) : null}
           </div>
 
           {/* Sticky enquiry card (desktop) */}
