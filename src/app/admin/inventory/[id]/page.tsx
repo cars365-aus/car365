@@ -21,7 +21,7 @@ export default async function EditVehiclePage({
   const supabase = createAdminClient();
 
   const [{ data: vehicle }, { data: featureRows }, makes, models, features, locations] = await Promise.all([
-    supabase.from("vehicles").select("*, makes:make_id(slug), models:model_id(slug)").eq("id", id).maybeSingle(),
+    supabase.from("vehicles").select("*, makes:make_id(slug), models:model_id(slug), images:vehicle_images(is_cover, sort_order, media:media_assets!media_id(storage_key))").eq("id", id).maybeSingle(),
     supabase.from("vehicle_features").select("feature_id").eq("vehicle_id", id),
     getMakes(), getAllModels(), getAllFeatures(), getActiveLocations(),
   ]);
@@ -29,6 +29,15 @@ export default async function EditVehiclePage({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const v = vehicle as any;
+  if (v.images) {
+    v.images = v.images
+      .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0))
+      .map((img: any) => ({
+        ...img,
+        url: img.media?.storage_key ? supabase.storage.from("media").getPublicUrl(img.media.storage_key).data.publicUrl : "",
+      }));
+  }
+
   const selectedFeatureIds = ((featureRows ?? []) as { feature_id: string }[]).map((f) => f.feature_id);
   const vdpPath = `/used-cars/${v.makes?.slug}/${v.models?.slug}/${v.slug}`;
 
