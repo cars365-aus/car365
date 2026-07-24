@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { fuelTypes, transmissionTypes, bodyTypes, driveTypes, vehicleStatuses } from "@/lib/validation/vehicle";
 import { FUEL_LABELS, TRANSMISSION_LABELS, BODY_TYPE_LABELS, DRIVE_LABELS } from "@/lib/nav";
 import type { Make, Model, Feature, LocationBranch, FeatureCategory } from "@/lib/domain";
-import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Image as ImageIcon, Loader2, Check as CheckIcon, Plus } from "lucide-react";
+import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Image as ImageIcon, Loader2, Check as CheckIcon, Plus, Upload } from "lucide-react";
 import { ImageUpload, UploadedImage } from "./image-upload";
 import { createMake, createModel } from "@/app/admin/catalogue/actions";
 
@@ -57,6 +57,110 @@ export function VehicleForm({
   const [modelId, setModelId] = useState<string>(vehicle?.model_id ?? "");
   const [activeTab, setActiveTab] = useState<StepValue>("basics");
   const formRef = useRef<HTMLFormElement>(null);
+  const csvInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCsvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const { read, utils } = await import("xlsx");
+      const data = await file.arrayBuffer();
+      const wb = read(data);
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = utils.sheet_to_json(ws);
+      
+      if (rows && rows.length > 0) {
+        const row = rows[0] as Record<string, any>;
+        
+        const getValue = (keys: string[]) => {
+          const foundKey = Object.keys(row).find(k => 
+            keys.some(key => k.toLowerCase().replace(/[^a-z0-9]/g, '') === key.toLowerCase().replace(/[^a-z0-9]/g, ''))
+          );
+          return foundKey ? row[foundKey] : undefined;
+        };
+
+        const form = formRef.current;
+        if (!form) return;
+
+        const updateInput = (name: string, keys: string[], defaultValue?: string) => {
+          let val = getValue(keys);
+          if (val === undefined || val === null || String(val).trim() === "") {
+            if (defaultValue !== undefined) {
+              val = defaultValue;
+            } else {
+              return;
+            }
+          }
+          const input = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
+          if (input) {
+            if (input.tagName === 'SELECT') {
+              const options = Array.from((input as HTMLSelectElement).options);
+              const match = options.find(o => o.value.toLowerCase() === String(val).toLowerCase());
+              if (match) {
+                input.value = match.value;
+              }
+            } else {
+              input.value = String(val);
+            }
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        };
+
+        updateInput("fuelType", ["fuel", "fueltype"]);
+        updateInput("transmission", ["transmission"]);
+        updateInput("bodyType", ["body", "bodytype"]);
+        updateInput("driveType", ["drive", "drivetype"]);
+        updateInput("engine", ["engine"]);
+        updateInput("powerKw", ["powerkw", "power", "kw"]);
+        updateInput("seats", ["seats"]);
+        updateInput("doors", ["doors"]);
+        updateInput("exteriorColor", ["exteriorcolor", "color", "exterior"]);
+        updateInput("interior", ["interior"]);
+        updateInput("vin", ["vin"]);
+        updateInput("registration", ["registration", "rego"]);
+        updateInput("regoExpiry", ["regoexpiry"]);
+        updateInput("safetyRating", ["safetyrating", "safety"]);
+        updateInput("year", ["year"]);
+        updateInput("variant", ["variant"]);
+        updateInput("mileageKm", ["mileage", "mileagekm"]);
+        updateInput("stockId", ["stockid", "stock"], "CARS365");
+        updateInput("price", ["price"]);
+        updateInput("weeklyEstimate", ["weeklyestimate", "weekly"]);
+        updateInput("warrantyText", ["warrantytext", "warranty"]);
+        
+        const valMake = getValue(["make"]);
+        if (valMake && String(valMake).trim() !== "") {
+           const foundMake = makes.find(m => m.name.toLowerCase() === String(valMake).toLowerCase().trim());
+           if (foundMake) setMakeId(foundMake.id);
+        }
+        
+        const valModel = getValue(["model"]);
+        if (valModel && String(valModel).trim() !== "") {
+           const foundModel = models.find(m => m.name.toLowerCase() === String(valModel).toLowerCase().trim());
+           if (foundModel) setModelId(foundModel.id);
+        }
+
+        const valLocation = getValue(["location"]);
+        if (valLocation && String(valLocation).trim() !== "") {
+           const locStr = String(valLocation).toLowerCase().trim();
+           const foundLoc = locations.find(l => l.name.toLowerCase().includes(locStr) || l.city.toLowerCase().includes(locStr) || locStr.includes(l.name.toLowerCase()));
+           if (foundLoc) {
+             const input = form.elements.namedItem("locationId") as HTMLSelectElement;
+             if (input) {
+               input.value = foundLoc.id;
+               input.dispatchEvent(new Event('change', { bubbles: true }));
+             }
+           }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to parse CSV", err);
+      alert("Failed to parse CSV file");
+    } finally {
+      if (csvInputRef.current) csvInputRef.current.value = "";
+    }
+  };
 
   // Inline creation states
   const [isAddingMake, setIsAddingMake] = useState(false);
@@ -66,6 +170,10 @@ export function VehicleForm({
   const [isCreatingInline, setIsCreatingInline] = useState(false);
 
   const v = vehicle ?? {};
+  
+  // Find default location for new listings (Granville / Sydney)
+  const defaultLocation = locations.find(l => l.name.toLowerCase().includes("granville") || l.city.toLowerCase().includes("granville") || l.city.toLowerCase().includes("sydney"));
+  const defaultLocationId = mode === "create" ? (defaultLocation?.id ?? "") : "";
   
   // Transform existing images if in edit mode
   const initialImages: UploadedImage[] = (v.images || []).map((img: any) => ({
@@ -168,39 +276,58 @@ export function VehicleForm({
     <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="space-y-6">
       {mode === "edit" ? <input type="hidden" name="id" value={v.id} /> : null}
 
-      {/* Step progress bar — create mode only */}
-      {mode === "create" && (
-        <div className="flex items-center gap-0">
-          {STEPS.map((step, i) => {
-            const Icon = step.icon;
-            const isActive = step.value === activeTab;
-            const isDone = i < currentIndex;
-            return (
-              <div key={step.value} className="flex flex-1 items-center">
-                <div
-                  className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : isDone
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {isDone ? (
-                    <CheckIcon className="size-3.5 shrink-0" />
-                  ) : (
-                    <Icon className="size-3.5 shrink-0" />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        {/* Step progress bar — create mode only */}
+        {mode === "create" ? (
+          <div className="flex items-center gap-0 w-full sm:w-2/3">
+            {STEPS.map((step, i) => {
+              const Icon = step.icon;
+              const isActive = step.value === activeTab;
+              const isDone = i < currentIndex;
+              return (
+                <div key={step.value} className="flex flex-1 items-center">
+                  <div
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : isDone
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {isDone ? (
+                      <CheckIcon className="size-3.5 shrink-0" />
+                    ) : (
+                      <Icon className="size-3.5 shrink-0" />
+                    )}
+                    <span className="hidden sm:inline">{step.label}</span>
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div className={`h-px flex-1 transition-colors ${i < currentIndex ? "bg-primary/40" : "bg-border"}`} />
                   )}
-                  <span className="hidden sm:inline">{step.label}</span>
                 </div>
-                {i < STEPS.length - 1 && (
-                  <div className={`h-px flex-1 transition-colors ${i < currentIndex ? "bg-primary/40" : "bg-border"}`} />
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+        ) : <div />}
+        
+        <div className="shrink-0 flex justify-end">
+          <button
+            type="button"
+            onClick={() => csvInputRef.current?.click()}
+            className="inline-flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors"
+          >
+            <Upload className="size-4" /> Auto-fill from CSV
+          </button>
+          <input 
+            ref={csvInputRef}
+            type="file" 
+            accept=".csv, .xlsx" 
+            className="hidden" 
+            onChange={handleCsvUpload}
+          />
         </div>
-      )}
+      </div>
 
       <Tabs value={activeTab} onValueChange={(v) => {
         if (mode === "edit") setActiveTab(v as StepValue);
@@ -272,7 +399,7 @@ export function VehicleForm({
               </select>
             </L>
             <L label="Location">
-              <select name="locationId" defaultValue={v.location_id ?? ""} className={inputCls}>
+              <select name="locationId" defaultValue={v.location_id ?? defaultLocationId} className={inputCls}>
                 <option value="">—</option>
                 {locations.map((l) => <option key={l.id} value={l.id}>{l.name} ({l.city})</option>)}
               </select>
