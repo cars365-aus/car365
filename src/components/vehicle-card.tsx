@@ -91,9 +91,7 @@ export function VehicleCard({
 
         <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
           {v.bodyType && <span className="rounded-md bg-muted px-2 py-0.5">{BODY_TYPE_LABELS[v.bodyType]}</span>}
-          {v.roadworthyIncluded ? (
-            <span className="inline-flex items-center gap-1"><ShieldCheck className="size-3.5 text-success" />Roadworthy</span>
-          ) : null}
+          <span className="inline-flex items-center gap-1"><ShieldCheck className="size-3.5 text-success" />Roadworthy</span>
         </div>
 
         <div className="mt-auto pt-4">
