@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import Link from "next/link";
 import { Plus, Edit2, Trash2 } from "lucide-react";
-import { formatDate } from "date-fns";
+import { format } from "date-fns";
 
 export const metadata = {
   title: "Manage Blog | Admin",
@@ -51,7 +51,7 @@ export default async function AdminBlogPage() {
                   </span>
                 </td>
                 <td className="p-4 hidden sm:table-cell text-muted-foreground">
-                  {article.published_at ? formatDate(new Date(article.published_at), "MMM d, yyyy") : "—"}
+                  {article.published_at ? format(new Date(article.published_at), "MMM d, yyyy") : "—"}
                 </td>
                 <td className="p-4 text-right">
                   <div className="flex justify-end gap-2">
