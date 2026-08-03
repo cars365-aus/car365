@@ -32,6 +32,27 @@ function clean<T extends Record<string, any>>(obj: T): T {
   return out as T;
 }
 
+/**
+ * Pre-sanitize raw FormData entries before Zod validation.
+ * - driveType: empty string → undefined (avoids enum crash)
+ * - powerKw / seats / doors: empty string or "0" → undefined (avoids min(1) crash)
+ */
+function sanitizeRaw(raw: Record<string, any>) {
+  const out = { ...raw };
+  // Optional enum — blank means "not selected"
+  if (!out.driveType || out.driveType === "") delete out.driveType;
+  // Optional positive ints — blank or zero means "not provided"
+  for (const field of ["powerKw", "seats", "doors", "weeklyEstimate", "featuredOrder"]) {
+    const v = out[field];
+    if (v === "" || v === "0" || v === 0 || v === null || v === undefined) {
+      delete out[field];
+    }
+  }
+  // Optional location UUID — blank means "none"
+  if (!out.locationId || out.locationId === "") delete out.locationId;
+  return out;
+}
+
 async function buildSlug(supabase: any, data: any): Promise<string> {
   const { data: mk } = await supabase.from("makes").select("slug").eq("id", data.makeId).maybeSingle();
   const { data: md } = await supabase.from("models").select("slug").eq("id", data.modelId).maybeSingle();
@@ -40,15 +61,16 @@ async function buildSlug(supabase: any, data: any): Promise<string> {
 
 export async function createVehicle(_prev: unknown, formData: FormData) {
   const user = await requireAdmin();
-  const raw = Object.fromEntries(formData.entries());
+  const rawRaw = Object.fromEntries(formData.entries());
   const featureIds = formData.getAll("featureIds").map(String).filter(Boolean);
+  const raw = sanitizeRaw(rawRaw);
   const parsed = vehicleCreateSchema.safeParse({
     ...raw,
-    roadworthyIncluded: raw.roadworthyIncluded === "on",
-    financeAvailable: raw.financeAvailable === "on",
-    tradeInWelcome: raw.tradeInWelcome === "on",
-    inspectionAvailable: raw.inspectionAvailable === "on",
-    isFeatured: raw.isFeatured === "on",
+    roadworthyIncluded: rawRaw.roadworthyIncluded === "on",
+    financeAvailable: rawRaw.financeAvailable === "on",
+    tradeInWelcome: rawRaw.tradeInWelcome === "on",
+    inspectionAvailable: rawRaw.inspectionAvailable === "on",
+    isFeatured: rawRaw.isFeatured === "on",
     featureIds,
   });
   if (!parsed.success) {
@@ -119,15 +141,16 @@ export async function createVehicle(_prev: unknown, formData: FormData) {
 
 export async function updateVehicle(_prev: unknown, formData: FormData) {
   const user = await requireAdmin();
-  const raw = Object.fromEntries(formData.entries());
+  const rawRaw = Object.fromEntries(formData.entries());
   const featureIds = formData.getAll("featureIds").map(String).filter(Boolean);
+  const raw = sanitizeRaw(rawRaw);
   const parsed = vehicleUpdateSchema.safeParse({
     ...raw,
-    roadworthyIncluded: raw.roadworthyIncluded === "on",
-    financeAvailable: raw.financeAvailable === "on",
-    tradeInWelcome: raw.tradeInWelcome === "on",
-    inspectionAvailable: raw.inspectionAvailable === "on",
-    isFeatured: raw.isFeatured === "on",
+    roadworthyIncluded: rawRaw.roadworthyIncluded === "on",
+    financeAvailable: rawRaw.financeAvailable === "on",
+    tradeInWelcome: rawRaw.tradeInWelcome === "on",
+    inspectionAvailable: rawRaw.inspectionAvailable === "on",
+    isFeatured: rawRaw.isFeatured === "on",
     featureIds,
   });
   if (!parsed.success) {
