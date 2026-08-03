@@ -31,24 +31,21 @@ export function NewsletterForm() {
   }
 
   return (
-    <form action={formAction} className="relative flex flex-col sm:flex-row gap-3 w-full group">
-      {/* Glow effect behind the form */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-primary to-yellow-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200 hidden sm:block"></div>
-      
+    <form action={formAction} className="flex flex-col sm:flex-row gap-4 w-full sm:w-[550px] max-w-full">
       <input 
         type="email" 
         name="email"
-        placeholder="Enter your best email..." 
+        placeholder="Your email" 
         required
-        className="relative flex-1 h-14 px-6 rounded-2xl sm:rounded-full border border-white/10 bg-[#050505]/80 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder:text-white/40 text-base shadow-inner transition-all hover:bg-[#050505]"
+        className="flex-1 h-14 px-6 rounded-full border border-white/10 bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder:text-white/40 text-base"
       />
       <button 
         type="submit" 
         disabled={pending}
-        className="relative h-14 px-8 rounded-2xl sm:rounded-full bg-gradient-to-r from-primary to-yellow-500 text-[#050505] font-black hover:scale-[1.02] transition-all disabled:opacity-70 disabled:hover:scale-100 whitespace-nowrap flex items-center justify-center gap-2 text-base shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_30px_rgba(234,179,8,0.5)]"
+        className="h-14 px-10 rounded-full bg-primary text-black font-bold hover:bg-[#d6a506] transition-colors disabled:opacity-70 whitespace-nowrap flex items-center justify-center gap-2 text-base"
       >
         {pending && <Loader2 className="size-5 animate-spin" />}
-        Subscribe Now
+        Subscribe
       </button>
     </form>
   );
