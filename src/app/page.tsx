@@ -79,8 +79,8 @@ export default async function HomePage() {
           {/* Background Image - Sports Car */}
           <div className="absolute inset-0 z-0 opacity-40">
             <img 
-              src="https://images.unsplash.com/photo-1503376712394-6b5ca7b3a970?auto=format&fit=crop&w=2000&q=80" 
-              alt="Sports Car Background" 
+              src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=2000&q=80" 
+              alt="Premium SUV Background" 
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0b1320] via-transparent to-[#0b1320]/80"></div>
