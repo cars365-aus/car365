@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { SlidersHorizontal, X } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { X } from "lucide-react";
 import { BODY_TYPE_LABELS, FUEL_LABELS, TRANSMISSION_LABELS } from "@/lib/nav";
-import type { BodyType, FuelType, Make, TransmissionType, VehicleListingResult } from "@/lib/domain";
+import type { BodyType, FuelType, Make, Model, TransmissionType, VehicleListingResult } from "@/lib/domain";
 
 type Facets = VehicleListingResult["facets"];
 
@@ -20,17 +19,18 @@ const SORT_OPTIONS: { value: string; label: string }[] = [
 
 export function UsedCarsFilters({
   makes,
+  allModels = [],
   facets,
   hideFilters = [],
 }: {
   makes: Make[];
+  allModels?: Model[];
   facets: Facets;
   hideFilters?: ("make" | "body")[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const [sheetOpen, setSheetOpen] = useState(false);
 
   const setParam = useCallback(
     (key: string, value: string | null) => {
@@ -45,11 +45,15 @@ export function UsedCarsFilters({
   );
 
   const get = (k: string) => params.get(k) ?? "";
-  const activeCount = ["make", "body", "fuel", "transmission", "price_min", "price_max", "year_min", "year_max", "km_max"].filter(
+  const activeCount = ["make", "model", "body", "fuel", "transmission", "price_min", "price_max", "year_min", "year_max", "km_max"].filter(
     (k) => params.get(k),
   ).length;
 
-  const form = (
+  const selectedMake = makes.find((m) => m.slug === get("make"));
+  const selectedMakeId = selectedMake?.id;
+  const filteredModels = allModels.filter((m) => m.makeId === selectedMakeId);
+
+  return (
     <div className="space-y-6">
       {/* Sort */}
       <FilterGroup label="Sort by">
@@ -69,11 +73,36 @@ export function UsedCarsFilters({
         <FilterGroup label="Make">
           <select
             value={get("make")}
-            onChange={(e) => setParam("make", e.target.value || null)}
+            onChange={(e) => {
+              const val = e.target.value || null;
+              const next = new URLSearchParams(params.toString());
+              if (val == null || val === "") next.delete("make");
+              else next.set("make", val);
+              next.delete("model"); // Always clear model when make changes!
+              next.delete("page");
+              const qs = next.toString();
+              router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+            }}
             className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground"
           >
             <option value="">All makes</option>
             {makes.map((m) => (
+              <option key={m.slug} value={m.slug}>{m.name}</option>
+            ))}
+          </select>
+        </FilterGroup>
+      ) : null}
+
+      {/* Model */}
+      {!hideFilters.includes("make") && get("make") && filteredModels.length > 0 ? (
+        <FilterGroup label="Model">
+          <select
+            value={get("model")}
+            onChange={(e) => setParam("model", e.target.value || null)}
+            className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground"
+          >
+            <option value="">All models</option>
+            {filteredModels.map((m) => (
               <option key={m.slug} value={m.slug}>{m.name}</option>
             ))}
           </select>
@@ -139,36 +168,12 @@ export function UsedCarsFilters({
       {activeCount > 0 ? (
         <button
           onClick={() => router.push(pathname, { scroll: false })}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+          className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted hover:text-primary"
         >
           <X className="size-4" /> Clear all filters
         </button>
       ) : null}
     </div>
-  );
-
-  return (
-    <>
-      {/* Mobile: filters button + sheet (controlled — Base UI's uncontrolled
-          Dialog trigger did not toggle reliably here) */}
-      <div className="lg:hidden">
-        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-          <SheetTrigger className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground">
-            <SlidersHorizontal className="size-4" />
-            Filters{activeCount > 0 ? ` (${activeCount})` : ""}
-          </SheetTrigger>
-          <SheetContent side="left" className="w-[88%] max-w-sm overflow-y-auto">
-            <SheetTitle className="mb-4">Filters</SheetTitle>
-            {form}
-          </SheetContent>
-        </Sheet>
-      </div>
-
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:block">
-        <div className="sticky top-20 rounded-xl border border-border bg-card p-5">{form}</div>
-      </aside>
-    </>
   );
 }
 
@@ -198,12 +203,12 @@ function FacetList({
           <li key={o.value}>
             <button
               onClick={() => onSelect(active ? null : o.value)}
-              className={`flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-sm transition-colors ${
-                active ? "bg-primary/10 font-medium text-primary" : "text-body hover:bg-muted"
+              className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-sm transition-colors ${
+                active ? "bg-primary text-black font-semibold shadow-sm" : "text-body hover:bg-muted font-medium"
               }`}
             >
               <span>{o.label}</span>
-              <span className="text-xs text-muted-foreground">{o.count}</span>
+              <span className={`text-xs ${active ? "text-black/70" : "text-muted-foreground"}`}>{o.count}</span>
             </button>
           </li>
         );
@@ -222,6 +227,11 @@ function RangeInput({
   onCommit: (value: string | null) => void;
 }) {
   const [local, setLocal] = useState(value);
+  
+  useEffect(() => {
+    setLocal(value);
+  }, [value]);
+
   return (
     <input
       type="number"

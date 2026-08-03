@@ -132,24 +132,24 @@ export default async function HomePage() {
 
         {/* Featured Cars */}
         {featured.length > 0 ? (
-          <section className="bg-slate-50 py-16">
+          <section className="bg-white dark:bg-slate-950 py-16">
             <div className="mx-auto max-w-7xl px-4 sm:px-6">
               <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-900 mb-6">Featured Cars</h2>
+                  <h2 className="text-2xl font-bold text-foreground mb-6">Featured Cars</h2>
                   <div className="flex flex-wrap gap-2">
-                    <button className="cursor-pointer rounded-full bg-[#0b1320] px-5 py-2 text-sm font-semibold text-white transition-colors">All Cars</button>
-                    <button className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">SUV</button>
-                    <button className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Sedan</button>
-                    <button className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Hatchback</button>
-                    <button className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Ute</button>
+                    <button className="cursor-pointer rounded-full bg-[#0b1320] dark:bg-primary dark:text-black px-5 py-2 text-sm font-semibold text-white transition-colors">All Cars</button>
+                    <button className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">SUV</button>
+                    <button className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">Sedan</button>
+                    <button className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">Hatchback</button>
+                    <button className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">Ute</button>
                   </div>
                 </div>
-                <Link href="/used-cars" className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
+                <Link href="/used-cars" className="inline-flex items-center gap-1 font-semibold text-blue-600 dark:text-primary hover:text-blue-700 dark:hover:text-primary-hover">
                   View all cars <ArrowRight className="size-4" />
                 </Link>
               </div>
-              <div className="dark">
+              <div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                   {featured.map((v, i) => <VehicleCard key={v.id} vehicle={v} priority={i < 4} />)}
                 </div>

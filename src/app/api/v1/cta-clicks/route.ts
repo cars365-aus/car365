@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { clientIp } from "@/lib/security/rate-limit";
+import { rateLimitSlidingWindow } from "@/lib/security/rate-limit-redis";
 
 export const runtime = "nodejs";
 
@@ -12,6 +14,17 @@ const schema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 20 click events per minute per IP.
+  // Prevents bots from inflating vehicle view/CTA counters in the analytics DB.
+  const ip = clientIp(request.headers);
+  const rl = await rateLimitSlidingWindow(`cta:${ip}`, 20, 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { ok: false },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfter ?? 60) } },
+    );
+  }
+
   let json: unknown;
   try {
     json = await request.json();

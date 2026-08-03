@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import Link from "next/link";
 import { MoreHorizontal, Edit, Trash2, CheckCircle, Clock, Archive } from "lucide-react";
 import { setVehicleStatus, deleteVehicle } from "./actions";
@@ -8,6 +8,8 @@ import { toast } from "sonner";
 
 export function InventoryRowActions({ vehicleId, currentStatus }: { vehicleId: string; currentStatus: string }) {
   const [pending, startTransition] = useTransition();
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const deleteTimeoutRef = useRef<NodeJS.Timeout>(null);
 
   function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const newStatus = e.target.value;
@@ -24,7 +26,11 @@ export function InventoryRowActions({ vehicleId, currentStatus }: { vehicleId: s
   }
 
   function handleDelete() {
-    if (confirm("Are you sure you want to delete this vehicle?")) {
+    if (!confirmingDelete) {
+      setConfirmingDelete(true);
+      if (deleteTimeoutRef.current) clearTimeout(deleteTimeoutRef.current);
+      deleteTimeoutRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
+    } else {
       startTransition(async () => {
         const res = await deleteVehicle(vehicleId, false);
         if (res?.error) {
@@ -62,10 +68,10 @@ export function InventoryRowActions({ vehicleId, currentStatus }: { vehicleId: s
       <button 
         disabled={pending} 
         onClick={handleDelete} 
-        className="text-danger hover:opacity-70 disabled:opacity-50"
+        className={`disabled:opacity-50 transition-colors ${confirmingDelete ? "text-danger bg-danger/10 px-2 py-1 rounded-md font-bold" : "text-danger hover:opacity-70"}`}
         title="Delete"
       >
-        <Trash2 className="size-4" />
+        {confirmingDelete ? <span className="text-xs">Confirm?</span> : <Trash2 className="size-4" />}
       </button>
     </div>
   );

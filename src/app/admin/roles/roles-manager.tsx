@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useTransition } from "react";
+import { useActionState, useTransition, useEffect } from "react";
 import { UserPlus, CheckCircle, AlertCircle, Shield, ShieldOff, ShieldCheck, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,14 @@ const initialAssignState: RoleActionState = { status: "idle", message: "" };
 function AssignRoleForm() {
   const [state, action, isPending] = useActionState(assignAdminRole, initialAssignState);
 
+  useEffect(() => {
+    if (state.status === "success") {
+      toast.success(state.message);
+    } else if (state.status === "error") {
+      toast.error(state.message);
+    }
+  }, [state]);
+
   return (
     <Card variant="elevated" className="border-2 border-dashed border-primary/20 bg-gradient-to-br from-orange-50/40 to-amber-50/20">
       <CardHeader className="border-b border-border/50 pb-4">
@@ -40,23 +49,6 @@ function AssignRoleForm() {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
-        {state.status !== "idle" && (
-          <div
-            className={`mb-5 rounded-xl border px-4 py-3 text-sm flex items-start gap-3 ${
-              state.status === "success"
-                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                : "border-red-200 bg-red-50 text-red-700"
-            }`}
-          >
-            {state.status === "success" ? (
-              <CheckCircle className="h-4 w-4 shrink-0 mt-0.5" />
-            ) : (
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-            )}
-            <span>{state.message}</span>
-          </div>
-        )}
-
         <form action={action} className="grid gap-5">
           <div className="grid gap-2">
             <Label htmlFor="assign-email">User email address <span className="text-red-500">*</span></Label>
@@ -140,13 +132,23 @@ function RoleRow({ entry }: { entry: AdminRoleEntry }) {
 
   const handleRevoke = () => {
     startTransition(async () => {
-      await revokeAdminRole(entry.userId);
+      const res = await revokeAdminRole(entry.userId);
+      if (res.status === "success") {
+        toast.success(res.message);
+      } else if (res.status === "error") {
+        toast.error(res.message);
+      }
     });
   };
 
   const handleRestore = () => {
     startTransition(async () => {
-      await restoreAdminRole(entry.userId);
+      const res = await restoreAdminRole(entry.userId);
+      if (res.status === "success") {
+        toast.success(res.message);
+      } else if (res.status === "error") {
+        toast.error(res.message);
+      }
     });
   };
 

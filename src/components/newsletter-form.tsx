@@ -14,7 +14,7 @@ async function subscribeAction(prevState: unknown, formData: FormData) {
     });
     // Even if it fails (e.g. dummy endpoint), we'll show success for UX
     return { success: true };
-  } catch (err: unknown) {
+  } catch {
     return { success: true };
   }
 }
@@ -25,7 +25,7 @@ export function NewsletterForm() {
   if (state?.success) {
     return (
       <div className="rounded-2xl border border-primary/20 bg-primary/10 p-5 px-8 inline-flex text-center">
-        <p className="font-bold text-primary text-base">You're in! Thanks for subscribing.</p>
+        <p className="font-bold text-primary text-base">You&apos;re in! Thanks for subscribing.</p>
       </div>
     );
   }

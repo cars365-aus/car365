@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { fuelTypes, transmissionTypes, bodyTypes, driveTypes, vehicleStatuses } from "@/lib/validation/vehicle";
 import { FUEL_LABELS, TRANSMISSION_LABELS, BODY_TYPE_LABELS, DRIVE_LABELS } from "@/lib/nav";
 import type { Make, Model, Feature, LocationBranch, FeatureCategory } from "@/lib/domain";
-import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Image as ImageIcon, Loader2, Check as CheckIcon, Plus } from "lucide-react";
+import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Image as ImageIcon, Loader2, Check as CheckIcon, Plus, Trash2 } from "lucide-react";
 import { ImageUpload, UploadedImage } from "./image-upload";
 import { createMake, createModel } from "@/app/admin/catalogue/actions";
 
@@ -55,6 +55,28 @@ export function VehicleForm({
   const [makes, setMakes] = useState<Make[]>(initialMakes);
   const [models, setModels] = useState<Model[]>(initialModels);
   
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const deleteTimeoutRef = useRef<NodeJS.Timeout>(null);
+
+  const v = vehicle ?? {};
+
+  const handleDelete = async () => {
+    if (!confirmingDelete) {
+      setConfirmingDelete(true);
+      if (deleteTimeoutRef.current) clearTimeout(deleteTimeoutRef.current);
+      deleteTimeoutRef.current = setTimeout(() => setConfirmingDelete(false), 3000);
+    } else {
+      const { deleteVehicle } = await import("@/app/admin/inventory/actions");
+      const res = await deleteVehicle(v.id);
+      if (res?.error) {
+        toast.error("Failed to delete vehicle: " + res.error);
+      } else {
+        toast.success("Vehicle deleted successfully");
+        router.push('/admin/inventory');
+      }
+    }
+  };
+
   const [makeId, setMakeId] = useState<string>(vehicle?.make_id ?? "");
   const [modelId, setModelId] = useState<string>(vehicle?.model_id ?? "");
   const [activeTab, setActiveTab] = useState<StepValue>("basics");
@@ -68,8 +90,6 @@ export function VehicleForm({
   const [newModelName, setNewModelName] = useState("");
   const [isCreatingInline, setIsCreatingInline] = useState(false);
 
-  const v = vehicle ?? {};
-  
   // Transform existing images if in edit mode
   const initialImages: UploadedImage[] = (v.images || []).map((img: { media: { storage_key: string; url: string }; url?: string; is_cover: boolean }) => ({
     path: img.media.storage_key,
@@ -373,21 +393,11 @@ export function VehicleForm({
           {mode === "edit" && (
             <button
               type="button"
-              onClick={async () => {
-                if (confirm("Are you sure you want to delete this vehicle? This action cannot be undone.")) {
-                  const { deleteVehicle } = await import("@/app/admin/inventory/actions");
-                  const res = await deleteVehicle(v.id);
-                  if (res?.error) {
-                    toast.error("Failed to delete vehicle: " + res.error);
-                  } else {
-                    toast.success("Vehicle deleted successfully");
-                    router.push('/admin/inventory');
-                  }
-                }
-              }}
-              className="inline-flex items-center gap-2 rounded-lg border border-danger/40 bg-card px-4 py-2.5 text-sm font-medium text-danger hover:bg-danger/10 transition-colors"
+              onClick={handleDelete}
+              className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${confirmingDelete ? "border-danger bg-danger text-white hover:bg-danger/90 font-bold" : "border-danger/40 bg-card text-danger hover:bg-danger/10"}`}
             >
-              Delete vehicle
+              <Trash2 className="size-4" />
+              {confirmingDelete ? "Click to confirm delete" : "Delete Vehicle"}
             </button>
           )}
         </div>

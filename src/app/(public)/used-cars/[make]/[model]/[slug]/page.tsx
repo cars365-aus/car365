@@ -70,10 +70,9 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
     ]),
   ];
 
-  const galleryImages: VehicleImage[] =
-    v.images.length > 0
-      ? v.images
-      : [{ id: "cover", url: v.coverImageUrl ?? "", altText: v.coverImageAlt, sortOrder: 0, isCover: true }];
+  const galleryImages: VehicleImage[] = v.images && v.images.length > 0 
+    ? v.images 
+    : [{ id: "cover", url: v.coverImageUrl || "/vehicle-placeholder.jpg", altText: v.coverImageAlt, sortOrder: 0, isCover: true }];
 
   const phone = phones.primary || null;
   const whatsapp = phones.whatsapp || null;

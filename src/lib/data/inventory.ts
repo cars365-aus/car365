@@ -61,11 +61,20 @@ function pickCover(images: RawRow[] | null | undefined): { key: string | null; a
   return { key: cover?.media_assets?.storage_key ?? null, alt: cover?.alt_text ?? null };
 }
 
+function getGalleryUrls(images: RawRow[] | null | undefined, supabaseUrl: string): string[] {
+  if (!images || images.length === 0) return [];
+  const sorted = [...images].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+  return sorted
+    .map((img) => (img.media_assets?.storage_key ? buildMediaUrl(supabaseUrl, img.media_assets.storage_key) : null))
+    .filter((url): url is string => Boolean(url));
+}
+
 function toListItem(row: RawRow, supabaseUrl: string): VehicleListItem {
   const cover = pickCover(row.vehicle_images);
   const coverUrl = cover.key
     ? buildMediaUrl(supabaseUrl, cover.key)
     : getBodyTypeFallback(row.body_type as BodyType);
+  const galleryUrls = getGalleryUrls(row.vehicle_images, supabaseUrl);
   return {
     id: row.id,
     stockId: row.stock_id,
@@ -88,6 +97,7 @@ function toListItem(row: RawRow, supabaseUrl: string): VehicleListItem {
     isNewArrival: row.published_at ? Date.now() - new Date(row.published_at).getTime() < 7 * 864e5 : false,
     coverImageUrl: coverUrl,
     coverImageAlt: cover.alt,
+    imageUrls: galleryUrls.length > 0 ? galleryUrls : coverUrl ? [coverUrl] : [],
     city: row.locations?.city ?? null,
     roadworthyIncluded: !!row.roadworthy_included,
     financeAvailable: !!row.finance_available,

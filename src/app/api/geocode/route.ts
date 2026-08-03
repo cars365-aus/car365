@@ -1,17 +1,23 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { clientIp, rateLimit } from "@/lib/security/rate-limit";
+import { clientIp } from "@/lib/security/rate-limit";
+import { rateLimitSlidingWindow } from "@/lib/security/rate-limit-redis";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const ip = clientIp(request.headers);
-  const limited = rateLimit(`geocode:${ip}`, 60, 60_000);
+  // Use Redis sliding-window so the limit is enforced across all instances
+  // (in-memory fallback only safe on single-process deployments).
+  const limited = await rateLimitSlidingWindow(`geocode:${ip}`, 60, 60_000);
 
   if (!limited.allowed) {
     return NextResponse.json(
       { error: "Too many geocoding requests", features: [] },
-      { status: 429 },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limited.retryAfter ?? 60) },
+      },
     );
   }
 

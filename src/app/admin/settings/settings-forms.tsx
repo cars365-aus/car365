@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { saveCompanyProfile, savePhoneNumbers, saveFinanceParams, saveNotificationRecipients, saveLocationHours } from "./actions";
 
 const input = "w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground";
@@ -9,6 +10,15 @@ type Action = (state: { ok?: boolean; error?: string } | undefined, fd: FormData
 
 function Card({ title, action, children }: { title: string; action: Action; children: React.ReactNode }) {
   const [state, formAction, pending] = useActionState(action, undefined);
+
+  useEffect(() => {
+    if (state?.ok) {
+      toast.success(`${title} saved successfully`);
+    } else if (state?.error) {
+      toast.error(state.error);
+    }
+  }, [state, title]);
+
   return (
     <form action={formAction} className="space-y-3 rounded-xl border border-border bg-card p-5 flex flex-col h-full">
       <h2 className="font-heading text-lg font-bold text-foreground">{title}</h2>
@@ -16,9 +26,7 @@ function Card({ title, action, children }: { title: string; action: Action; chil
         {children}
       </div>
       <div className="flex items-center gap-3 pt-3">
-        <button type="submit" disabled={pending} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60">{pending ? "Saving…" : "Save"}</button>
-        {state?.ok ? <span className="text-sm text-success">Saved.</span> : null}
-        {state?.error ? <span className="text-sm text-danger">{state.error}</span> : null}
+        <button type="submit" disabled={pending} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60 transition-colors shadow-sm">{pending ? "Saving…" : "Save changes"}</button>
       </div>
     </form>
   );

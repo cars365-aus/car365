@@ -98,6 +98,7 @@ export type VehicleListItem = {
   isNewArrival: boolean; // published within the last 7 days (computed at fetch)
   coverImageUrl: string | null;
   coverImageAlt: string | null;
+  imageUrls?: string[];
   city: string | null;
   roadworthyIncluded: boolean;
   financeAvailable: boolean;

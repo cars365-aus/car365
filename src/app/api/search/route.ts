@@ -102,9 +102,11 @@ export async function GET(request: NextRequest) {
       }
     });
   } catch (error) {
+    // Log internally but never expose engine/stack details to the client —
+    // error messages can reveal framework internals to attackers.
     console.error("Search error:", error);
     return NextResponse.json(
-      { error: "Search failed", message: error instanceof Error ? error.message : "Unknown error" },
+      { error: "Search temporarily unavailable. Please try again." },
       { status: 500 },
     );
   }

@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect, useRef } from "react";
 import { Plus, Trash2, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { createMake, deleteMake, createModel, deleteModel } from "./actions";
 import type { Make, Model } from "@/lib/domain";
 
@@ -26,7 +27,6 @@ export function AddMakeForm() {
         {pending ? <Loader2 className="size-4 animate-spin" /> : <Plus className="size-4" />}
         Add make
       </button>
-      {state?.error && <p className="w-full text-xs text-danger">{state.error}</p>}
     </form>
   );
 }
@@ -34,20 +34,38 @@ export function AddMakeForm() {
 // ── Delete Make Button ───────────────────────────────────────────────────────
 export function DeleteMakeButton({ id, name }: { id: string; name: string }) {
   const [state, action, pending] = useActionState(deleteMake, undefined);
+  const [confirming, setConfirming] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
+
+  useEffect(() => {
+    if (state?.ok) {
+      toast.success(`Make "${name}" deleted`);
+    } else if (state?.error) {
+      toast.error(state.error);
+    }
+  }, [state, name]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!confirming) {
+      e.preventDefault();
+      setConfirming(true);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => setConfirming(false), 3000);
+    }
+  };
+
   return (
     <form action={action}>
       <input type="hidden" name="id" value={id} />
       <button
         type="submit"
         disabled={pending}
-        title={`Delete ${name}`}
-        onClick={(e) => { if (!confirm(`Delete "${name}" and all its models?`)) e.preventDefault(); }}
-        className={btnDanger}
+        onClick={handleClick}
+        className={confirming ? "inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-white bg-danger hover:bg-danger/90 transition-colors" : btnDanger}
       >
         {pending ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
-        Delete
+        {confirming ? "Click to confirm" : "Delete"}
       </button>
-      {state?.error && <span className="text-xs text-danger">{state.error}</span>}
     </form>
   );
 }
@@ -96,7 +114,6 @@ export function MakeRow({ make, models }: { make: Make; models: Model[] }) {
               Add
             </button>
           </form>
-          {addState?.error && <p className="text-xs text-danger">{addState.error}</p>}
         </div>
       )}
     </div>
@@ -105,22 +122,40 @@ export function MakeRow({ make, models }: { make: Make; models: Model[] }) {
 
 function ModelChip({ model }: { model: Model }) {
   const [state, action, pending] = useActionState(deleteModel, undefined);
+  const [confirming, setConfirming] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
+
+  useEffect(() => {
+    if (state?.ok) {
+      toast.success(`Model "${model.name}" deleted`);
+    } else if (state?.error) {
+      toast.error(state.error);
+    }
+  }, [state, model.name]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!confirming) {
+      e.preventDefault();
+      setConfirming(true);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => setConfirming(false), 3000);
+    }
+  };
+
   return (
     <form action={action} className="inline-flex">
       <input type="hidden" name="id" value={model.id} />
-      <div className="flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-sm text-foreground">
+      <div className={`flex items-center gap-1 rounded-full border px-3 py-1 text-sm transition-colors ${confirming ? "border-danger bg-danger/10 text-danger" : "border-border bg-card text-foreground"}`}>
         {model.name}
         <button
           type="submit"
           disabled={pending}
-          title={`Delete ${model.name}`}
-          onClick={(e) => { if (!confirm(`Delete model "${model.name}"?`)) e.preventDefault(); }}
-          className="ml-1 text-muted-foreground hover:text-danger transition-colors"
+          onClick={handleClick}
+          className={`ml-1 transition-colors ${confirming ? "text-danger hover:text-danger/80 font-bold" : "text-muted-foreground hover:text-danger"}`}
         >
-          {pending ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
+          {pending ? <Loader2 className="size-3 animate-spin" /> : (confirming ? "Confirm?" : <Trash2 className="size-3" />)}
         </button>
       </div>
-      {state?.error && <span className="text-xs text-danger ml-1">{state.error}</span>}
     </form>
   );
 }
