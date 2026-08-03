@@ -3,6 +3,8 @@
 import { useActionState, useState, useRef } from "react";
 import Link from "next/link";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { fuelTypes, transmissionTypes, bodyTypes, driveTypes, vehicleStatuses } from "@/lib/validation/vehicle";
 import { FUEL_LABELS, TRANSMISSION_LABELS, BODY_TYPE_LABELS, DRIVE_LABELS } from "@/lib/nav";
 import type { Make, Model, Feature, LocationBranch, FeatureCategory } from "@/lib/domain";
@@ -57,6 +59,7 @@ export function VehicleForm({
   const [modelId, setModelId] = useState<string>(vehicle?.model_id ?? "");
   const [activeTab, setActiveTab] = useState<StepValue>("basics");
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
 
   // Inline creation states
   const [isAddingMake, setIsAddingMake] = useState(false);
@@ -68,9 +71,9 @@ export function VehicleForm({
   const v = vehicle ?? {};
   
   // Transform existing images if in edit mode
-  const initialImages: UploadedImage[] = (v.images || []).map((img: any) => ({
+  const initialImages: UploadedImage[] = (v.images || []).map((img: { media: { storage_key: string; url: string }; url?: string; is_cover: boolean }) => ({
     path: img.media.storage_key,
-    url: img.media.url || img.url, // fallback
+    url: img.media.url || img.url || "", // fallback
     isCover: img.is_cover
   }));
 
@@ -87,12 +90,13 @@ export function VehicleForm({
     const panel = formRef.current.querySelector(`[data-step="${activeTab}"]`);
     if (panel) {
       const inputs = panel.querySelectorAll('input[required], select[required], textarea[required]');
-      for (const input of Array.from(inputs)) {
-        if (!(input as any).checkValidity()) {
-          (input as any).reportValidity();
-          return false; // Stop and show HTML5 error on the specific input
+        const formElements = Array.from(inputs) as (HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)[];
+        for (const input of formElements) {
+          if (!input.checkValidity()) {
+            input.reportValidity();
+            return false; // Stop and show HTML5 error on the specific input
+          }
         }
-      }
     }
     return true;
   }
@@ -118,8 +122,9 @@ export function VehicleForm({
       setMakeId(res.id);
       setIsAddingMake(false);
       setNewMakeName("");
+      toast.success("Make added successfully");
     } else {
-      alert(res.error || "Failed to create make");
+      toast.error(res.error || "Failed to create make");
     }
     setIsCreatingInline(false);
   }
@@ -136,8 +141,9 @@ export function VehicleForm({
       setModelId(res.id);
       setIsAddingModel(false);
       setNewModelName("");
+      toast.success("Model added successfully");
     } else {
-      alert(res.error || "Failed to create model");
+      toast.error(res.error || "Failed to create model");
     }
     setIsCreatingInline(false);
   }
@@ -370,7 +376,13 @@ export function VehicleForm({
               onClick={async () => {
                 if (confirm("Are you sure you want to delete this vehicle? This action cannot be undone.")) {
                   const { deleteVehicle } = await import("@/app/admin/inventory/actions");
-                  await deleteVehicle(v.id);
+                  const res = await deleteVehicle(v.id);
+                  if (res?.error) {
+                    toast.error("Failed to delete vehicle: " + res.error);
+                  } else {
+                    toast.success("Vehicle deleted successfully");
+                    router.push('/admin/inventory');
+                  }
                 }
               }}
               className="inline-flex items-center gap-2 rounded-lg border border-danger/40 bg-card px-4 py-2.5 text-sm font-medium text-danger hover:bg-danger/10 transition-colors"

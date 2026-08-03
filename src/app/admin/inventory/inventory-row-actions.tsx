@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import Link from "next/link";
 import { MoreHorizontal, Edit, Trash2, CheckCircle, Clock, Archive } from "lucide-react";
 import { setVehicleStatus, deleteVehicle } from "./actions";
+import { toast } from "sonner";
 
 export function InventoryRowActions({ vehicleId, currentStatus }: { vehicleId: string; currentStatus: string }) {
   const [pending, startTransition] = useTransition();
@@ -15,7 +16,9 @@ export function InventoryRowActions({ vehicleId, currentStatus }: { vehicleId: s
     startTransition(async () => {
       const res = await setVehicleStatus(vehicleId, newStatus);
       if (res?.error) {
-        alert("Failed to change status: " + res.error);
+        toast.error("Failed to change status: " + res.error);
+      } else {
+        toast.success("Status updated");
       }
     });
   }
@@ -25,7 +28,9 @@ export function InventoryRowActions({ vehicleId, currentStatus }: { vehicleId: s
       startTransition(async () => {
         const res = await deleteVehicle(vehicleId, false);
         if (res?.error) {
-          alert("Failed to delete vehicle: " + res.error);
+          toast.error("Failed to delete vehicle: " + res.error);
+        } else {
+          toast.success("Vehicle deleted");
         }
       });
     }

@@ -9,6 +9,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { VehicleCard } from "@/components/vehicle-card";
 import { HeroSearch } from "@/components/hero-search";
+import { NewsletterForm } from "@/components/newsletter-form";
 import { getFeaturedVehicles, getMakes } from "@/lib/data/inventory";
 import { getApprovedTestimonials } from "@/lib/data/content";
 import { getCompanyProfile } from "@/lib/data/settings";
@@ -316,7 +317,7 @@ export default async function HomePage() {
                       <Star key={i} className={`size-4 ${i < t.rating ? "fill-primary text-primary" : "fill-slate-200 text-slate-200"}`} />
                     ))}
                   </div>
-                  <p className="text-sm text-slate-700 mb-6 line-clamp-4">"{t.quote}"</p>
+                  <p className="text-sm text-slate-700 mb-6 line-clamp-4">&quot;{t.quote}&quot;</p>
                   <div className="flex items-center gap-3">
                     <div className="size-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
                       {t.photoUrl ? <img src={t.photoUrl} alt="" className="w-full h-full object-cover"/> : <div className="w-full h-full bg-slate-300"></div>}
@@ -351,7 +352,7 @@ export default async function HomePage() {
               <div className="w-full lg:w-1/2 p-8 lg:p-12">
                 <h2 className="text-3xl font-black text-slate-900 mb-6">A better way to buy used cars in Sydney</h2>
                 <p className="text-slate-600 mb-10 leading-relaxed">
-                  At CARS365, we're passionate about cars and committed to honest, straightforward service. Every vehicle is carefully inspected and roadworthy, so you can drive with confidence.
+                  At CARS365, we&apos;re passionate about cars and committed to honest, straightforward service. Every vehicle is carefully inspected and roadworthy, so you can drive with confidence.
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                   <div>
@@ -432,30 +433,19 @@ export default async function HomePage() {
         </section>
 
         {/* VIP List */}
-        <section className="bg-slate-50 py-24 border-t border-slate-200">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
-            <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary/10 text-primary mb-6">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-8"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        <section className="bg-[#050505] py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-8">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+              <div className="text-left w-full lg:w-1/2">
+                <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Join our VIP list</h2>
+                <p className="text-white/70 max-w-md">
+                  Get exclusive access to new arrivals, special offers, and automotive insights delivered straight to your inbox.
+                </p>
+              </div>
+              <div className="w-full lg:w-auto flex justify-start lg:justify-end">
+                <NewsletterForm />
+              </div>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4 tracking-tight">Join our VIP list</h2>
-            <p className="text-lg text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Get exclusive access to new arrivals, special offers, and automotive insights delivered straight to your inbox.
-            </p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" action="/api/v1/newsletter" method="POST">
-              <input 
-                type="email" 
-                name="email"
-                placeholder="Your email" 
-                required
-                className="flex-1 h-[52px] px-5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-slate-900 shadow-sm"
-              />
-              <button 
-                type="submit" 
-                className="h-[52px] px-8 rounded-xl bg-[#0b1320] text-white font-bold hover:bg-black transition-colors shadow-sm whitespace-nowrap"
-              >
-                Subscribe
-              </button>
-            </form>
           </div>
         </section>
 

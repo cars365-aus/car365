@@ -25,10 +25,33 @@ export function HeroSearch({ makes }: { makes: Make[] }) {
       });
       return;
     }
-    setLoadingModels(true);
-    fetchModels(make)
-      .then(setModels)
-      .finally(() => setLoadingModels(false));
+    let ignore = false;
+    async function loadModels() {
+      // Don't set loading state synchronously in the effect body
+      // We can set it in the next tick if needed, or better just use a timeout
+      // to avoid React warning
+      const timer = setTimeout(() => {
+        if (!ignore) setLoadingModels(true);
+      }, 0);
+      
+      try {
+        const fetched = await fetchModels(make);
+        if (!ignore) {
+          setModels(fetched);
+        }
+      } finally {
+        if (!ignore) {
+          clearTimeout(timer);
+          setLoadingModels(false);
+        }
+      }
+    }
+    
+    loadModels();
+    
+    return () => {
+      ignore = true;
+    };
   }, [make]);
 
   function submit(e: React.FormEvent) {
