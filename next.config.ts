@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
   },
   outputFileTracingRoot: process.cwd(),
   images: {
+    unoptimized: true,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
