@@ -22,7 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ({ url: `${base}${path}`, lastModified, changeFrequency: "weekly", priority });
 
   const staticRoutes = [
-    "/", "/used-cars", "/sell-your-car", "/trade-in", "/finance",
+    "/", "/used-cars", "/sell-your-car", "/trade-in", "/finance", "/about",
     "/testimonials", "/faqs", "/contact", "/how-it-works",
     "/careers", "/press", "/legal/privacy-policy", "/legal/terms",
   ].map((p) => url(p, staticDate, p === "/" ? 1 : 0.7));
