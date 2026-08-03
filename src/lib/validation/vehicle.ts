@@ -30,7 +30,7 @@ const optionalPositiveInt = (max: number) =>
  * Coerce empty string → undefined for optional enum fields so the
  * "not selected" state doesn't trip the enum validator.
  */
-const optionalEnum = <T extends [string, ...string[]]>(values: T) =>
+const optionalEnum = <T extends readonly [string, ...string[]]>(values: T) =>
   z.preprocess(
     (v) => (v === "" || v === null || v === undefined ? undefined : v),
     z.enum(values).optional(),
