@@ -75,35 +75,29 @@ export default async function HomePage() {
       
       <main>
         {/* Hero Section */}
-        <div className="relative bg-[#0b1320] pb-24 lg:pb-32">
-          {/* Background Image - Sports Car */}
-          <div className="absolute inset-0 z-0 opacity-40">
+        <div className="relative bg-[#0b1320] pb-28 lg:pb-36">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
             <img 
-              src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=2000&q=80" 
-              alt="Premium SUV Background" 
-              className="w-full h-full object-cover"
+              src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=2500&q=80" 
+              alt="Affordable Reliable Used Car" 
+              className="w-full h-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0b1320] via-transparent to-[#0b1320]/80"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0b1320] via-[#0b1320]/80 to-transparent w-full md:w-3/4"></div>
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0b1320] via-[#0b1320]/50 to-transparent"></div>
           </div>
           
-          <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:pt-32">
+          <div className="relative z-10 mx-auto max-w-7xl px-4 pt-24 sm:px-6 lg:pt-36">
             <div className="max-w-xl">
-              {rating ? (
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-3 py-1.5 text-sm text-white">
-                  <Star className="size-4 fill-primary text-primary" />
-                  <span className="font-bold">{rating}/5</span> from verified customers
-                </div>
-              ) : null}
-              
-              <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] text-white mb-4">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter leading-[1.05] text-white mb-6 drop-shadow-sm">
                 Find the right car.<br/>Drive away confident.
               </h1>
               
-              <p className="text-lg text-slate-300 font-medium mb-8">
+              <p className="text-lg sm:text-xl text-slate-300 font-medium mb-10 max-w-lg leading-relaxed drop-shadow">
                 Quality used cars, carefully inspected and ready for Sydney roads.
               </p>
               
-              <div className="flex flex-wrap gap-4 mb-20">
+              <div className="flex flex-wrap gap-4 mb-24">
                 <Link href="/used-cars" className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-primary px-8 font-bold text-black hover:bg-primary-hover transition-colors">
                   Browse Cars
                 </Link>
@@ -143,11 +137,11 @@ export default async function HomePage() {
                 <div>
                   <h2 className="text-2xl font-bold text-slate-900 mb-6">Featured Cars</h2>
                   <div className="flex flex-wrap gap-2">
-                    <span className="cursor-pointer rounded-full bg-[#0b1320] px-5 py-2 text-sm font-semibold text-white">All Cars</span>
-                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">SUV</span>
-                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Sedan</span>
-                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Hatchback</span>
-                    <span className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Ute</span>
+                    <button className="cursor-pointer rounded-full bg-[#0b1320] px-5 py-2 text-sm font-semibold text-white transition-colors">All Cars</button>
+                    <button className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">SUV</button>
+                    <button className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Sedan</button>
+                    <button className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Hatchback</button>
+                    <button className="cursor-pointer rounded-full bg-white border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:border-slate-900 hover:text-slate-900 transition-colors">Ute</button>
                   </div>
                 </div>
                 <Link href="/used-cars" className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700">
