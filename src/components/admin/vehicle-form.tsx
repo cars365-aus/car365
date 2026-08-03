@@ -1,14 +1,13 @@
 "use client";
 
 import { useActionState, useState, useRef } from "react";
-import Link from "next/link";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { fuelTypes, transmissionTypes, bodyTypes, driveTypes, vehicleStatuses } from "@/lib/validation/vehicle";
 import { FUEL_LABELS, TRANSMISSION_LABELS, BODY_TYPE_LABELS, DRIVE_LABELS } from "@/lib/nav";
 import type { Make, Model, Feature, LocationBranch, FeatureCategory } from "@/lib/domain";
-import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Image as ImageIcon, Loader2, Check as CheckIcon, Plus, Trash2 } from "lucide-react";
+import { ChevronRight, ChevronLeft, Car, Gauge, DollarSign, Star, Image as ImageIcon, Loader2, Check as CheckIcon, Trash2 } from "lucide-react";
 import { ImageUpload, UploadedImage } from "./image-upload";
 import { createMake, createModel } from "@/app/admin/catalogue/actions";
 
@@ -90,12 +89,16 @@ export function VehicleForm({
   const [newModelName, setNewModelName] = useState("");
   const [isCreatingInline, setIsCreatingInline] = useState(false);
 
-  // Transform existing images if in edit mode
-  const initialImages: UploadedImage[] = (v.images || []).map((img: { media: { storage_key: string; url: string }; url?: string; is_cover: boolean }) => ({
-    path: img.media.storage_key,
-    url: img.media.url || img.url || "", // fallback
-    isCover: img.is_cover
-  }));
+  // Transform existing images if in edit mode. Be defensive about shape: a row
+  // whose media join came back null must not blow up the whole form — skip it.
+  const initialImages: UploadedImage[] = (v.images || [])
+    .map((img: { media?: { storage_key?: string; url?: string } | null; url?: string; is_cover?: boolean }) => {
+      const path = img.media?.storage_key ?? "";
+      const url = img.media?.url || img.url || "";
+      if (!path && !url) return null;
+      return { path, url, isCover: Boolean(img.is_cover) };
+    })
+    .filter((x: UploadedImage | null): x is UploadedImage => x !== null);
 
   const modelsForMake = models.filter((m) => m.makeId === makeId);
   const featureGroups = (["comfort", "safety", "technology", "exterior"] as FeatureCategory[])
