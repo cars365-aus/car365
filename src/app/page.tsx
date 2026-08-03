@@ -264,7 +264,7 @@ export default async function HomePage() {
             </div>
             <div className="lg:w-1/2 w-full h-[350px]">
               <img 
-                src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80" 
+                src="/images/finance.jpg" 
                 alt="Handing over car keys" 
                 className="w-full h-full object-cover rounded-2xl shadow-xl"
               />
@@ -343,7 +343,7 @@ export default async function HomePage() {
             <div className="flex flex-col lg:flex-row gap-12 items-center rounded-2xl bg-white overflow-hidden shadow-sm border border-slate-100">
               <div className="w-full lg:w-1/2 h-[300px] lg:h-[450px]">
                 <img 
-                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80" 
+                  src="/images/team.jpg" 
                   alt="Cars 365 Team" 
                   className="w-full h-full object-cover"
                 />
@@ -428,6 +428,34 @@ export default async function HomePage() {
                 </div>
               </details>
             ))}
+          </div>
+        </section>
+
+        {/* VIP List */}
+        <section className="bg-slate-50 py-24 border-t border-slate-200">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
+            <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary/10 text-primary mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-8"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4 tracking-tight">Join our VIP list</h2>
+            <p className="text-lg text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Get exclusive access to new arrivals, special offers, and automotive insights delivered straight to your inbox.
+            </p>
+            <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" action="/api/v1/newsletter" method="POST">
+              <input 
+                type="email" 
+                name="email"
+                placeholder="Your email" 
+                required
+                className="flex-1 h-[52px] px-5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-slate-900 shadow-sm"
+              />
+              <button 
+                type="submit" 
+                className="h-[52px] px-8 rounded-xl bg-[#0b1320] text-white font-bold hover:bg-black transition-colors shadow-sm whitespace-nowrap"
+              >
+                Subscribe
+              </button>
+            </form>
           </div>
         </section>
 

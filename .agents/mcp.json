@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\yadav\\Desktop\\chrome-devtools-mcp\\build\\src\\bin\\chrome-devtools-mcp.js"
+      ]
+    }
+  }
+}
