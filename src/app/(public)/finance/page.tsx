@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { FinanceCalculator } from "@/components/finance-calculator";
-import { FinanceForm } from "@/components/leads/finance-form";
+import { FinancePanels } from "@/components/finance-panels";
 import { getFinanceParams, getPhoneNumbers } from "@/lib/data/settings";
 import { getVehicleLeadContext } from "@/lib/data/inventory";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -36,14 +35,13 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
           </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <FinanceCalculator params={params} price={ctx?.price ?? 30000} />
-          <div className="rounded-xl border border-border bg-card p-6">
-            <h2 className="font-heading text-lg font-bold text-foreground">Enquire about finance</h2>
-            <p className="mb-4 mt-1 text-sm text-muted-foreground">A specialist will contact you — no obligation.</p>
-            <FinanceForm vehicleId={ctx?.id} phone={phone} whatsappUrl={whatsappUrl} />
-          </div>
-        </div>
+        <FinancePanels
+          params={params}
+          price={ctx?.price ?? 30000}
+          vehicleId={ctx?.id}
+          phone={phone}
+          whatsappUrl={whatsappUrl}
+        />
       </main>
       <SiteFooter />
     </>

@@ -461,3 +461,50 @@ p {
   }
 }
 
+/* ── Finance calculator range sliders ──────────────────────────────────────
+   Yellow filled track (set inline via a linear-gradient background) plus a
+   white thumb with a yellow ring. The fill percentage is computed per-value
+   in the FinanceCalculator component. */
+.finance-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+  cursor: pointer;
+}
+.finance-range:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+.finance-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 3px solid var(--primary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  margin-top: -6px; /* centre thumb on the 6px track */
+}
+.finance-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 3px solid var(--primary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+.finance-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 9999px;
+}
+.finance-range::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+}
+

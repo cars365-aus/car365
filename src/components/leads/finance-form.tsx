@@ -8,7 +8,7 @@ import {
 import { submitLead } from "@/lib/leads/submit";
 
 /** Finance enquiry (SRS FR-13). Email + consent are required. */
-export function FinanceForm({ vehicleId, phone, whatsappUrl }: { vehicleId?: string; phone?: string | null; whatsappUrl?: string | null }) {
+export function FinanceForm({ vehicleId, phone, whatsappUrl, deposit, weekly }: { vehicleId?: string; phone?: string | null; whatsappUrl?: string | null; deposit?: number; weekly?: number }) {
   const [f, setF] = useState({ name: "", phone: "", email: "", employmentStatus: "", depositAmount: "", weeklyBudget: "" });
   const [consent, setConsent] = useState(false);
   const [website, setWebsite] = useState("");
@@ -16,9 +16,20 @@ export function FinanceForm({ vehicleId, phone, whatsappUrl }: { vehicleId?: str
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  // Whether the buyer has hand-edited the amount fields. Once touched, we show
+  // their value; until then the field mirrors the calculator (derived below —
+  // no effect needed, so we never clobber typed input).
+  const [depositTouched, setDepositTouched] = useState(false);
+  const [weeklyTouched, setWeeklyTouched] = useState(false);
   const renderedAt = useRef(0);
   useEffect(() => { renderedAt.current = Date.now(); }, []);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
+
+  // Derived field values: the buyer's own input once touched, otherwise the
+  // live calculator figure.
+  const depositAmount = depositTouched ? f.depositAmount : deposit && deposit > 0 ? String(deposit) : "";
+  const weeklyBudget = weeklyTouched ? f.weeklyBudget : weekly && weekly > 0 ? String(weekly) : "";
+  const prefillHint = !depositTouched && !weeklyTouched && (depositAmount !== "" || weeklyBudget !== "");
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,8 +39,8 @@ export function FinanceForm({ vehicleId, phone, whatsappUrl }: { vehicleId?: str
       type: "finance", vehicleId,
       name: f.name, phone: f.phone, email: f.email,
       employmentStatus: f.employmentStatus || undefined,
-      depositAmount: f.depositAmount || undefined,
-      weeklyBudget: f.weeklyBudget || undefined,
+      depositAmount: depositAmount || undefined,
+      weeklyBudget: weeklyBudget || undefined,
       consent: true, website, formRenderedAt: renderedAt.current, turnstileToken: token,
     });
     setLoading(false);
@@ -54,9 +65,26 @@ export function FinanceForm({ vehicleId, phone, whatsappUrl }: { vehicleId?: str
         </Select>
       </Field>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <Field label="Deposit (approx)"><TextInput value={f.depositAmount} onChange={set("depositAmount")} inputMode="numeric" placeholder="$" /></Field>
-        <Field label="Weekly budget"><TextInput value={f.weeklyBudget} onChange={set("weeklyBudget")} inputMode="numeric" placeholder="$/wk" /></Field>
+        <Field label="Deposit (approx)">
+          <TextInput
+            value={depositAmount}
+            onChange={(e) => { setDepositTouched(true); setF({ ...f, depositAmount: e.target.value }); }}
+            inputMode="numeric"
+            placeholder="$"
+          />
+        </Field>
+        <Field label="Weekly budget">
+          <TextInput
+            value={weeklyBudget}
+            onChange={(e) => { setWeeklyTouched(true); setF({ ...f, weeklyBudget: e.target.value }); }}
+            inputMode="numeric"
+            placeholder="$/wk"
+          />
+        </Field>
       </div>
+      {prefillHint ? (
+        <p className="-mt-1 text-xs text-muted-foreground">Pre-filled from the calculator — adjust if needed.</p>
+      ) : null}
       <ConsentCheckbox checked={consent} onChange={setConsent}>
         I agree to be contacted about finance and for my details to be shared with a finance partner.
       </ConsentCheckbox>
