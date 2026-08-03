@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import {
   ShieldCheck, BadgeCheck, Handshake, CircleDollarSign, ArrowRight, Star,
@@ -79,10 +80,13 @@ export default async function HomePage() {
         <div className="relative bg-[#0b1320] pb-28 lg:pb-36">
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
-            <img 
-              src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=2500&q=80" 
-              alt="Affordable Reliable Used Car" 
-              className="w-full h-full object-cover object-center"
+            <Image
+              src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1920&q=80"
+              alt="Affordable reliable used car"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#0b1320] via-[#0b1320]/80 to-transparent w-full md:w-3/4"></div>
             <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0b1320] via-[#0b1320]/50 to-transparent"></div>
@@ -170,10 +174,13 @@ export default async function HomePage() {
             {(["sedan", "suv", "hatch", "ute", "van", "coupe"] as const).map((b) => (
               <Link key={b} href={bodyTypeHref(b as keyof typeof BODY_TYPE_LABELS)} className="group flex flex-col items-center justify-end rounded-lg border border-slate-200 bg-white p-3 pb-4 transition-all hover:border-slate-300 hover:shadow-sm aspect-[4/3] sm:aspect-auto sm:h-[130px]">
                 <div className="flex-1 flex items-center justify-center w-full px-1 mb-1">
-                  <img 
-                    src={`/images/body-types/${b}.png`} 
-                    alt={b} 
-                    className="w-full max-h-[85px] object-contain scale-110 transition-transform duration-300 group-hover:scale-125 mix-blend-multiply" 
+                  <Image
+                    src={`/images/body-types/${b}.webp`}
+                    alt={b}
+                    width={200}
+                    height={150}
+                    sizes="(max-width: 640px) 40vw, (max-width: 1024px) 30vw, 130px"
+                    className="w-full max-h-[85px] object-contain scale-110 transition-transform duration-300 group-hover:scale-125 mix-blend-multiply"
                   />
                 </div>
                 <span className="font-medium text-[13px] text-slate-800">{BODY_TYPE_LABELS[b as keyof typeof BODY_TYPE_LABELS] || b}</span>
@@ -186,10 +193,12 @@ export default async function HomePage() {
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
           <div className="relative overflow-hidden rounded-2xl bg-[#0b1320] text-white shadow-xl">
             <div className="absolute inset-y-0 right-0 w-1/2 opacity-30 sm:opacity-100">
-              <img 
-                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80" 
-                alt="Man crossing arms" 
-                className="h-full w-full object-cover object-center"
+              <Image
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80"
+                alt="Man crossing arms"
+                fill
+                sizes="(max-width: 640px) 50vw, 50vw"
+                className="object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#0b1320] via-[#0b1320]/80 to-transparent"></div>
             </div>
@@ -263,11 +272,13 @@ export default async function HomePage() {
               </Link>
               <p className="text-xs text-slate-500">Credit criteria, fees and charges apply. Australian Credit Licence 282145.</p>
             </div>
-            <div className="lg:w-1/2 w-full h-[350px]">
-              <img 
-                src="/images/finance.jpg" 
-                alt="Handing over car keys" 
-                className="w-full h-full object-cover rounded-2xl shadow-xl"
+            <div className="relative lg:w-1/2 w-full h-[350px] overflow-hidden rounded-2xl shadow-xl">
+              <Image
+                src="/images/finance.webp"
+                alt="Handing over car keys"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
               />
             </div>
           </div>
@@ -320,7 +331,9 @@ export default async function HomePage() {
                   <p className="text-sm text-slate-700 mb-6 line-clamp-4">&quot;{t.quote}&quot;</p>
                   <div className="flex items-center gap-3">
                     <div className="size-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
-                      {t.photoUrl ? <img src={t.photoUrl} alt="" className="w-full h-full object-cover"/> : <div className="w-full h-full bg-slate-300"></div>}
+                      {/* Arbitrary external avatar host (Google reviews etc.) — plain img avoids next/image remotePattern failures. */}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      {t.photoUrl ? <img src={t.photoUrl} alt="" loading="lazy" className="w-full h-full object-cover"/> : <div className="w-full h-full bg-slate-300"></div>}
                     </div>
                     <div>
                       <p className="font-bold text-sm text-slate-900">{t.customerName}</p>
@@ -342,11 +355,13 @@ export default async function HomePage() {
         <section className="bg-slate-50 py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="flex flex-col lg:flex-row gap-12 items-center rounded-2xl bg-white overflow-hidden shadow-sm border border-slate-100">
-              <div className="w-full lg:w-1/2 h-[300px] lg:h-[450px]">
-                <img 
-                  src="/images/team.jpg" 
-                  alt="Cars 365 Team" 
-                  className="w-full h-full object-cover"
+              <div className="relative w-full lg:w-1/2 h-[300px] lg:h-[450px] overflow-hidden">
+                <Image
+                  src="/images/team.webp"
+                  alt="Cars 365 Team"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
                 />
               </div>
               <div className="w-full lg:w-1/2 p-8 lg:p-12">
@@ -397,7 +412,7 @@ export default async function HomePage() {
             ].map((g, i) => (
               <Link key={i} href="/about" className="group block rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-all">
                 <div className="relative h-48 w-full overflow-hidden">
-                  <img src={g.img} alt={g.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <Image src={g.img} alt={g.title} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   <div className="absolute top-4 left-4 rounded bg-white px-2 py-1 text-xs font-bold text-slate-900">
                     {g.tag}
                   </div>
