@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { VehicleGallery } from "@/components/vehicle-gallery";
 import { VehicleCard } from "@/components/vehicle-card";
 import { VdpLeadActions } from "@/components/leads/vdp-lead-actions";
+import { ListingBreadcrumbs } from "@/components/listing-breadcrumbs";
 import { FinanceCalculator } from "@/components/finance-calculator";
 import { getVehicleBySlug, getSimilarVehicles } from "@/lib/data/inventory";
 import { getFinanceParams, getPhoneNumbers, getCompanyProfile } from "@/lib/data/settings";
@@ -14,6 +15,7 @@ import { resolveRedirect } from "@/lib/data/redirects";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { JsonLd } from "@/components/json-ld";
 import { vehicleSchema, breadcrumbSchema } from "@/lib/seo/jsonld";
+import { pageMetadata } from "@/lib/seo/metadata";
 import {
   BODY_TYPE_LABELS, FUEL_LABELS, TRANSMISSION_LABELS, DRIVE_LABELS,
   formatKm, formatPrice,
@@ -27,15 +29,43 @@ type Params = { make: string; model: string; slug: string };
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
   const v = await getVehicleBySlug(slug);
-  if (!v) return { title: "Vehicle not found" };
-  const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""} for Sale | Cars365`;
-  
-  const baseDesc = `Looking for a ${v.year} ${v.makeName} ${v.modelName}? ${formatKm(v.mileageKm)}, ${TRANSMISSION_LABELS[v.transmission]}, ${FUEL_LABELS[v.fuelType]}.`;
-  const extraDesc = v.description ? ` ${(v.description).slice(0, 80)}...` : " Inspected and ready to drive away.";
-  
+  if (!v) return { title: "Vehicle not found", robots: { index: false, follow: true } };
+
+  const name = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""}`;
+  // The root layout's template already appends "| Cars365 Australia", so the
+  // old hardcoded "| Cars365" suffix produced a doubled brand in every SERP
+  // title and pushed the model name past Google's ~60-character truncation.
+  const title = `${name} for Sale — ${formatPrice(v.price)}`;
+
+  const baseDesc = `${name} for sale in Granville, NSW. ${formatKm(v.mileageKm)}, ${TRANSMISSION_LABELS[v.transmission]}, ${FUEL_LABELS[v.fuelType]}, ${formatPrice(v.price)}.`;
+  const extraDesc = v.description
+    ? ` ${v.description.slice(0, 80).trim()}…`
+    : " Inspected, roadworthy included and ready to drive away.";
+
+  const path = `/used-cars/${v.makeSlug}/${v.modelSlug}/${v.slug}`;
+
   return {
-    title,
-    description: `${baseDesc}${extraDesc} Finance available at Cars365.`,
+    ...pageMetadata({
+      path,
+      title,
+      description: `${baseDesc}${extraDesc} Finance and trade-ins available at Cars365.`,
+      // The car's own cover photo is a far stronger social/OG thumbnail than
+      // the generic site image, and doubles as the image Google associates
+      // with this specific vehicle entity.
+      image: v.coverImageUrl,
+      keywords: [
+        `${v.year} ${v.makeName} ${v.modelName}`,
+        `used ${v.makeName} ${v.modelName} for sale`,
+        `${v.makeName} ${v.modelName} Sydney`,
+      ],
+    }),
+    // A sold car is expired inventory: keep it crawlable so link equity flows
+    // to the model hub and similar-vehicle links, but out of the index, where
+    // it would otherwise accumulate as thin, disappointing search results.
+    // (Archived cars 301 to the model page 60 days after sale — see below.)
+    ...(v.status === "sold"
+      ? { robots: { index: false, follow: true, googleBot: { index: false, follow: true } } }
+      : {}),
   };
 }
 
@@ -59,8 +89,29 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
 
   const sellerName = (company.trading_name as string) || "Cars365";
   const vdpPath = `/used-cars/${v.makeSlug}/${v.modelSlug}/${v.slug}`;
+
+  // Google reports "missing field priceValidUntil" without an explicit date and
+  // suppresses the price from the rich result. 30 days matches how often stock
+  // is repriced here.
+  const priceValidUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+
+  const googleRating = company.google_rating as number | undefined;
+  const googleReviewCount = company.google_review_count as number | undefined;
+
   const jsonLd = [
-    vehicleSchema(v, { path: vdpPath, sellerName }),
+    vehicleSchema(v, {
+      path: vdpPath,
+      sellerName,
+      priceValidUntil,
+      // Third-party (Google) review aggregate, not first-party testimonials —
+      // self-serving review markup is ineligible for rich results.
+      sellerRating:
+        googleRating && googleReviewCount
+          ? { value: googleRating, count: googleReviewCount }
+          : null,
+    }),
     breadcrumbSchema([
       { name: "Home", path: "/" },
       { name: "Used Cars", path: "/used-cars" },
@@ -99,14 +150,17 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
       <JsonLd schema={jsonLd} />
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-        {/* Breadcrumbs */}
-        <nav className="mb-4 flex flex-wrap gap-1.5 text-sm text-muted-foreground">
-          <Link href="/" className="hover:text-foreground">Home</Link><span aria-hidden>/</span>
-          <Link href="/used-cars" className="hover:text-foreground">Used Cars</Link><span aria-hidden>/</span>
-          <Link href={`/used-cars/${v.makeSlug}`} className="hover:text-foreground">{v.makeName}</Link><span aria-hidden>/</span>
-          <Link href={`/used-cars/${v.makeSlug}/${v.modelSlug}`} className="hover:text-foreground">{v.modelName}</Link><span aria-hidden>/</span>
-          <span className="text-foreground">{v.year} {v.variant ?? v.modelName}</span>
-        </nav>
+        {/* Breadcrumbs — BreadcrumbList JSON-LD is emitted above, alongside the
+            Vehicle schema, so this renders the visual trail only. */}
+        <ListingBreadcrumbs
+          trail={[
+            ["Used Cars", "/used-cars"],
+            [v.makeName, `/used-cars/${v.makeSlug}`],
+            [v.modelName, `/used-cars/${v.makeSlug}/${v.modelSlug}`],
+            [`${v.year} ${v.variant ?? v.modelName}`, vdpPath],
+          ]}
+          suppressSchema
+        />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
           <div>

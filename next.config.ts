@@ -97,6 +97,18 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "no-store, no-cache" },
         ],
       },
+      // ── Geo-restriction landing page ────────────────────────────────────────
+      // Middleware rewrites out-of-region page requests here and already sets
+      // these headers on the rewritten response. Repeating them at the route
+      // level covers direct navigation to /geo-blocked, so the page can never
+      // be indexed or cached by a shared proxy under any access path.
+      {
+        source: "/geo-blocked",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+          { key: "Cache-Control", value: "private, no-store" },
+        ],
+      },
     ];
   },
   async redirects() {

@@ -1,11 +1,15 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { InventoryListingView } from "@/components/inventory-listing-view";
+import { ListingBreadcrumbs } from "@/components/listing-breadcrumbs";
+import { JsonLd } from "@/components/json-ld";
 import { getMakes } from "@/lib/data/inventory";
 import { formatPrice } from "@/lib/nav";
+import { collectionPageSchema } from "@/lib/seo/jsonld";
+import { listingMetadata } from "@/lib/seo/listing";
+import { makeTitle, makeDescription, budgetTitle, budgetDescription } from "@/lib/seo/templates";
 
 export const revalidate = 300;
 
@@ -24,23 +28,37 @@ async function resolveMake(slug: string) {
   return makes.find((m) => m.slug === slug) ?? null;
 }
 
-import { makeTitle, makeDescription, budgetTitle, budgetDescription } from "@/lib/seo/templates";
-
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { make } = await params;
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<Params>;
+  searchParams: Promise<SP>;
+}): Promise<Metadata> {
+  const [{ make }, sp] = await Promise.all([params, searchParams]);
   const budget = parseBudget(make);
+
   if (budget) {
-    return {
+    return listingMetadata({
+      basePath: `/used-cars/under-${budget}`,
+      sp,
       title: budgetTitle(budget),
       description: budgetDescription(budget),
-    };
+      keywords: [`used cars under ${formatPrice(budget)}`, "cheap used cars Sydney", "budget cars NSW"],
+    });
   }
+
   const m = await resolveMake(make);
-  if (!m) return { title: "Used Cars" };
-  return {
+  // An unresolved make renders notFound(); keep it out of the index either way.
+  if (!m) return { title: "Used Cars", robots: { index: false, follow: true } };
+
+  return listingMetadata({
+    basePath: `/used-cars/${m.slug}`,
+    sp,
     title: makeTitle(m.name),
     description: makeDescription(m.name),
-  };
+    keywords: [`used ${m.name} for sale`, `second hand ${m.name}`, `${m.name} dealer Sydney`],
+  });
 }
 
 export default async function MakeOrBudgetPage({
@@ -54,11 +72,21 @@ export default async function MakeOrBudgetPage({
   const budget = parseBudget(make);
 
   if (budget) {
+    const path = `/used-cars/under-${budget}`;
     return (
       <>
+        <JsonLd
+          schema={collectionPageSchema({
+            name: budgetTitle(budget),
+            description: budgetDescription(budget),
+            path,
+          })}
+        />
         <SiteHeader />
         <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-          <Breadcrumbs trail={[["Used Cars", "/used-cars"], [`Under ${formatPrice(budget)}`, null]]} />
+          <ListingBreadcrumbs
+            trail={[["Used Cars", "/used-cars"], [`Under ${formatPrice(budget)}`, path]]}
+          />
           <header className="mb-6">
             <h1 className="font-heading text-3xl font-bold text-foreground">Used cars under {formatPrice(budget)}</h1>
             <p className="mt-2 max-w-2xl text-body">
@@ -66,7 +94,7 @@ export default async function MakeOrBudgetPage({
               ready to drive away, with finance and trade-ins available.
             </p>
           </header>
-          <InventoryListingView baseFilters={{ priceMax: budget }} sp={sp} basePath={`/used-cars/under-${budget}`} />
+          <InventoryListingView baseFilters={{ priceMax: budget }} sp={sp} basePath={path} />
         </main>
         <SiteFooter />
       </>
@@ -76,11 +104,19 @@ export default async function MakeOrBudgetPage({
   const m = await resolveMake(make);
   if (!m) notFound();
 
+  const path = `/used-cars/${m.slug}`;
   return (
     <>
+      <JsonLd
+        schema={collectionPageSchema({
+          name: makeTitle(m.name),
+          description: makeDescription(m.name),
+          path,
+        })}
+      />
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        <Breadcrumbs trail={[["Used Cars", "/used-cars"], [m.name, null]]} />
+        <ListingBreadcrumbs trail={[["Used Cars", "/used-cars"], [m.name, path]]} />
         <header className="mb-6">
           <h1 className="font-heading text-3xl font-bold text-foreground">Used {m.name} for sale</h1>
           <p className="mt-2 max-w-2xl text-body">
@@ -88,23 +124,9 @@ export default async function MakeOrBudgetPage({
             photographed, and backed by a specialist who&apos;ll answer your questions fast.
           </p>
         </header>
-        <InventoryListingView baseFilters={{ make: m.slug }} sp={sp} basePath={`/used-cars/${m.slug}`} hideFilters={["make"]} />
+        <InventoryListingView baseFilters={{ make: m.slug }} sp={sp} basePath={path} hideFilters={["make"]} />
       </main>
       <SiteFooter />
     </>
-  );
-}
-
-function Breadcrumbs({ trail }: { trail: [string, string | null][] }) {
-  return (
-    <nav className="mb-4 flex flex-wrap gap-1.5 text-sm text-muted-foreground">
-      <Link href="/" className="hover:text-foreground">Home</Link>
-      {trail.map(([label, href], i) => (
-        <span key={i} className="flex gap-1.5">
-          <span aria-hidden>/</span>
-          {href ? <Link href={href} className="hover:text-foreground">{label}</Link> : <span className="text-foreground">{label}</span>}
-        </span>
-      ))}
-    </nav>
   );
 }

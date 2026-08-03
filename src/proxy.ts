@@ -1,6 +1,32 @@
+/**
+ * Edge request gate — the first enforcement layer for every request.
+ *
+ * FILE LOCATION / NAME: this was previously `middleware.ts` in the project
+ * root. Next.js resolves this convention **next to the `app` directory**, so
+ * with an `src/app` layout it must live at `src/…` — a root-level file is
+ * silently ignored and none of these rules ever run. Next 16 also deprecated
+ * the `middleware` name in favour of `proxy` (`npx @next/codemod@canary
+ * middleware-to-proxy .`), so the file is now `src/proxy.ts` exporting `proxy`.
+ *
+ * Order of enforcement:
+ *   1. Hard-block known bad-actor bots (403).
+ *   2. Geo restriction — serve AU + IN only (451 / branded page).
+ *   3. Block mutations from missing/suspicious User-Agents on /api.
+ *   4. Inject X-Robots-Tag on non-public paths; strip fingerprinting headers.
+ *   5. Redirect stray OAuth codes to /auth/callback.
+ *   6. 301 lowercase-canonicalise programmatic SEO routes.
+ *   7. Authenticate and authorise /admin (defence-in-depth; RLS is the backstop).
+ */
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { isAllowlistedAdminEmail } from "@/lib/security/admin-allowlist";
+import { isAllowedBot } from "@/lib/security/bots";
+import {
+  GEO_BLOCKED_PATH,
+  evaluateGeoAccess,
+  getAllowedCountries,
+  prefersMachineReadableResponse,
+} from "@/lib/security/geo-restriction";
 
 // ─── Bot / Scraper UA Lists ────────────────────────────────────────────────────
 //
@@ -13,28 +39,8 @@ import { isAllowlistedAdminEmail } from "@/lib/security/admin-allowlist";
 // rate-limit layer rather than being hard-blocked here.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Good-faith SEO / social bots we NEVER block (SEO must not be impacted). */
-const ALLOWED_BOTS = [
-  "googlebot",
-  "bingbot",
-  "slurp",          // Yahoo
-  "duckduckbot",
-  "baiduspider",
-  "sogou",
-  "exabot",
-  "facebot",
-  "facebookexternalhit",
-  "twitterbot",
-  "linkedinbot",
-  "slackbot",
-  "discordbot",
-  "whatsapp",
-  "applebot",
-  "yeti",           // Naver (Korean search)
-  "pinterestbot",
-  "tumblr",
-  "telegrambot",
-];
+// The good-faith crawler allowlist lives in `@/lib/security/bots` — it is
+// shared with the geo-restriction gate, which must also never block Googlebot.
 
 /**
  * Known bad-actor UAs: AI training scrapers, SEO attack tools, and crawlers
@@ -117,12 +123,11 @@ const BAD_BOT_PATTERNS = [
  */
 function isBadBot(ua: string): boolean {
   if (!ua || ua.length === 0) return false;
-  const lower = ua.toLowerCase();
 
   // Never block good-faith crawlers
-  for (const allowed of ALLOWED_BOTS) {
-    if (lower.includes(allowed)) return false;
-  }
+  if (isAllowedBot(ua)) return false;
+
+  const lower = ua.toLowerCase();
 
   for (const pattern of BAD_BOT_PATTERNS) {
     if (lower.includes(pattern)) return true;
@@ -138,7 +143,24 @@ function isSuspiciousUA(ua: string | null): boolean {
   return false;
 }
 
-export async function middleware(request: NextRequest) {
+/**
+ * Response headers common to every geo-blocked reply.
+ *
+ * `no-store` keeps a country-specific response out of every shared cache — a
+ * CDN must never serve the blocked page to an allowed visitor (or vice versa).
+ * Allowed requests are left untouched, so normal caching/ISR is unaffected.
+ * `noindex` ensures the blocked page can never enter a search index if a
+ * crawler somehow reaches it.
+ */
+function geoBlockHeaders(country: string): Headers {
+  return new Headers({
+    "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+    "X-Robots-Tag": "noindex, nofollow, noarchive",
+    "X-Geo-Blocked": country,
+  });
+}
+
+export async function proxy(request: NextRequest) {
   const ua = request.headers.get("user-agent") ?? "";
   const path = request.nextUrl.pathname;
 
@@ -149,7 +171,36 @@ export async function middleware(request: NextRequest) {
     return new NextResponse(null, { status: 403 });
   }
 
-  // ── 2. Block requests with missing/suspicious UA on mutation endpoints ───────
+  // ── 2. Geo restriction: AU + IN only ────────────────────────────────────────
+  // Runs before anything expensive (no DB/Supabase work happens for a blocked
+  // visitor). SEO artefacts, health/cron endpoints and good-faith crawlers are
+  // exempt; see src/lib/security/geo-restriction.ts for the full policy.
+  const geo = evaluateGeoAccess({ headers: request.headers, pathname: path, userAgent: ua });
+
+  if (geo.blocked) {
+    const headers = geoBlockHeaders(geo.country);
+
+    // API routes, Server Action POSTs and JSON clients get a machine-readable
+    // 451 — never the HTML page, and never a redirect.
+    if (prefersMachineReadableResponse({ method: request.method, pathname: path, headers: request.headers })) {
+      headers.set("Content-Type", "application/json");
+      return new NextResponse(
+        JSON.stringify({
+          error: "Unavailable in your region",
+          code: "geo_restricted",
+          allowedCountries: [...getAllowedCountries()],
+        }),
+        { status: 451, headers },
+      );
+    }
+
+    // Page requests are REWRITTEN (not redirected): the visitor's URL is
+    // preserved, there is no extra round-trip, and the branded page is a
+    // statically prerendered route so it costs nothing to serve.
+    return NextResponse.rewrite(new URL(GEO_BLOCKED_PATH, request.url), { headers });
+  }
+
+  // ── 3. Block requests with missing/suspicious UA on mutation endpoints ───────
   // Public GET pages are exempt so we don't break pre-rendering or curl checks.
   const isMutation =
     request.method === "POST" ||
@@ -161,7 +212,7 @@ export async function middleware(request: NextRequest) {
     return new NextResponse(null, { status: 403 });
   }
 
-  // ── 3. Inject X-Robots-Tag: noindex on non-public paths ─────────────────────
+  // ── 4. Inject X-Robots-Tag: noindex on non-public paths ─────────────────────
   // Even if a crawler gets past robots.txt, these headers are respected by all
   // major search engines and prevent accidental indexing of admin/API paths.
   const isNonPublicPath =
@@ -210,14 +261,14 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // ── 4. OAuth code redirect ───────────────────────────────────────────────────
+  // ── 5. OAuth code redirect ───────────────────────────────────────────────────
   if (path === "/" && request.nextUrl.searchParams.has("code")) {
     const callbackUrl = request.nextUrl.clone();
     callbackUrl.pathname = "/auth/callback";
     return NextResponse.redirect(callbackUrl);
   }
 
-  // ── 5. Strict SEO canonical lowercasing for programmatic routes ──────────────
+  // ── 6. Strict SEO canonical lowercasing for programmatic routes ──────────────
   if (
     (path.startsWith("/locations/") || path.startsWith("/categories/")) &&
     path !== path.toLowerCase()

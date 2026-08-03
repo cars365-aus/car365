@@ -9,19 +9,31 @@ import { MobileStateProvider } from "@/components/mobile-state-provider";
 import { MobileAnimationProvider } from "@/components/mobile-animation-provider";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
+import { siteBaseUrl } from "@/lib/seo/site";
+
+// Both faces are variable fonts on Google Fonts. Omitting `weight` makes
+// next/font serve the single variable woff2 that covers the whole axis instead
+// of one static file per listed weight — fewer font requests competing with the
+// LCP image, and no risk of a heading falling back to a synthesised weight.
+// `fallback` supplies metric-adjacent system faces so the swap doesn't shift
+// layout (CLS) before the webfont lands.
+const FONT_FALLBACK = ["system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"];
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
+  preload: true,
+  fallback: FONT_FALLBACK,
 });
 
 // SRS §12.2: a modern grotesque with automotive character for headings (600–800).
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
   variable: "--font-heading",
   display: "swap",
+  preload: true,
+  fallback: FONT_FALLBACK,
 });
 
 export const viewport: Viewport = {
@@ -39,11 +51,14 @@ export const metadata: Metadata = {
   description:
     "Browse quality, inspected used cars for sale in Australia. Transparent pricing, finance available, trade-ins welcome, and a team that answers fast in Granville, NSW.",
   keywords: ["used cars Australia", "cars for sale NSW", "second hand cars Sydney", "used SUV", "used ute", "car finance", "trade-in Granville"],
-  metadataBase: new URL("https://www.cars-365.com.au"),
-  alternates: {
-    canonical: "/",
-  },
-
+  metadataBase: new URL(siteBaseUrl()),
+  // NOTE: no `alternates.canonical` here — on purpose.
+  // Next.js inherits layout metadata into every descendant route, so declaring
+  // `canonical: "/"` at the root made every listing, landing page and vehicle
+  // detail page emit a canonical pointing at the homepage. Google treats that
+  // as "this URL is a duplicate of the homepage" and drops the page from the
+  // index. Each route now declares its own self-referencing canonical via
+  // `canonical()` from `@/lib/seo/site`.
   applicationName: "Cars365",
   icons: {
     icon: [
@@ -67,7 +82,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_AU",
-    url: "https://www.cars-365.com.au",
+    // No `url` here: like canonical, a hardcoded homepage URL would be
+    // inherited by every route. Each page sets its own via `pageMetadata`.
     siteName: "Cars365 Australia",
     title: "Cars365 — Quality Used Cars in Australia",
     description:

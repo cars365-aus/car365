@@ -37,11 +37,19 @@ export async function InventoryListingView({
   ]);
   const totalPages = Math.max(1, Math.ceil(listing.total / listing.perPage));
 
-  const listPaths = listing.items.map((v) => `/used-cars/${v.makeSlug}/${v.modelSlug}/${v.slug}`);
-
   return (
     <>
-      {listPaths.length > 0 && <JsonLd schema={itemListSchema(listPaths)} />}
+      {/* ItemList now carries each vehicle's name and image, and positions
+          continue across pages (page 2 starts at 13, not 1) so Google reads one
+          coherent collection rather than N lists that all start at position 1. */}
+      {listing.items.length > 0 && (
+        <JsonLd
+          schema={itemListSchema(listing.items, {
+            startPosition: (listing.page - 1) * listing.perPage + 1,
+            total: listing.total,
+          })}
+        />
+      )}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
         <div className="hidden lg:block">
           <aside className="sticky top-20 rounded-xl border border-border bg-card p-5">
@@ -108,11 +116,44 @@ function Pagination({ page, totalPages, sp, basePath }: { page: number; totalPag
     const qs = params.toString();
     return `${basePath}${qs ? `?${qs}` : ""}`;
   };
+
   return (
-    <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Pagination">
-      {page > 1 ? <Link href={build(page - 1)} className="rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted">Previous</Link> : null}
-      <span className="px-2 text-sm text-muted-foreground">Page {page} of {totalPages}</span>
-      {page < totalPages ? <Link href={build(page + 1)} className="rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted">Next</Link> : null}
-    </nav>
+    <>
+      {/*
+        rel=prev/next as discovery hints. Google retired them as an indexing
+        signal in 2019 but Bing still consumes them, and they cost two tags.
+        Next.js hoists <link> elements out of the body into <head>.
+        `page - 1 === 1` drops the redundant `?page=1`, which would be a
+        duplicate of the clean hub URL.
+      */}
+      {page > 1 && <link rel="prev" href={build(page - 1)} />}
+      {page < totalPages && <link rel="next" href={build(page + 1)} />}
+
+      <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Pagination">
+        {page > 1 ? (
+          <Link
+            href={build(page - 1)}
+            rel="prev"
+            aria-label={`Go to page ${page - 1}`}
+            className="rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted"
+          >
+            Previous
+          </Link>
+        ) : null}
+        <span className="px-2 text-sm text-muted-foreground" aria-current="page">
+          Page {page} of {totalPages}
+        </span>
+        {page < totalPages ? (
+          <Link
+            href={build(page + 1)}
+            rel="next"
+            aria-label={`Go to page ${page + 1}`}
+            className="rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted"
+          >
+            Next
+          </Link>
+        ) : null}
+      </nav>
+    </>
   );
 }

@@ -20,10 +20,30 @@ import {
 } from "@/lib/nav";
 import { HeroParallax, FadeInStagger, FadeInItem } from "@/components/animations/hero-animations";
 import { ScrollReveal } from "@/components/animations/scroll-reveal";
+import { JsonLd } from "@/components/json-ld";
+import { faqPageSchema } from "@/lib/seo/jsonld";
+import { pageMetadata } from "@/lib/seo/metadata";
 
+// `title.absolute` bypasses the root layout's "%s | Cars365 Australia"
+// template — the homepage title already carries the brand, and the template
+// would render "… | Cars365 Australia | Cars365 Australia".
+// The previous title also read "Car365", a typo that split the brand signal
+// Google uses to resolve the entity behind the knowledge panel.
 export const metadata: Metadata = {
-  title: "Car365 — Quality Used Cars, Honestly Inspected",
-  description: "Browse quality, inspected used cars for sale. Transparent pricing, finance available, trade-ins welcome, and a team that answers fast.",
+  ...pageMetadata({
+    path: "/",
+    title: "Used Cars for Sale in Sydney | Cars365 Australia",
+    description:
+      "Browse quality, inspected used cars for sale in Granville, Sydney. Transparent pricing, roadworthy included, finance available and trade-ins welcome across Australia.",
+    keywords: [
+      "used cars for sale",
+      "used cars Sydney",
+      "second hand cars NSW",
+      "used car dealer Granville",
+      "cheap used cars Australia",
+    ],
+  }),
+  title: { absolute: "Used Cars for Sale in Sydney | Cars365 Australia" },
 };
 
 export const revalidate = 900;
@@ -59,6 +79,22 @@ const FAQS = [
   { q: "Where are you located?", a: "We are located at 12-14 Parramatta Rd, Granville NSW 2142." },
 ];
 
+/** Initials for a reviewer avatar when no photo is available (e.g. "Sarah M." → "SM"). */
+function reviewInitials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const initials = (parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "");
+  return initials.toUpperCase() || "?";
+}
+
+const AVATAR_COLORS = ["#2563eb", "#7c3aed", "#db2777", "#059669", "#d97706", "#0891b2", "#dc2626", "#4f46e5"];
+
+/** Deterministic avatar colour from the reviewer's name, so it's stable per person. */
+function reviewAvatarColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+}
+
 export default async function HomePage() {
   const [featured, makes, testimonials, company] = await Promise.all([
     getFeaturedVehicles(8),
@@ -68,6 +104,7 @@ export default async function HomePage() {
   ]);
   const popularMakes = makes.filter((m) => m.isPopular).slice(0, 8);
   const rating = company.google_rating as number | undefined;
+  const reviewCount = company.google_review_count as number | undefined;
 
   return (
     <div className="bg-white text-slate-900 min-h-screen font-sans">
@@ -313,7 +350,7 @@ export default async function HomePage() {
                   <Star key={i} className="size-6 fill-primary text-primary" />
                 ))}
               </div>
-              <p className="text-slate-600 mb-2">from <span className="font-bold text-slate-900">400+</span> verified reviews</p>
+              <p className="text-slate-600 mb-2">from <span className="font-bold text-slate-900">{reviewCount ? `${reviewCount.toLocaleString()}+` : "400+"}</span> verified reviews</p>
               <p className="font-bold text-slate-900">Google</p>
             </div>
             <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -330,10 +367,17 @@ export default async function HomePage() {
                   </div>
                   <p className="text-sm text-slate-700 mb-6 line-clamp-4">&quot;{t.quote}&quot;</p>
                   <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
-                      {/* Arbitrary external avatar host (Google reviews etc.) — plain img avoids next/image remotePattern failures. */}
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      {t.photoUrl ? <img src={t.photoUrl} alt="" loading="lazy" className="w-full h-full object-cover"/> : <div className="w-full h-full bg-slate-300"></div>}
+                    <div
+                      className="size-10 rounded-full overflow-hidden shrink-0 flex items-center justify-center text-sm font-semibold text-white"
+                      style={{ backgroundColor: reviewAvatarColor(t.customerName) }}
+                    >
+                      {t.photoUrl ? (
+                        // Arbitrary external avatar host (Google etc.) — plain img avoids next/image remotePattern failures.
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={t.photoUrl} alt={t.customerName} loading="lazy" className="w-full h-full object-cover" />
+                      ) : (
+                        <span aria-hidden="true">{reviewInitials(t.customerName)}</span>
+                      )}
                     </div>
                     <div>
                       <p className="font-bold text-sm text-slate-900">{t.customerName}</p>
