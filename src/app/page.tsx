@@ -432,18 +432,33 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* VIP List */}
-        <section className="bg-[#050505] py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-8">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
-              <div className="text-left w-full lg:w-1/2">
-                <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Join our VIP list</h2>
-                <p className="text-white/70 max-w-md">
-                  Get exclusive access to new arrivals, special offers, and automotive insights delivered straight to your inbox.
+        {/* VIP List - Premium Redesign */}
+        <section className="relative py-32 overflow-hidden bg-[#050505]">
+          {/* Subtle glowing orbs & grid background */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none opacity-60 mix-blend-screen" />
+          <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
+          
+          <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-8">
+            <div className="relative rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-16 backdrop-blur-2xl shadow-2xl overflow-hidden ring-1 ring-white/5">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+              
+              <div className="relative flex flex-col items-center text-center max-w-2xl mx-auto">
+                <div className="mb-8 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-yellow-600 shadow-[0_0_40px_rgba(234,179,8,0.4)]">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-7 text-[#050505]">
+                    <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
+                    <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
+                  </svg>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 mb-5 tracking-tight">
+                  Join the VIP Club
+                </h2>
+                <p className="text-lg md:text-xl text-white/60 mb-12 leading-relaxed max-w-xl">
+                  Unlock exclusive early access to premium inventory, special finance rates, and insider automotive insights.
                 </p>
-              </div>
-              <div className="w-full lg:w-auto flex justify-start lg:justify-end">
-                <NewsletterForm />
+                <div className="w-full max-w-lg mx-auto">
+                  <NewsletterForm />
+                </div>
               </div>
             </div>
           </div>
