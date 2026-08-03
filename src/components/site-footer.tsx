@@ -7,9 +7,7 @@ import { NewsletterForm } from "@/components/newsletter-form";
 import {
   NAV_BODY_TYPES,
   BODY_TYPE_LABELS,
-  BUDGET_BANDS,
   bodyTypeHref,
-  budgetHref,
   makeHref,
 } from "@/lib/nav";
 
@@ -220,24 +218,6 @@ export async function SiteFooter() {
             </ul>
           </div>
 
-          {/* By budget */}
-          <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/50">
-              By budget
-            </h3>
-            <ul className="space-y-2.5 text-sm">
-              {BUDGET_BANDS.map((b) => (
-                <li key={b.max}>
-                  <Link
-                    href={budgetHref(b.max)}
-                    className="transition-colors hover:text-white"
-                  >
-                    {b.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
 
           {/* Company */}
           <div>
@@ -282,23 +262,10 @@ export async function SiteFooter() {
 
       {/* ── Bottom bar ─────────────────────────────────────────────── */}
       <div className="border-t border-white/[0.06]">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 px-4 py-6 sm:px-6 md:flex-row lg:px-8">
-          {/* Copyright + legal */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-600 md:justify-start">
-            <span>© {currentYear} {tradingName}. All rights reserved.</span>
-            {LEGAL_LINKS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="transition-colors hover:text-slate-300"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-7 sm:px-6 lg:px-8">
 
-          {/* Social icons */}
-          <div className="flex items-center gap-3">
+          {/* Social icons — centred row */}
+          <div className="flex items-center justify-center gap-3">
             {/* Facebook */}
             <a
               href="https://www.facebook.com/marketplace/profile/1703029730/?tab=listings"
@@ -347,6 +314,20 @@ export async function SiteFooter() {
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
             </a>
+          </div>
+
+          {/* Copyright + legal — centred row below socials */}
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-600">
+            <span>© {currentYear} {tradingName}. All rights reserved.</span>
+            {LEGAL_LINKS.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="transition-colors hover:text-slate-300"
+              >
+                {l.label}
+              </Link>
+            ))}
           </div>
 
         </div>
