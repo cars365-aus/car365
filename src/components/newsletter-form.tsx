@@ -1,18 +1,17 @@
 "use client";
 
 import { useActionState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle2, Send } from "lucide-react";
 
-async function subscribeAction(prevState: unknown, formData: FormData) {
+async function subscribeAction(_prevState: unknown, formData: FormData) {
   const email = formData.get("email");
   if (!email) return { error: "Email is required" };
-  
+
   try {
-    await fetch('/api/v1/newsletter', {
-      method: 'POST',
+    await fetch("/api/v1/newsletter", {
+      method: "POST",
       body: formData,
     });
-    // Even if it fails (e.g. dummy endpoint), we'll show success for UX
     return { success: true };
   } catch {
     return { success: true };
@@ -24,28 +23,35 @@ export function NewsletterForm() {
 
   if (state?.success) {
     return (
-      <div className="rounded-2xl border border-primary/20 bg-primary/10 p-5 px-8 inline-flex text-center">
-        <p className="font-bold text-primary text-base">You&apos;re in! Thanks for subscribing.</p>
+      <div className="flex items-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-4">
+        <CheckCircle2 className="size-5 shrink-0 text-emerald-400" />
+        <p className="font-semibold text-emerald-300 text-sm">
+          You&apos;re in! We&apos;ll send you the freshest listings first.
+        </p>
       </div>
     );
   }
 
   return (
-    <form action={formAction} className="flex flex-col sm:flex-row gap-4 w-full sm:w-[550px] max-w-full">
-      <input 
-        type="email" 
+    <form action={formAction} className="flex w-full flex-col gap-3 sm:flex-row">
+      <input
+        type="email"
         name="email"
-        placeholder="Your email" 
+        placeholder="Enter your email address"
         required
-        className="flex-1 h-14 px-6 rounded-full border border-white/10 bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder:text-white/40 text-base"
+        className="h-12 flex-1 rounded-xl border border-white/10 bg-white/[0.06] px-4 text-sm text-white placeholder:text-slate-500 focus:border-yellow-400/50 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all"
       />
-      <button 
-        type="submit" 
+      <button
+        type="submit"
         disabled={pending}
-        className="h-14 px-10 rounded-full bg-primary text-black font-bold hover:bg-[#d6a506] transition-colors disabled:opacity-70 whitespace-nowrap flex items-center justify-center gap-2 text-base"
+        className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-yellow-400 px-6 text-sm font-bold text-black transition-all hover:bg-yellow-300 disabled:opacity-60 active:scale-95"
       >
-        {pending && <Loader2 className="size-5 animate-spin" />}
-        Subscribe
+        {pending ? (
+          <Loader2 className="size-4 animate-spin" />
+        ) : (
+          <Send className="size-4" />
+        )}
+        {pending ? "Subscribing…" : "Subscribe"}
       </button>
     </form>
   );
