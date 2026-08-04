@@ -27,6 +27,7 @@ beforeEach(() => {
   }
   // Simulate running behind the Vercel edge so the geo headers are trusted.
   process.env.VERCEL = "1";
+  process.env.GEO_RESTRICTION_ENABLED = "true";
 });
 
 afterEach(() => {
@@ -67,12 +68,15 @@ describe("isGeoRestrictionEnabled", () => {
     expect(isGeoRestrictionEnabled()).toBe(true);
   });
 
-  it('is disabled only by an explicit "false"', () => {
-    process.env.GEO_RESTRICTION_ENABLED = "FALSE";
+  it("is enabled only by an explicit 'true'", () => {
+    process.env.GEO_RESTRICTION_ENABLED = "true";
+    expect(isGeoRestrictionEnabled()).toBe(true);
+
+    process.env.GEO_RESTRICTION_ENABLED = "false";
     expect(isGeoRestrictionEnabled()).toBe(false);
 
     process.env.GEO_RESTRICTION_ENABLED = "0";
-    expect(isGeoRestrictionEnabled()).toBe(true);
+    expect(isGeoRestrictionEnabled()).toBe(false);
   });
 });
 

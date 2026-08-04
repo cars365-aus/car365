@@ -130,9 +130,9 @@ export function getAllowedCountries(): Set<string> {
   return cachedCountrySet;
 }
 
-/** Kill switch. Enabled unless `GEO_RESTRICTION_ENABLED` is explicitly "false". */
+/** Kill switch. Disabled by default to allow VPNs globally unless explicitly opted in. */
 export function isGeoRestrictionEnabled(): boolean {
-  return process.env.GEO_RESTRICTION_ENABLED?.trim().toLowerCase() !== "false";
+  return process.env.GEO_RESTRICTION_ENABLED?.trim().toLowerCase() === "true";
 }
 
 /**
