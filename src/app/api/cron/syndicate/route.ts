@@ -27,7 +27,8 @@ export async function GET(request: Request) {
     try {
       const res = await runSync(conn.dealer_id, conn.channel_code, "scheduled");
       results.push({ channelCode: conn.channel_code, result: res });
-    } catch (e: any) {
+    } catch (error) {
+      const e = error as Error;
       results.push({ channelCode: conn.channel_code, result: { success: false, reason: e.message } });
     }
   }

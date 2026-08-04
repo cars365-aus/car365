@@ -49,7 +49,8 @@ export async function GET(request: Request) {
         });
       }
       checked++;
-    } catch (e: any) {
+    } catch (error) {
+      const e = error as Error;
       errors.push({ vehicle_id: v.vehicle_id, error: e.message });
     }
   }

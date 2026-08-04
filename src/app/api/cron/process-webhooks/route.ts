@@ -98,7 +98,8 @@ export async function GET() {
         .eq("id", event.id);
       
       processedCount++;
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as Error;
       console.error(`Error processing webhook event ${event.id}:`, err);
       await supabase
         .from("webhook_events")

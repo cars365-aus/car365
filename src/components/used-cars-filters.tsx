@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { BODY_TYPE_LABELS, FUEL_LABELS, TRANSMISSION_LABELS } from "@/lib/nav";
@@ -227,10 +227,12 @@ function RangeInput({
   onCommit: (value: string | null) => void;
 }) {
   const [local, setLocal] = useState(value);
+  const [prevValue, setPrevValue] = useState(value);
   
-  useEffect(() => {
+  if (value !== prevValue) {
     setLocal(value);
-  }, [value]);
+    setPrevValue(value);
+  }
 
   return (
     <input

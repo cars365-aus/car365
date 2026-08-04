@@ -44,7 +44,7 @@ export default async function FaqsPage() {
               <FadeInItem>
                 <h1 className="font-heading text-4xl font-black uppercase tracking-tight text-white sm:text-6xl mb-6">
                   Got Questions? <br className="hidden sm:block" />
-                  <span className="text-primary">We've got answers.</span>
+                  <span className="text-primary">We&apos;ve got answers.</span>
                 </h1>
               </FadeInItem>
               <FadeInItem>
@@ -70,7 +70,7 @@ export default async function FaqsPage() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/10 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             <h3 className="relative z-10 font-heading text-3xl font-bold text-white mb-4">Still need help?</h3>
             <p className="relative z-10 text-lg text-slate-400 mb-8 max-w-lg mx-auto">
-              If you couldn't find what you're looking for, our team is ready to assist you directly.
+              If you couldn&apos;t find what you&apos;re looking for, our team is ready to assist you directly.
             </p>
             <Link href="/contact" className="relative z-10 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-black transition-transform hover:scale-105 shadow-[0_0_20px_rgba(255,204,0,0.2)]">
               Get in touch <ArrowRight className="size-5" />

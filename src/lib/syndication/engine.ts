@@ -91,28 +91,28 @@ export async function runSync(
       stockNumber: v.stock_number,
       vin: v.vin,
       rego: v.rego,
-      regoState: v.rego_state as any,
+      regoState: v.rego_state as CanonicalVehicle["regoState"],
       make: v.make,
       model: v.model,
       variant: v.variant,
       badge: v.badge,
-      bodyType: v.body_type as any,
+      bodyType: v.body_type as CanonicalVehicle["bodyType"],
       year: v.year,
       odometerKm: v.odometer_km,
-      transmission: v.transmission as any,
-      fuelType: v.fuel_type as any,
-      drivetrain: v.drivetrain as any,
+      transmission: v.transmission as CanonicalVehicle["transmission"],
+      fuelType: v.fuel_type as CanonicalVehicle["fuelType"],
+      drivetrain: v.drivetrain as CanonicalVehicle["drivetrain"],
       doors: v.doors,
       seats: v.seats,
       engineCc: v.engine_cc,
       engineText: v.engine_text,
       colourExterior: v.colour_exterior,
       colourInterior: v.colour_interior,
-      condition: v.condition as any,
+      condition: v.condition as CanonicalVehicle["condition"],
       priceAmount: v.price_amount,
-      priceType: v.price_type as any,
-      currency: v.currency as any,
-      status: v.status as any,
+      priceType: v.price_type as CanonicalVehicle["priceType"],
+      currency: v.currency as CanonicalVehicle["currency"],
+      status: v.status as CanonicalVehicle["status"],
       descriptionRaw: v.description_raw,
       descriptionGenerated: v.description_generated,
       descriptionApprovedAt: v.description_approved_at,
@@ -315,7 +315,8 @@ export async function runSync(
     }).eq("id", runId);
 
     return { success: true, count: okCount };
-  } catch (err: any) {
+  } catch (error) {
+    const err = error as Error;
     await supabase.from("sync_run").update({
       status: "failed",
       error_summary: err.message,
