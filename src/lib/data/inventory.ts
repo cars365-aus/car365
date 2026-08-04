@@ -317,8 +317,7 @@ export const getVehicleBySlug = unstable_cache(
         models:model_id ( name, slug ),
         locations:location_id ( id, name, slug, address, city, state, postcode, phone, whatsapp, lat, lng, hours ),
         vehicle_images ( id, alt_text, sort_order, is_cover, media_assets:media_id ( storage_key ) ),
-        vehicle_features ( features:feature_id ( id, name, slug, category ) ),
-        syndication_vehicle_extra ( tiktok_embed_html )
+        vehicle_features ( features:feature_id ( id, name, slug, category ) )
       `)
       .eq("slug", slug)
       .in("status", PUBLIC_STATUSES)
@@ -401,7 +400,7 @@ export const getVehicleBySlug = unstable_cache(
             hours: r.locations.hours ?? {},
           }
         : null,
-      tiktokEmbedHtml: r.syndication_vehicle_extra?.tiktok_embed_html ?? null,
+      tiktokEmbedHtml: null,
     };
   },
   ["vehicle-detail"],
