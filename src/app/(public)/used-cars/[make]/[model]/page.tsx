@@ -73,7 +73,7 @@ export default async function ModelPage({
         })}
       />
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-8">
         <ListingBreadcrumbs
           trail={[["Used Cars", "/used-cars"], [mk.name, `/used-cars/${mk.slug}`], [md.name, path]]}
         />

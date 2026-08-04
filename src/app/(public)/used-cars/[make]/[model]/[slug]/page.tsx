@@ -134,7 +134,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
     <>
       <JsonLd schema={jsonLd} />
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-8">
         {/* Breadcrumbs — BreadcrumbList JSON-LD is emitted above, alongside the
             Vehicle schema, so this renders the visual trail only. */}
         <ListingBreadcrumbs

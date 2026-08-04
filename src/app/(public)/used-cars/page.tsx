@@ -37,7 +37,7 @@ export default async function UsedCarsPage({ searchParams }: { searchParams: Pro
     <>
       <JsonLd schema={collectionPageSchema({ name: TITLE, description: DESCRIPTION, path: "/used-cars" })} />
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-8">
         <ListingBreadcrumbs trail={[["Used Cars", "/used-cars"]]} />
         <header className="relative mb-8 overflow-hidden rounded-2xl bg-slate-50 border border-slate-200 p-8 shadow-sm dark:bg-card dark:border-border lg:p-12">
           <div className="relative z-10 max-w-3xl">
