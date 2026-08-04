@@ -39,12 +39,22 @@ export default async function UsedCarsPage({ searchParams }: { searchParams: Pro
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <ListingBreadcrumbs trail={[["Used Cars", "/used-cars"]]} />
-        <header className="mb-6">
-          <h1 className="font-heading text-3xl font-bold text-foreground">Used cars for sale in Sydney</h1>
-          <p className="mt-1 text-body">
-            Quality, inspected cars ready to drive away — every vehicle comes with a roadworthy
-            certificate, transparent pricing and finance options.
-          </p>
+        <header className="relative mb-8 overflow-hidden rounded-2xl bg-slate-50 border border-slate-200 p-8 shadow-sm dark:bg-card dark:border-border lg:p-12">
+          <div className="relative z-10 max-w-3xl">
+            <span className="mb-3 inline-block rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white dark:bg-white dark:text-black">
+              Premium Inventory
+            </span>
+            <h1 className="font-heading text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+              Used cars for sale in Sydney
+            </h1>
+            <p className="mt-4 text-lg leading-relaxed text-slate-700 dark:text-slate-300 sm:text-xl">
+              Quality, inspected cars ready to drive away — every vehicle comes with a roadworthy
+              certificate, transparent pricing and finance options.
+            </p>
+          </div>
+          {/* Subtle elegant dark accents in the background */}
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-slate-900/10 blur-3xl dark:bg-white/10"></div>
+          <div className="pointer-events-none absolute right-20 top-20 h-32 w-32 rounded-full bg-slate-900/5 blur-2xl dark:bg-white/5"></div>
         </header>
         <InventoryListingView baseFilters={{}} sp={sp} basePath="/used-cars" />
       </main>
