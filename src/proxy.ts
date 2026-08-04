@@ -168,6 +168,9 @@ export async function proxy(request: NextRequest) {
   // Return 403 with no body to minimise response cost and avoid tipping off
   // automated scanners that inspect response bodies for clues.
   if (isBadBot(ua)) {
+    return new NextResponse(null, { status: 403 });
+  }
+
   // ── 2. Geo restriction: AU + IN only ────────────────────────────────────────
   // Runs before anything expensive (no DB/Supabase work happens for a blocked
   // visitor). SEO artefacts, health/cron endpoints and good-faith crawlers are
