@@ -2,7 +2,7 @@ import { optionalEnv } from "@/lib/config";
 import { recordApiCall } from "@/lib/observability/usage";
 
 export async function verifyTurnstile(token?: string, ip?: string) {
-  const secret = optionalEnv("TURNSTILE_SECRET_KEY");
+  const secret = optionalEnv("TURNSTILE_SECRET");
 
   if (!secret) {
     if (process.env.NODE_ENV === "production" && process.env.TURNSTILE_SKIP !== "true") {

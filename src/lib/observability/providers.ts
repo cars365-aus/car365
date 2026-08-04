@@ -122,7 +122,7 @@ export const API_PROVIDERS: readonly ApiProvider[] = [
     category: "security",
     unit: "request",
     tracked: true,
-    configuredBy: ["TURNSTILE_SECRET_KEY"],
+    configuredBy: ["TURNSTILE_SECRET"],
     monthlyQuota: null,
     planLabel: "Free — unlimited",
     audPer1000: 0,
