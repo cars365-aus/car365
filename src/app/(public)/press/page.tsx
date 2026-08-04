@@ -2,12 +2,14 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/press",
   title: "Press & Media",
   description:
     "Press and media enquiries for Cars365, an Australian used-car dealership focused on honestly inspected vehicles and transparent pricing.",
-};
+});
 
 export default function PressPage() {
   return (

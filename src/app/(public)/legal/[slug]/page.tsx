@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { pageMetadata } from "@/lib/seo/metadata";
 
 type PolicySection = {
   heading: string;
@@ -20,47 +21,48 @@ const policies: Record<string, Policy> = {
   terms: {
     title: "Terms of Service",
     summary:
-      "These terms govern your use of the Cars365 website, where we advertise quality used vehicles for sale and invite you to enquire about them.",
+      "These terms govern your use of the Cars365 website, where we advertise quality used vehicles for sale and invite you to enquire about them. By accessing our website, you agree to these terms.",
     sections: [
       {
         heading: "About Cars365",
         body: [
-          "Cars365 is a used-vehicle dealership. We list vehicles we hold or can source for sale, publish their details and pricing, and provide ways for you to contact us with an enquiry, finance request, trade-in request, or inspection booking.",
-          "The website is an advertisement and an invitation to enquire. It is not an offer capable of acceptance, and submitting an enquiry does not create a contract of sale. A sale is formed only when we and the buyer agree the terms of that specific vehicle in writing.",
+          "Cars365 is a licensed used-vehicle dealership operating in New South Wales. We list vehicles we hold or can source for sale, publish their details and pricing, and provide ways for you to contact us with an enquiry, finance request, trade-in request, or inspection booking.",
+          "The website is an advertisement and an invitation to treat. It is not an offer capable of legally binding acceptance, and submitting an enquiry does not create a contract of sale. A binding contract of sale is formed only when both parties sign a written Motor Vehicle Dealer's Contract of Sale.",
         ],
       },
       {
-        heading: "Vehicle information and pricing",
+        heading: "Vehicle information, pricing, and holding deposits",
         body: [
-          "We take care to describe each vehicle accurately, including make, model, year, odometer, body type, fuel, transmission, and features. Occasionally details may contain errors or become out of date, and a vehicle may sell before a listing is removed.",
-          "Advertised prices are in Australian dollars and may exclude government charges such as stamp duty, registration, and transfer fees unless stated otherwise. We may correct pricing or availability errors at any time before a sale is agreed.",
+          "We take reasonable care to describe each vehicle accurately, including make, model, year, odometer reading, body type, fuel, transmission, and features. However, details may occasionally contain errors or become out of date, and a vehicle may sell before a listing is removed.",
+          "Advertised prices are in Australian Dollars (AUD) and exclude government statutory charges such as stamp duty, registration, and transfer fees, unless explicitly advertised as 'Drive Away'. We reserve the right to correct pricing or availability errors at any time before a contract of sale is executed.",
+          "Any holding deposit placed on a vehicle is subject to a separate written agreement and may be fully or partially refundable in accordance with the Motor Dealers and Repairers Act 2013 (NSW)."
         ],
       },
       {
-        heading: "Enquiries and finance",
+        heading: "Enquiries and third-party finance",
         body: [
-          "When you submit an enquiry you must provide accurate contact details. We use those details to respond to your request about the relevant vehicle and related services.",
-          "Any finance repayment figures shown are indicative estimates only, are not an offer of finance, and are subject to lender approval, fees, and your circumstances. Trade-in figures are estimates only until we inspect your vehicle.",
+          "When you submit an enquiry, you must provide accurate contact details. We use those details to respond to your request about the relevant vehicle and related services.",
+          "Any finance repayment figures shown are indicative estimates only, do not constitute an offer of credit, and are subject to lender approval, credit criteria, fees, and your personal circumstances. We operate as an authorised representative for our finance partners. Trade-in valuations provided online are estimates only and are contingent upon a physical inspection of your vehicle."
         ],
       },
       {
-        heading: "Australian Consumer Law",
+        heading: "Australian Consumer Law and Statutory Warranties",
         body: [
-          "Nothing in these terms excludes, restricts, or modifies any consumer guarantee, right, or remedy that cannot lawfully be excluded under the Australian Consumer Law or other applicable law.",
-          "Where we sell a vehicle to you, statutory guarantees and any applicable statutory warranty apply to that sale in addition to any warranty we expressly provide.",
+          "Nothing in these terms excludes, restricts, or modifies any consumer guarantee, right, or remedy that cannot lawfully be excluded under the Australian Consumer Law (ACL).",
+          "Where we sell a vehicle to you, statutory guarantees under the ACL apply. Furthermore, eligible vehicles are sold with a statutory dealer guarantee (Form 5) as prescribed by the Motor Dealers and Repairers Act 2013 (NSW).",
         ],
       },
       {
         heading: "Acceptable use of the website",
         body: [
-          "You must not use the website to break the law, submit false or spam enquiries, impersonate others, scrape data, bypass security controls, distribute malware, or interfere with its availability.",
+          "You must not use the website to break any law, submit false or spam enquiries, impersonate others, scrape data, bypass security controls, distribute malware, or interfere with its availability. We reserve the right to block access to users who violate these conditions.",
         ],
       },
       {
-        heading: "Service changes and liability",
+        heading: "Limitation of liability and jurisdiction",
         body: [
-          "We may change, suspend, or discontinue parts of the website for maintenance, security, legal, or business reasons, and we do not guarantee uninterrupted availability.",
-          "To the maximum extent permitted by law, our liability for your use of the website is limited to resupplying the affected service. This does not limit rights that cannot be excluded under the Australian Consumer Law.",
+          "To the maximum extent permitted by law, our liability for your use of the website is limited to resupplying the affected service. We are not liable for indirect, incidental, or consequential damages arising out of your use of the website.",
+          "These Terms of Service are governed by the laws in force in New South Wales, Australia. You submit to the non-exclusive jurisdiction of the courts of New South Wales.",
         ],
       },
       {
@@ -74,16 +76,16 @@ const policies: Record<string, Policy> = {
   "privacy-policy": {
     title: "Privacy Policy",
     summary:
-      "This policy explains how Cars365 collects, uses, discloses, stores, and protects personal information when you use our website and contact us about a vehicle.",
+      "This policy explains how Cars365 collects, uses, discloses, stores, and protects your personal information in accordance with the Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs).",
     sections: [
       {
         heading: "Personal information we collect",
         body: [
-          "We collect information you provide directly when you enquire, request finance or a trade-in, book an inspection, or subscribe to updates, together with information generated automatically as you use the website.",
+          "We collect information you provide directly when you enquire, request finance or a trade-in appraisal, book an inspection, or subscribe to updates, together with information generated automatically as you use the website.",
         ],
         bullets: [
           "Contact details you give us, such as your name, phone number, and email address.",
-          "Enquiry details, such as the vehicle you are interested in, your message, finance or trade-in information you choose to share, and any photos you upload.",
+          "Enquiry details, such as the vehicle you are interested in, your message, finance or trade-in information you choose to share (including vehicle registration and VIN), and any photos you upload.",
           "Technical and security data, such as IP-derived identifiers, device and browser metadata, and anti-spam and rate-limit events.",
           "Records of our communications with you and the status of your enquiry in our system.",
         ],
@@ -91,29 +93,31 @@ const policies: Record<string, Policy> = {
       {
         heading: "How we use information",
         body: [
-          "We use personal information to respond to your enquiry, provide information about vehicles and related services, arrange finance or trade-in appraisals where you ask us to, complete a sale, provide support, and meet our legal obligations.",
-          "With your consent, we may send you updates about new stock or offers. You can opt out of marketing at any time. We may also use aggregated or de-identified data to understand demand and improve the website.",
+          "We use personal information to respond to your enquiry, provide information about vehicles and related services, arrange finance or trade-in appraisals where requested, complete a sale, provide support, and meet our legal and regulatory obligations.",
+          "With your consent, we may send you updates about new stock or offers in compliance with the Spam Act 2003 (Cth). You can opt out of direct marketing at any time using the unsubscribe link provided. We may also use aggregated or de-identified data to understand demand and improve our services.",
         ],
       },
       {
-        heading: "Disclosure",
+        heading: "Disclosure to third parties",
         body: [
-          "We may share your details with service providers who help us operate, such as hosting, database, email, finance and insurance partners (only where you have asked us to arrange finance or a trade-in), analytics, and bot protection. They may use the information only to provide their service to us.",
-          "We do not sell your personal information. We may disclose information where required or permitted by law.",
+          "We may share your details with service providers who help us operate, such as hosting, database, email, analytics, and cybersecurity partners. They may use the information only to provide their services to us under strict confidentiality obligations.",
+          "If you request us to arrange finance or insurance, we will disclose your information to our licensed finance and insurance partners to process your application.",
+          "We do not sell your personal information. We will only disclose your information to government or law enforcement agencies where required or authorised by law (for example, for vehicle registration transfer or under a court order).",
         ],
       },
       {
-        heading: "Security and retention",
+        heading: "Security and data retention",
         body: [
-          "We use technical and organisational controls such as role-based access, row-level security, audit logging, rate limiting, and encrypted transport to protect personal information.",
-          "We keep personal information only for as long as needed to respond to your enquiry, complete any sale, meet legal and accounting obligations, and resolve disputes. Enquiry contact details are anonymised once they are no longer required.",
+          "We use robust technical and organisational controls—including role-based access, row-level security, audit logging, rate limiting, and encrypted transport (SSL/TLS)—to protect your personal information from misuse, interference, loss, and unauthorised access.",
+          "We comply with the Notifiable Data Breaches (NDB) scheme under the Privacy Act. In the unlikely event of an eligible data breach, we will notify you and the OAIC as required by law.",
+          "We keep personal information only for as long as needed to respond to your enquiry, complete any sale, meet statutory accounting obligations, and resolve disputes. Enquiry contact details are securely destroyed or anonymised once they are no longer required.",
         ],
       },
       {
         heading: "Access, correction, and complaints",
         body: [
-          "You may request access to or correction of the personal information we hold about you. We may need to verify your identity before acting on a request.",
-          "If you believe we have mishandled your personal information, please contact us first so we can investigate. If the matter is unresolved, you may contact the Office of the Australian Information Commissioner.",
+          "Under the APPs, you have the right to request access to or correction of the personal information we hold about you. We will respond to your request within a reasonable period and may need to verify your identity.",
+          "If you believe we have breached the APPs, please contact us first so we can investigate and aim to resolve your complaint within 30 days. If you remain dissatisfied, you may contact the Office of the Australian Information Commissioner (OAIC) at www.oaic.gov.au.",
         ],
       },
     ],
@@ -121,25 +125,26 @@ const policies: Record<string, Policy> = {
   disclaimer: {
     title: "Website Disclaimer",
     summary:
-      "This disclaimer explains what to understand before relying on the vehicle information published on the Cars365 website.",
+      "This disclaimer outlines the terms of relying on the vehicle information and financial estimates published on the Cars365 website.",
     sections: [
       {
-        heading: "Vehicle listings",
+        heading: "Accuracy of vehicle listings",
         body: [
-          "Vehicle listings are provided in good faith to help you decide whether to enquire. While we aim to keep details accurate and current, specifications, features, condition, pricing, and availability can change, and a vehicle may be sold before its listing is updated.",
-          "Before committing to buy, please confirm the vehicle's price, on-road costs, condition, service history, and any warranty directly with our team and, where relevant, arrange your own inspection.",
+          "Vehicle listings are provided in good faith to help you decide whether to enquire. While we aim to keep details accurate and current, specifications, features, condition, pricing, and availability can change without notice. A vehicle may be sold before its listing is updated.",
+          "We guarantee clear title (no money owing and not written-off) for all vehicles sold as per our obligations under NSW law. However, before committing to buy, you should confirm the vehicle's price, on-road costs, condition, service history, and any warranty directly with our sales team and, where relevant, arrange your own independent mechanical inspection.",
         ],
       },
       {
-        heading: "Estimates only",
+        heading: "Finance and trade-in estimates",
         body: [
-          "Finance repayment estimates and trade-in figures shown on the website are indicative only. They are not an offer, are subject to approval and inspection, and may differ from the final amount.",
+          "Finance repayment estimates and trade-in figures shown on the website are indicative only. They do not constitute a formal offer of credit or a binding offer to purchase your vehicle.",
+          "All finance is subject to formal approval by the lender, credit checks, and your personal financial circumstances. Trade-in valuations are strictly subject to a physical appraisal of your vehicle by our team.",
         ],
       },
       {
-        heading: "Consumer rights",
+        heading: "Consumer rights preserved",
         body: [
-          "This disclaimer does not limit any rights you have under the Australian Consumer Law or other laws that cannot be excluded. Where we supply a vehicle to you, we remain responsible for the legal obligations that apply to that sale.",
+          "This disclaimer does not exclude, restrict, or modify any rights you have under the Australian Consumer Law (ACL) or the Motor Dealers and Repairers Act 2013 (NSW). Where we supply a vehicle to you, we remain fully responsible for the statutory obligations and guarantees that apply to that sale.",
         ],
       },
     ],
@@ -159,13 +164,14 @@ export async function generateMetadata({
   const policy = policies[slug];
 
   if (!policy) {
-    return {};
+    return { robots: { index: false, follow: true } };
   }
 
-  return {
+  return pageMetadata({
+    path: `/legal/${slug}`,
     title: policy.title,
     description: policy.summary,
-  };
+  });
 }
 
 export default async function LegalPage({

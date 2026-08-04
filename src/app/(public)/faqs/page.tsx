@@ -6,13 +6,18 @@ import { SiteFooter } from "@/components/site-footer";
 import { JsonLd } from "@/components/json-ld";
 import { getPublishedFaqs } from "@/lib/data/content";
 import { faqPageSchema, breadcrumbSchema } from "@/lib/seo/jsonld";
+import { pageMetadata } from "@/lib/seo/metadata";
 import { FaqAccordion } from "./faq-client";
 import { FadeInItem, FadeInStagger } from "@/components/animations/hero-animations";
 
-export const metadata: Metadata = {
-  title: "Frequently Asked Questions | Cars365",
-  description: "Answers to common questions about buying, selling, financing, warranty, and inspections at Cars365.",
-};
+// Title no longer carries a manual "| Cars365" — the root layout's template
+// appends "| Cars365 Australia", so the old value rendered the brand twice.
+export const metadata: Metadata = pageMetadata({
+  path: "/faqs",
+  title: "Frequently Asked Questions",
+  description:
+    "Answers to common questions about buying, selling, financing, warranty, and inspections at Cars365.",
+});
 
 export const revalidate = 3600;
 

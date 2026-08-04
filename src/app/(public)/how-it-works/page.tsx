@@ -1,7 +1,15 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = { title: "How It Works" };
+// Previously title-only: no description, so Google wrote its own snippet from
+// whatever text it found on the page.
+export const metadata = pageMetadata({
+  path: "/how-it-works",
+  title: "How Buying a Car From Cars365 Works",
+  description:
+    "From browsing to driving away — how buying a used car from Cars365 works: search, test drive, arrange finance, and drive away with a roadworthy certificate.",
+});
 
 export default function HowItWorksPage() {
   return (

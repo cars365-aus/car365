@@ -3,6 +3,7 @@ import { Plus, Star } from "lucide-react";
 import { getInventoryList } from "@/lib/data/dashboard";
 import { formatPrice } from "@/lib/nav";
 import { InventoryRowActions } from "./inventory-row-actions";
+import { SyndicationBackfillBanner } from "@/components/admin/syndication-backfill-banner";
 
 export const metadata = { title: "Inventory" };
 export const dynamic = "force-dynamic";
@@ -32,6 +33,8 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
           <Plus className="size-4" /> Add vehicle
         </Link>
       </header>
+
+      <SyndicationBackfillBanner />
 
       <div className="flex flex-wrap gap-2">
         {STATUS_TABS.map((t) => (

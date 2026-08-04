@@ -7,11 +7,14 @@ import { JsonLd } from "@/components/json-ld";
 import { getApprovedTestimonials } from "@/lib/data/content";
 import { getCompanyProfile } from "@/lib/data/settings";
 import { reviewsAggregateSchema, breadcrumbSchema } from "@/lib/seo/jsonld";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/testimonials",
   title: "Customer Reviews & Testimonials",
-  description: "Real stories from customers who bought their car with us — honest inspections, fair pricing, and a team that answers fast.",
-};
+  description:
+    "Real stories from customers who bought their car with us — honest inspections, fair pricing, and a team that answers fast.",
+});
 
 export const revalidate = 3600;
 

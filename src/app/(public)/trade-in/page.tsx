@@ -5,11 +5,15 @@ import { SellTradeForm } from "@/components/leads/sell-trade-form";
 import { getPhoneNumbers } from "@/lib/data/settings";
 import { getVehicleLeadContext } from "@/lib/data/inventory";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Trade In Your Car",
-  description: "Trade in your current car against your next one. Tell us about it and we'll value it for you.",
-};
+export const metadata: Metadata = pageMetadata({
+  path: "/trade-in",
+  title: "Trade In Your Car — Free Valuation",
+  description:
+    "Trade in your current car against your next one. Tell us about it and we'll value it for you — trade-ins welcome across Sydney and NSW.",
+  keywords: ["car trade in Sydney", "trade in valuation NSW", "trade in used car Australia"],
+});
 
 export const revalidate = 3600;
 

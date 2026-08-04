@@ -5,6 +5,7 @@ import type { Vehicle } from "@/lib/types";
 import { resolveVehicleImage } from "@/lib/image-utils";
 import type { VehicleImageRecord } from "@/lib/image-utils";
 import { computeSuperHost } from "@/lib/vehicle-badges";
+import { trackApiCall } from "@/lib/observability/usage";
 
 const VEHICLE_COLLECTION_NAME = "vehicles";
 
@@ -201,7 +202,11 @@ export async function searchVehicles(
   };
 
   try {
-    const results = await client.collections<Vehicle>(VEHICLE_COLLECTION_NAME).documents().search(searchParameters);
+    // trackApiCall observes the outcome and duration for the admin API-usage
+    // dashboard, then returns or re-throws exactly what Typesense produced.
+    const results = await trackApiCall("typesense", () =>
+      client.collections<Vehicle>(VEHICLE_COLLECTION_NAME).documents().search(searchParameters),
+    );
 
     const vehicles = results.hits?.map((hit) => hit.document) ?? [];
 

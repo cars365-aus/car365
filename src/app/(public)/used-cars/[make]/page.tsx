@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { InventoryListingView } from "@/components/inventory-listing-view";
 import { ListingBreadcrumbs } from "@/components/listing-breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
-import { getMakes } from "@/lib/data/inventory";
+import { getMakes, getVehicleCount } from "@/lib/data/inventory";
 import { formatPrice } from "@/lib/nav";
 import { collectionPageSchema } from "@/lib/seo/jsonld";
 import { listingMetadata } from "@/lib/seo/listing";
@@ -45,6 +45,7 @@ export async function generateMetadata({
       title: budgetTitle(budget),
       description: budgetDescription(budget),
       keywords: [`used cars under ${formatPrice(budget)}`, "cheap used cars Sydney", "budget cars NSW"],
+      thin: { total: await getVehicleCount({ priceMax: budget }), kind: "category" },
     });
   }
 
@@ -58,6 +59,7 @@ export async function generateMetadata({
     title: makeTitle(m.name),
     description: makeDescription(m.name),
     keywords: [`used ${m.name} for sale`, `second hand ${m.name}`, `${m.name} dealer Sydney`],
+    thin: { total: await getVehicleCount({ make: m.slug }), kind: "makeModel" },
   });
 }
 

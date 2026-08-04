@@ -127,6 +127,7 @@ export type VehicleDetail = VehicleListItem & {
   inspectionAvailable: boolean;
   seoTitle: string | null;
   seoDescription: string | null;
+  tiktokEmbedHtml?: string | null;
   images: VehicleImage[];
   features: Feature[];
   location: LocationBranch | null;

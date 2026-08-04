@@ -10,7 +10,7 @@ import { VdpLeadActions } from "@/components/leads/vdp-lead-actions";
 import { ListingBreadcrumbs } from "@/components/listing-breadcrumbs";
 import { FinanceCalculator } from "@/components/finance-calculator";
 import { getVehicleBySlug, getSimilarVehicles } from "@/lib/data/inventory";
-import { getFinanceParams, getPhoneNumbers, getCompanyProfile } from "@/lib/data/settings";
+import { getFinanceParams, getPhoneNumbers } from "@/lib/data/settings";
 import { resolveRedirect } from "@/lib/data/redirects";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { JsonLd } from "@/components/json-ld";
@@ -71,11 +71,13 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function VehicleDetailPage({ params }: { params: Promise<Params> }) {
   const { make, model, slug } = await params;
-  const [v, financeParams, phones, company] = await Promise.all([
+  // getCompanyProfile() is no longer read here: the dealer's trading name and
+  // review aggregate now come from the site-wide AutoDealer node, which the
+  // Offer references by @id.
+  const [v, financeParams, phones] = await Promise.all([
     getVehicleBySlug(slug),
     getFinanceParams(),
     getPhoneNumbers(),
-    getCompanyProfile(),
   ]);
   if (!v) {
     // Sold cars are archived 60 days after sale with a 301 to the model page.
@@ -87,31 +89,14 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
   const similar = await getSimilarVehicles({ id: v.id, bodyType: v.bodyType, price: v.price });
   const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""}`;
 
-  const sellerName = (company.trading_name as string) || "Cars365";
   const vdpPath = `/used-cars/${v.makeSlug}/${v.modelSlug}/${v.slug}`;
 
-  // Google reports "missing field priceValidUntil" without an explicit date and
-  // suppresses the price from the rich result. 30 days matches how often stock
-  // is repriced here.
-  const priceValidUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .slice(0, 10);
-
-  const googleRating = company.google_rating as number | undefined;
-  const googleReviewCount = company.google_review_count as number | undefined;
-
   const jsonLd = [
-    vehicleSchema(v, {
-      path: vdpPath,
-      sellerName,
-      priceValidUntil,
-      // Third-party (Google) review aggregate, not first-party testimonials —
-      // self-serving review markup is ineligible for rich results.
-      sellerRating:
-        googleRating && googleReviewCount
-          ? { value: googleRating, count: googleReviewCount }
-          : null,
-    }),
+    // The Offer references the site-wide AutoDealer node by @id, so seller name
+    // and review aggregate come from <SiteEntityGraph /> rather than being
+    // redeclared here. `priceValidUntil` defaults inside the builder — reading
+    // the clock here would break React's render-purity rule.
+    vehicleSchema(v, { path: vdpPath }),
     breadcrumbSchema([
       { name: "Home", path: "/" },
       { name: "Used Cars", path: "/used-cars" },
@@ -238,6 +223,17 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
                 ) : null}
               </ul>
             </section>
+
+            {/* TikTok Embed */}
+            {v.tiktokEmbedHtml ? (
+              <section className="mt-8">
+                <h2 className="mb-4 font-heading text-xl font-bold text-foreground">As seen on TikTok</h2>
+                <div 
+                  className="overflow-hidden rounded-xl border border-border bg-card p-2 shadow-sm flex justify-center [&>blockquote]:m-0"
+                  dangerouslySetInnerHTML={{ __html: v.tiktokEmbedHtml }}
+                />
+              </section>
+            ) : null}
           </div>
 
           {/* Sticky enquiry card (desktop) */}

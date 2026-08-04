@@ -21,6 +21,7 @@ import {
 import { HeroParallax, FadeInStagger, FadeInItem } from "@/components/animations/hero-animations";
 import { ScrollReveal } from "@/components/animations/scroll-reveal";
 import { JsonLd } from "@/components/json-ld";
+import { SiteEntityGraph } from "@/components/site-entity-graph";
 import { faqPageSchema } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -108,6 +109,15 @@ export default async function HomePage() {
 
   return (
     <div className="bg-white text-slate-900 min-h-screen font-sans">
+      {/* The homepage is outside the (public) route group — it has its own
+          light-theme shell — so it renders the site entity graph itself. */}
+      <SiteEntityGraph />
+      {/* The homepage already renders a six-question FAQ block in visible HTML;
+          publishing the matching FAQPage markup is what makes it eligible for
+          an expanded FAQ result. Same source array, so the markup can never
+          drift from what a visitor actually reads — a Google policy
+          requirement, not just good practice. */}
+      <JsonLd schema={faqPageSchema(FAQS.map((f) => ({ question: f.q, answer: f.a })))} />
       <div className="dark">
         <SiteHeader />
       </div>
@@ -179,11 +189,11 @@ export default async function HomePage() {
                 <div>
                   <h2 className="text-2xl font-bold text-foreground mb-6">Featured Cars</h2>
                   <div className="flex flex-wrap gap-2">
-                    <button className="cursor-pointer rounded-full bg-[#0b1320] dark:bg-primary dark:text-black px-5 py-2 text-sm font-semibold text-white transition-colors">All Cars</button>
-                    <button className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">SUV</button>
-                    <button className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">Sedan</button>
-                    <button className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">Hatchback</button>
-                    <button className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">Ute</button>
+                    <Link href="/used-cars" className="cursor-pointer rounded-full bg-[#0b1320] dark:bg-primary dark:text-black px-5 py-2 text-sm font-semibold text-white transition-colors">All Cars</Link>
+                    <Link href={bodyTypeHref("suv")} className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">SUV</Link>
+                    <Link href={bodyTypeHref("sedan")} className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">Sedan</Link>
+                    <Link href={bodyTypeHref("hatch")} className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">Hatchback</Link>
+                    <Link href={bodyTypeHref("ute")} className="cursor-pointer rounded-full bg-white dark:bg-card border border-slate-200 dark:border-border px-5 py-2 text-sm font-semibold text-slate-600 dark:text-muted-foreground hover:border-slate-900 dark:hover:border-foreground hover:text-slate-900 dark:hover:text-foreground transition-colors">Ute</Link>
                   </div>
                 </div>
                 <Link href="/used-cars" className="inline-flex items-center gap-1 font-semibold text-blue-600 dark:text-primary hover:text-blue-700 dark:hover:text-primary-hover">

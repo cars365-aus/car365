@@ -16,6 +16,7 @@ const CONTEXT = "https://schema.org";
  */
 export const ORGANIZATION_ID = `${siteBaseUrl()}/#organization`;
 export const WEBSITE_ID = `${siteBaseUrl()}/#website`;
+export const LOCAL_BUSINESS_ID = `${siteBaseUrl()}/#localbusiness`;
 
 export function breadcrumbSchema(items: { name: string; path: string }[]) {
   const base = siteBaseUrl();
@@ -211,20 +212,30 @@ export function faqPageSchema(faqs: Pick<Faq, "question" | "answer">[]) {
  *    are the entity keys that let Google dedupe this car across aggregators.
  *  • `priceValidUntil`, without which Google reports "missing field price".
  *  • `driveWheelConfiguration`, `numberOfDoors`, `vehicleEngine`, `vehicleConfiguration`.
- *  • Dealer `aggregateRating` on the Offer's seller, which is what surfaces
- *    stars beside a vehicle result.
+ *  • The Offer's `seller` and `availableAtOrFrom` reference the site-wide
+ *    AutoDealer node by `@id`, so the dealership's Google review aggregate
+ *    (which is what surfaces stars beside a vehicle result) resolves from one
+ *    entity rather than a detached copy per vehicle.
  */
 export function vehicleSchema(
   v: VehicleDetail,
   opts: {
     path: string;
-    sellerName: string;
-    /** Dealer-level review aggregate — renders stars on the offer. */
-    sellerRating?: { value: number; count: number } | null;
-    /** How long the advertised price stands; defaults to 30 days out. */
+    /**
+     * How long the advertised price stands (YYYY-MM-DD). Defaults to 30 days
+     * out, which matches how often stock is repriced here. Google reports
+     * "missing field priceValidUntil" without it and suppresses the price from
+     * the rich result. Injectable so tests can pin the date; the default is
+     * computed here rather than by the caller because reading the clock inside
+     * a Server Component's render violates React's purity rule.
+     */
     priceValidUntil?: string;
   },
 ) {
+  const priceValidUntil =
+    opts.priceValidUntil ??
+    new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
   const url = absoluteUrl(opts.path);
   const availability =
     v.status === "sold" ? "https://schema.org/SoldOut"
@@ -285,28 +296,18 @@ export function vehicleSchema(
       "@id": `${url}#offer`,
       price: v.price,
       priceCurrency: "AUD",
-      priceValidUntil: opts.priceValidUntil,
+      priceValidUntil,
       availability,
       itemCondition: "https://schema.org/UsedCondition",
       url,
-      availableAtOrFrom: { "@id": ORGANIZATION_ID },
+      availableAtOrFrom: { "@id": LOCAL_BUSINESS_ID },
       areaServed: { "@type": "Country", name: "Australia" },
-      seller: {
-        "@type": "AutoDealer",
-        name: opts.sellerName,
-        "@id": ORGANIZATION_ID,
-        ...(opts.sellerRating && opts.sellerRating.count > 0
-          ? {
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: opts.sellerRating.value,
-                reviewCount: opts.sellerRating.count,
-                bestRating: 5,
-                worstRating: 1,
-              },
-            }
-          : {}),
-      },
+      // A pure `@id` reference to the AutoDealer node the site-wide entity
+      // graph already publishes — which carries the dealership's name, address
+      // and Google review aggregate. Redeclaring an inline `"@type":
+      // "AutoDealer"` under the Organization's `@id` (as this did) asserts one
+      // identifier is two different types, which parsers resolve unpredictably.
+      seller: { "@id": LOCAL_BUSINESS_ID },
     },
   };
 }
@@ -352,7 +353,7 @@ export function autoDealerSchema(input: {
   return {
     "@context": CONTEXT,
     "@type": "AutoDealer",
-    "@id": `${base}/#localbusiness`,
+    "@id": LOCAL_BUSINESS_ID,
     name: input.name,
     url: base,
     image: `${base}/og-image.jpg`,

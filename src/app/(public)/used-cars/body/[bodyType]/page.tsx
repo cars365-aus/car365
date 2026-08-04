@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { InventoryListingView } from "@/components/inventory-listing-view";
 import { ListingBreadcrumbs } from "@/components/listing-breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
+import { getVehicleCount } from "@/lib/data/inventory";
 import { parseBodySegment, BODY_TYPE_LABELS } from "@/lib/nav";
 import { collectionPageSchema } from "@/lib/seo/jsonld";
 import { listingMetadata } from "@/lib/seo/listing";
@@ -36,6 +37,7 @@ export async function generateMetadata({
     title: bodyTypeTitle(label),
     description: bodyTypeDescription(label),
     keywords: [`used ${label} for sale`, `${label} for sale Sydney`, `second hand ${label} NSW`],
+    thin: { total: await getVehicleCount({ bodyType: b }), kind: "category" },
   });
 }
 

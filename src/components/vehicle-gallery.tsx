@@ -17,13 +17,13 @@ export function VehicleGallery({ images, title }: { images: VehicleImage[]; titl
 
   return (
     <div>
-      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted sm:aspect-[16/10]">
+      <div className="relative flex aspect-[4/3] w-full max-h-[500px] items-center justify-center overflow-hidden rounded-xl bg-black/5 dark:bg-black/20 sm:aspect-[16/9] lg:max-h-[600px]">
         <Image
           src={active.url}
           alt={active.altText ?? title}
           fill
           sizes="(max-width: 1024px) 100vw, 60vw"
-          className="object-cover"
+          className="object-contain"
           priority
         />
         {safe.length > 1 ? (

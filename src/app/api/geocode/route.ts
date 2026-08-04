@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { clientIp } from "@/lib/security/rate-limit";
 import { rateLimitSlidingWindow } from "@/lib/security/rate-limit-redis";
+import { recordApiCall } from "@/lib/observability/usage";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,7 @@ export async function GET(request: NextRequest) {
     // We request a larger limit and use a strict bounding box for Australia (minLon,minLat,maxLon,maxLat)
     // to ensure we capture localized suburbs, towns, and airports rather than getting drowned out
     // by global mega-cities before our filter applies.
+    const startedAt = Date.now();
     const upstream = await fetch(
       `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=40&bbox=112.9,-43.6,153.6,-10.6`,
       {
@@ -53,6 +55,11 @@ export async function GET(request: NextRequest) {
         cache: "no-store",
       },
     );
+
+    // Observe-only, for the admin API-usage dashboard. Photon is a free
+    // community instance with no quota but also no SLA, so sustained volume
+    // here is the signal to self-host rather than a cost signal.
+    recordApiCall("photon", { ok: upstream.ok, durationMs: Date.now() - startedAt });
 
     if (!upstream.ok) {
       return NextResponse.json(

@@ -5,11 +5,15 @@ import { SiteFooter } from "@/components/site-footer";
 import { SellTradeForm } from "@/components/leads/sell-trade-form";
 import { getPhoneNumbers } from "@/lib/data/settings";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Sell Your Car — Fast, Fair Offers",
-  description: "Sell your car to us the easy way. Tell us a few details and we'll come back with a fair offer — no obligation.",
-};
+export const metadata: Metadata = pageMetadata({
+  path: "/sell-your-car",
+  title: "Sell Your Car in Sydney — Fast, Fair Offers",
+  description:
+    "Sell your car to us the easy way. Tell us a few details and we'll come back with a fair offer — no obligation, free valuation across Sydney and NSW.",
+  keywords: ["sell my car Sydney", "car valuation NSW", "sell used car Australia"],
+});
 
 export const revalidate = 3600;
 

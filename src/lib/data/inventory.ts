@@ -232,6 +232,39 @@ export async function getVehicleListing(
   };
 }
 
+/**
+ * Row count for a filter set, without fetching any rows.
+ *
+ * Used by `generateMetadata` on the programmatic landing pages to decide
+ * whether a page has enough stock to be indexed (see `seo/guards.ts`). A
+ * `head: true` count query returns no payload, and the result is cached, so
+ * the thin-page guard costs a cheap COUNT rather than repeating the page's
+ * full listing query — `getVehicleListing` is deliberately uncached because
+ * it is per-request and facet-heavy.
+ *
+ * `city` is intentionally unsupported: no landing page filters by city, and
+ * resolving it would need the extra locations round-trip this exists to avoid.
+ */
+export const getVehicleCount = unstable_cache(
+  async (filters: Pick<VehicleFilters, "make" | "model" | "bodyType" | "priceMax">): Promise<number> => {
+    const supabase = createAdminClient();
+    // The make/model filters target embedded columns, so the `!inner` joins
+    // must be present even though `head: true` returns no rows — without them
+    // PostgREST cannot resolve `makes.slug`.
+    const base = supabase
+      .from("vehicles")
+      .select("id, makes:make_id!inner ( slug ), models:model_id!inner ( slug )", {
+        count: "exact",
+        head: true,
+      })
+      .in("status", PUBLIC_STATUSES);
+    const { count } = (await applyFilters(base, filters)) as { count: number | null };
+    return count ?? 0;
+  },
+  ["vehicle-count"],
+  { revalidate: 300, tags: ["vehicles"] },
+);
+
 export const getFeaturedVehicles = unstable_cache(
   async (limit = 12): Promise<VehicleListItem[]> => {
     const supabase = createAdminClient();
@@ -284,7 +317,8 @@ export const getVehicleBySlug = unstable_cache(
         models:model_id ( name, slug ),
         locations:location_id ( id, name, slug, address, city, state, postcode, phone, whatsapp, lat, lng, hours ),
         vehicle_images ( id, alt_text, sort_order, is_cover, media_assets:media_id ( storage_key ) ),
-        vehicle_features ( features:feature_id ( id, name, slug, category ) )
+        vehicle_features ( features:feature_id ( id, name, slug, category ) ),
+        syndication_vehicle_extra ( tiktok_embed_html )
       `)
       .eq("slug", slug)
       .in("status", PUBLIC_STATUSES)
@@ -367,6 +401,7 @@ export const getVehicleBySlug = unstable_cache(
             hours: r.locations.hours ?? {},
           }
         : null,
+      tiktokEmbedHtml: r.syndication_vehicle_extra?.tiktok_embed_html ?? null,
     };
   },
   ["vehicle-detail"],

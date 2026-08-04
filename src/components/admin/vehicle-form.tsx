@@ -321,7 +321,12 @@ export function VehicleForm({
             <L label="Doors"><input name="doors" type="number" defaultValue={v.doors ?? ""} className={inputCls} /></L>
             <L label="Exterior colour"><input name="exteriorColor" defaultValue={v.exterior_color ?? ""} className={inputCls} /></L>
             <L label="Interior"><input name="interior" defaultValue={v.interior ?? ""} className={inputCls} /></L>
-            <L label="VIN"><input name="vin" defaultValue={v.vin ?? ""} className={inputCls} maxLength={17} /></L>
+            <L 
+              label="VIN" 
+              hint="Crucial for syndication. Without a valid 17-character VIN, this vehicle will be rejected by Google and Meta."
+            >
+              <input name="vin" defaultValue={v.vin ?? ""} className={inputCls} maxLength={17} />
+            </L>
             <L label="Registration"><input name="registration" defaultValue={v.registration ?? ""} className={inputCls} /></L>
             <L label="Rego expiry"><input name="regoExpiry" type="date" defaultValue={v.rego_expiry ?? ""} className={inputCls} /></L>
             <L label="Safety rating"><input name="safetyRating" defaultValue={v.safety_rating ?? ""} className={inputCls} placeholder="5-star ANCAP" /></L>
@@ -446,8 +451,14 @@ export function VehicleForm({
   );
 }
 
-function L({ label, children }: { label: string; children: React.ReactNode }) {
-  return <label className="block"><span className="mb-1 block text-sm font-medium text-foreground">{label}</span>{children}</label>;
+function L({ label, hint, children }: { label: React.ReactNode; hint?: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-sm font-medium text-foreground">{label}</span>
+      {children}
+      {hint ? <span className="mt-1.5 block text-xs font-semibold text-danger">{hint}</span> : null}
+    </label>
+  );
 }
 
 function Check({ name, label, defaultChecked }: { name: string; label: string; defaultChecked: boolean }) {

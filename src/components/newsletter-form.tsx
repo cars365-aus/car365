@@ -10,7 +10,8 @@ async function subscribeAction(_prevState: unknown, formData: FormData) {
   try {
     await fetch("/api/v1/newsletter", {
       method: "POST",
-      body: formData,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, consent: true, source: "footer" }),
     });
     return { success: true };
   } catch {

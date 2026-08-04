@@ -1,12 +1,13 @@
 import nodemailer from "nodemailer";
 import { getAppUrl, optionalEnv } from "@/lib/config";
+import { recordApiCall } from "@/lib/observability/usage";
 
 const smtpHost = optionalEnv("SMTP_HOST");
 const smtpPort = parseInt(optionalEnv("SMTP_PORT") || "465", 10);
 const smtpUser = optionalEnv("SMTP_USER");
 const smtpPass = optionalEnv("SMTP_PASS");
 
-export const transporter = (smtpHost && smtpUser && smtpPass)
+const baseTransporter = (smtpHost && smtpUser && smtpPass)
   ? nodemailer.createTransport({
       host: smtpHost,
       port: smtpPort,
@@ -14,6 +15,34 @@ export const transporter = (smtpHost && smtpUser && smtpPass)
       auth: {
         user: smtpUser,
         pass: smtpPass,
+      },
+    })
+  : null;
+
+/**
+ * SMTP transport, wrapped once so every send in this module is counted for the
+ * admin API-usage dashboard without touching the ~8 individual send functions.
+ *
+ * The wrapper only observes: it records the outcome and duration, then returns
+ * or re-throws exactly what nodemailer produced. Metrics never alter delivery,
+ * and `recordApiCall` swallows its own errors, so a metrics failure can never
+ * stop an enquiry alert reaching the sales team.
+ */
+export const transporter = baseTransporter
+  ? new Proxy(baseTransporter, {
+      get(target, prop, receiver) {
+        if (prop !== "sendMail") return Reflect.get(target, prop, receiver);
+        return async (...args: Parameters<typeof target.sendMail>) => {
+          const startedAt = Date.now();
+          try {
+            const info = await target.sendMail(...args);
+            recordApiCall("ses", { ok: true, durationMs: Date.now() - startedAt });
+            return info;
+          } catch (error) {
+            recordApiCall("ses", { ok: false, durationMs: Date.now() - startedAt });
+            throw error;
+          }
+        };
       },
     })
   : null;

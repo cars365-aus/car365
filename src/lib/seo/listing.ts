@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { canonical } from "@/lib/seo/site";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { thinPageRobots, type ThinPageKind } from "@/lib/seo/guards";
 
 type SP = Record<string, string | string[] | undefined>;
 
@@ -92,8 +93,15 @@ export function listingMetadata(input: {
   title: string;
   description: string;
   keywords?: string[];
+  /**
+   * Live stock count for this landing page. When supplied, a page that is too
+   * thin to be useful is held out of the index until inventory grows into it.
+   */
+  thin?: { total: number; kind: ThinPageKind };
 }): Metadata {
   const title = paginatedTitle(input.title, input.sp);
+  const indexation = listingIndexation(input.basePath, input.sp);
+  const thinRobots = input.thin ? thinPageRobots(input.thin.total, input.thin.kind) : undefined;
 
   return {
     ...pageMetadata({
@@ -102,6 +110,9 @@ export function listingMetadata(input: {
       description: input.description,
       keywords: input.keywords,
     }),
-    ...listingIndexation(input.basePath, input.sp),
+    ...indexation,
+    // A thin page is noindex regardless of facets; the facet rule can only
+    // ever make a page *less* indexable, never more.
+    ...(thinRobots ? { robots: thinRobots } : {}),
   };
 }

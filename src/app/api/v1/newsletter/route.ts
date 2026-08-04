@@ -32,12 +32,31 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = createAdminClient();
-  // Idempotent on email (SRS §9.22).
-  const { error } = await supabase
-    .from("newsletter_subscribers")
-    .upsert({ email, source: source ?? "footer" }, { onConflict: "email", ignoreDuplicates: true });
-  if (error) {
-    return NextResponse.json({ data: null, error: { message: "Could not subscribe." } }, { status: 500 });
+  
+  // Idempotent on email: check if they already exist as a waitlist lead
+  const { data: existing } = await supabase
+    .from("leads")
+    .select("id")
+    .eq("type", "waitlist")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (!existing) {
+    const { error } = await supabase
+      .from("leads")
+      .insert({
+        type: "waitlist",
+        name: "Newsletter Subscriber",
+        phone: "N/A",
+        email: email,
+        source_url: request.headers.get("referer") ?? null,
+        ip_hash: ipHash,
+        payload: { source: source ?? "footer" }
+      });
+      
+    if (error) {
+      return NextResponse.json({ data: null, error: { message: "Could not subscribe." } }, { status: 500 });
+    }
   }
 
   return NextResponse.json({ data: { subscribed: true }, error: null }, { status: 200 });

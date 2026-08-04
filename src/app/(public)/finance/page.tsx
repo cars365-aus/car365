@@ -5,11 +5,15 @@ import { FinancePanels } from "@/components/finance-panels";
 import { getFinanceParams, getPhoneNumbers } from "@/lib/data/settings";
 import { getVehicleLeadContext } from "@/lib/data/inventory";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Car Finance — Estimate Your Repayments",
-  description: "Estimate weekly repayments with our finance calculator and enquire about competitive car finance. Indicative only, not an offer of finance.",
-};
+export const metadata: Metadata = pageMetadata({
+  path: "/finance",
+  title: "Car Finance Australia — Estimate Your Repayments",
+  description:
+    "Estimate weekly repayments with our car finance calculator and enquire about competitive Australian car finance. Indicative only, not an offer of finance.",
+  keywords: ["car finance Australia", "used car loan NSW", "car repayment calculator"],
+});
 
 export const revalidate = 300;
 

@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { InventoryListingView } from "@/components/inventory-listing-view";
 import { ListingBreadcrumbs } from "@/components/listing-breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
-import { getMakes, getModelsForMake } from "@/lib/data/inventory";
+import { getMakes, getModelsForMake, getVehicleCount } from "@/lib/data/inventory";
 import { collectionPageSchema } from "@/lib/seo/jsonld";
 import { listingMetadata } from "@/lib/seo/listing";
 import { makeModelTitle, makeModelDescription } from "@/lib/seo/templates";
@@ -43,6 +43,10 @@ export async function generateMetadata({
       `${r.make.name} ${r.model.name} for sale`,
       `second hand ${r.make.name} ${r.model.name} Sydney`,
     ],
+    thin: {
+      total: await getVehicleCount({ make: r.make.slug, model: r.model.slug }),
+      kind: "makeModel",
+    },
   });
 }
 

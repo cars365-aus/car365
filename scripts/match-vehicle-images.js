@@ -96,7 +96,15 @@ async function main() {
     if (bodyCat === "coupe" || bodyCat === "convertible") bodyCat = "sedan";
     if (!buckets[bodyCat] || buckets[bodyCat].length === 0) bodyCat = "suv";
 
-    const pool = buckets[bodyCat];
+    let pool = buckets[bodyCat];
+    if (!pool || pool.length === 0) {
+      const validKey = Object.keys(buckets).find((k) => buckets[k].length > 0);
+      if (!validKey) {
+        console.warn(`⚠️ No images available to match for ${v.id}`);
+        continue;
+      }
+      pool = buckets[validKey];
+    }
     const vehicleHash = v.id.split("-").reduce((acc, part) => acc + (parseInt(part.slice(0, 4), 16) || 0), 0);
     const setSize = 5;
     const startIndex = (vehicleHash % pool.length);

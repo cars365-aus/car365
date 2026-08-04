@@ -17,14 +17,16 @@ import { siteBaseUrl } from "@/lib/seo/site";
 // LCP image, and no risk of a heading falling back to a synthesised weight.
 // `fallback` supplies metric-adjacent system faces so the swap doesn't shift
 // layout (CLS) before the webfont lands.
-const FONT_FALLBACK = ["system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"];
-
+//
+// NOTE: next/font options must be explicitly written literals — the loader is
+// evaluated at build time and cannot resolve a shared constant, so the fallback
+// array is repeated rather than extracted.
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
   preload: true,
-  fallback: FONT_FALLBACK,
+  fallback: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
 });
 
 // SRS §12.2: a modern grotesque with automotive character for headings (600–800).
@@ -33,7 +35,7 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-heading",
   display: "swap",
   preload: true,
-  fallback: FONT_FALLBACK,
+  fallback: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
 });
 
 export const viewport: Viewport = {

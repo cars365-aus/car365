@@ -6,11 +6,14 @@ import { GeneralContactForm } from "@/components/leads/general-contact-form";
 import { getPhoneNumbers, getCompanyProfile } from "@/lib/data/settings";
 import { getActiveLocations } from "@/lib/data/locations";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Get in touch — call, WhatsApp, or send us a message. We reply fast during business hours.",
-};
+export const metadata: Metadata = pageMetadata({
+  path: "/contact",
+  title: "Contact Cars365 — Granville, NSW",
+  description:
+    "Get in touch — call, WhatsApp, or send us a message. Visit our Granville, Sydney showroom. We reply fast during business hours.",
+});
 
 export const revalidate = 3600;
 

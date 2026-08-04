@@ -2,12 +2,14 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata = {
-  title: "Careers",
+export const metadata = pageMetadata({
+  path: "/careers",
+  title: "Careers at Cars365",
   description:
     "We don't have open positions right now, but we're always glad to hear from talented people who want to help Australians buy quality used cars with confidence.",
-};
+});
 
 export default function CareersPage() {
   return (
