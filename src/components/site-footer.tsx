@@ -56,31 +56,7 @@ export async function SiteFooter() {
       {/* Subtle top gradient accent */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-yellow-400/40 to-transparent" />
 
-      {/* ── Newsletter banner ──────────────────────────────────────── */}
-      <div className="relative border-b border-white/[0.06]">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-400/10 via-yellow-500/5 to-transparent border border-yellow-400/20 px-6 py-8 md:px-10">
-            {/* decorative glow */}
-            <div className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-yellow-400/10 blur-3xl" />
-            <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-              <div className="max-w-md">
-                <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-yellow-400">
-                  Stay in the loop
-                </p>
-                <h3 className="font-heading text-xl font-bold text-white">
-                  New arrivals straight to your inbox
-                </h3>
-                <p className="mt-1 text-sm text-slate-400">
-                  Be first to see freshly listed cars that match what you&apos;re after.
-                </p>
-              </div>
-              <div className="w-full max-w-lg shrink-0">
-                <NewsletterForm />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       {/* ── Main link columns ──────────────────────────────────────── */}
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -249,7 +225,7 @@ export async function SiteFooter() {
                 {DAYS_ORDER.filter((d) => branch.hours[d]).map((d) => (
                   <li key={d} className="grid grid-cols-[40px_1fr] gap-6">
                     <span className="text-slate-500">{DAY_LABELS[d]}</span>
-                    <span className={branch.hours[d] === "closed" ? "text-slate-600" : "text-white"}>
+                    <span className={`whitespace-nowrap ${branch.hours[d] === "closed" ? "text-slate-600" : "text-white"}`}>
                       {branch.hours[d] === "closed" ? "Closed" : branch.hours[d]}
                     </span>
                   </li>

@@ -78,7 +78,7 @@ export default async function ContactPage() {
                       {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].filter((d) => branch.hours[d]).map((d) => (
                         <li key={d} className="grid grid-cols-[100px_1fr] gap-4">
                           <span>{DAY_LABELS[d]}</span>
-                          <span className="tabular-nums">
+                          <span className="tabular-nums whitespace-nowrap">
                             {branch.hours[d] === "closed" ? "Closed" : branch.hours[d]}
                           </span>
                         </li>
