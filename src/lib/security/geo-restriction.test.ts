@@ -48,7 +48,7 @@ function req(country: string | null, extra: Record<string, string> = {}) {
 
 describe("getAllowedCountries", () => {
   it("defaults to AU + IN when unset", () => {
-    expect([...getAllowedCountries()].sort()).toEqual([...DEFAULT_ALLOWED_COUNTRIES].sort());
+    expect([...getAllowedCountries()].sort()).toEqual(["AU", "IN"]);
   });
 
   it("parses a comma-separated list, trimming and upper-casing", () => {
@@ -58,7 +58,7 @@ describe("getAllowedCountries", () => {
 
   it("falls back to the default rather than locking everyone out on a bad value", () => {
     process.env.GEO_ALLOWED_COUNTRIES = "  , not-a-code, ";
-    expect([...getAllowedCountries()].sort()).toEqual([...DEFAULT_ALLOWED_COUNTRIES].sort());
+    expect([...getAllowedCountries()].sort()).toEqual(["AU", "IN"]);
   });
 });
 

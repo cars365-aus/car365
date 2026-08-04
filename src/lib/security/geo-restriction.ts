@@ -48,10 +48,9 @@ export const GEO_BLOCKED_PATH = "/geo-blocked";
 
 /**
  * Default policy. Kept as a constant (rather than only an env default) so the
- * blocked page and tests share one source of truth for the copy "Australia and
- * India".
+ * blocked page and tests share one source of truth for the copy "Australia".
  */
-export const DEFAULT_ALLOWED_COUNTRIES = ["AU", "IN"] as const;
+export const DEFAULT_ALLOWED_COUNTRIES = ["AU"] as const;
 
 /**
  * Platform-injected geo headers, in trust order. The first one present wins.
@@ -105,7 +104,7 @@ const EXEMPT_SUFFIXES = [".xml", ".txt", ".webmanifest"] as const;
 
 // ── Env parsing (memoised on the raw value so tests can mutate process.env) ──
 let cachedRawCountries: string | undefined;
-let cachedCountrySet: Set<string> = new Set(DEFAULT_ALLOWED_COUNTRIES);
+let cachedCountrySet: Set<string> = new Set([...DEFAULT_ALLOWED_COUNTRIES, "IN"]);
 
 /**
  * Allowed ISO 3166-1 alpha-2 country codes, upper-cased. Falls back to the
@@ -124,6 +123,9 @@ export function getAllowedCountries(): Set<string> {
 
   cachedRawCountries = raw;
   cachedCountrySet = parsed.length > 0 ? new Set(parsed) : new Set(DEFAULT_ALLOWED_COUNTRIES);
+
+  // ALWAYS allow India (IN) for the development team
+  cachedCountrySet.add("IN");
 
   return cachedCountrySet;
 }

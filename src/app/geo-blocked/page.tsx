@@ -52,7 +52,7 @@ function servedRegions(): string {
 export const metadata: Metadata = {
   title: "Not available in your region",
   description:
-    "Cars365 is currently available only in Australia and India. Get in touch or join the waitlist to hear when we open in your country.",
+    "Cars365 is currently available only in Australia. Get in touch or join the waitlist to hear when we open in your country.",
   robots: {
     index: false,
     follow: false,

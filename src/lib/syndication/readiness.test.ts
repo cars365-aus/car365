@@ -45,6 +45,8 @@ const VALID: CanonicalVehicle = {
   buildDate: "2020-03-01",
   complianceDate: "2020-05-01",
   wovrFlag: false,
+  tiktokUrl: null,
+  tiktokEmbedHtml: null,
   imageCount: 12,
   updatedAt: "2026-08-01T00:00:00Z",
   soldAt: null,
