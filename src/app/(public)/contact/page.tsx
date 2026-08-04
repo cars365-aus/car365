@@ -76,7 +76,12 @@ export default async function ContactPage() {
                     <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground"><Clock className="size-4" /> Opening hours</p>
                     <ul className="space-y-1 text-sm text-body">
                       {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].filter((d) => branch.hours[d]).map((d) => (
-                        <li key={d} className="flex justify-between"><span>{DAY_LABELS[d]}</span><span className="tabular-nums">{branch.hours[d] === "closed" ? "Closed" : branch.hours[d]}</span></li>
+                        <li key={d} className="grid grid-cols-[100px_1fr] gap-4">
+                          <span>{DAY_LABELS[d]}</span>
+                          <span className="tabular-nums">
+                            {branch.hours[d] === "closed" ? "Closed" : branch.hours[d]}
+                          </span>
+                        </li>
                       ))}
                     </ul>
                   </div>

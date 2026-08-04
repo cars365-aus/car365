@@ -247,7 +247,7 @@ export async function SiteFooter() {
               </h3>
               <ul className="space-y-1.5 text-sm">
                 {DAYS_ORDER.filter((d) => branch.hours[d]).map((d) => (
-                  <li key={d} className="flex justify-between gap-4">
+                  <li key={d} className="grid grid-cols-[40px_1fr] gap-6">
                     <span className="text-slate-500">{DAY_LABELS[d]}</span>
                     <span className={branch.hours[d] === "closed" ? "text-slate-600" : "text-white"}>
                       {branch.hours[d] === "closed" ? "Closed" : branch.hours[d]}
