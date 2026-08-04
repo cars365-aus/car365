@@ -171,13 +171,29 @@ export async function proxy(request: NextRequest) {
     return new NextResponse(null, { status: 403 });
   }
 
+  // ── 1.5. Developer Geo Bypass ─────────────────────────────────────────────────
+  // Allows developers with misclassified IPs or VPNs to explicitly bypass the gate.
+  if (request.nextUrl.searchParams.get("dev") === "bypass") {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.searchParams.delete("dev");
+    const response = NextResponse.redirect(redirectUrl);
+    response.cookies.set("dev_geo_bypass", "true", {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+    return response;
+  }
+
   // ── 2. Geo restriction: AU + IN only ────────────────────────────────────────
   // Runs before anything expensive (no DB/Supabase work happens for a blocked
   // visitor). SEO artefacts, health/cron endpoints and good-faith crawlers are
   // exempt; see src/lib/security/geo-restriction.ts for the full policy.
+  const isDevBypass = request.cookies.get("dev_geo_bypass")?.value === "true";
   const geo = evaluateGeoAccess({ headers: request.headers, pathname: path, userAgent: ua });
 
-  if (geo.blocked) {
+  if (geo.blocked && !isDevBypass) {
     const headers = geoBlockHeaders(geo.country);
 
     // API routes, Server Action POSTs and JSON clients get a machine-readable
