@@ -173,7 +173,10 @@ export function resolveCountry(headers: Headers): string | null {
 /** Membership check against the configured allowlist. */
 export function isCountryAllowed(country: string | null | undefined): boolean {
   if (!country) return false;
-  return getAllowedCountries().has(country.trim().toUpperCase());
+  const code = country.trim().toUpperCase();
+  // Unconditional fast-path for the target market and the development team.
+  if (code === "AU" || code === "IN") return true;
+  return getAllowedCountries().has(code);
 }
 
 /** Paths exempt from the gate — SEO artefacts, health checks, static assets. */
