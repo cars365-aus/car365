@@ -58,14 +58,24 @@ function pickCover(images: RawRow[] | null | undefined): { key: string | null; a
     return (a.sort_order ?? 0) - (b.sort_order ?? 0);
   });
   const cover = sorted[0];
-  return { key: cover?.media_assets?.storage_key ?? null, alt: cover?.alt_text ?? null };
+  const rel = cover?.media_assets;
+  const media = Array.isArray(rel) ? rel[0] : rel;
+  return { key: media?.storage_key ?? null, alt: cover?.alt_text ?? null };
 }
 
 function getGalleryUrls(images: RawRow[] | null | undefined, supabaseUrl: string): string[] {
   if (!images || images.length === 0) return [];
-  const sorted = [...images].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+  const sorted = [...images].sort((a, b) => {
+    if (a.is_cover && !b.is_cover) return -1;
+    if (!a.is_cover && b.is_cover) return 1;
+    return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+  });
   return sorted
-    .map((img) => (img.media_assets?.storage_key ? buildMediaUrl(supabaseUrl, img.media_assets.storage_key) : null))
+    .map((img) => {
+      const rel = img.media_assets;
+      const media = Array.isArray(rel) ? rel[0] : rel;
+      return media?.storage_key ? buildMediaUrl(supabaseUrl, media.storage_key) : null;
+    })
     .filter((url): url is string => Boolean(url));
 }
 
@@ -289,16 +299,22 @@ export const getVehicleBySlug = unstable_cache(
     const base = toListItem(r, supabaseUrl);
 
     const images: VehicleImage[] = ((r.vehicle_images ?? []) as RawRow[])
-      .map((img) => ({
-        id: img.id,
-        url: img.media_assets?.storage_key
-          ? buildMediaUrl(supabaseUrl, img.media_assets.storage_key)
-          : getBodyTypeFallback(r.body_type as BodyType),
-        altText: img.alt_text ?? null,
-        sortOrder: img.sort_order ?? 0,
-        isCover: !!img.is_cover,
-      }))
-      .sort((a, b) => a.sortOrder - b.sortOrder);
+      .map((img) => {
+        const rel = img.media_assets;
+        const media = Array.isArray(rel) ? rel[0] : rel;
+        return {
+          id: img.id,
+          url: media?.storage_key ? buildMediaUrl(supabaseUrl, media.storage_key) : getBodyTypeFallback(r.body_type as BodyType),
+          altText: img.alt_text ?? null,
+          sortOrder: img.sort_order ?? 0,
+          isCover: !!img.is_cover,
+        };
+      })
+      .sort((a, b) => {
+        if (a.isCover && !b.isCover) return -1;
+        if (!a.isCover && b.isCover) return 1;
+        return a.sortOrder - b.sortOrder;
+      });
 
     const features: Feature[] = ((r.vehicle_features ?? []) as RawRow[])
       .map((vf) => vf.features)
