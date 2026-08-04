@@ -147,8 +147,8 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Pa
           suppressSchema
         />
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
-          <div>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="min-w-0">
             <VehicleGallery images={galleryImages} title={title} />
 
             {isSold ? (
