@@ -23,11 +23,11 @@ function fillStyle(value: number, min: number, max: number) {
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border bg-black/30 p-3">
-      <span className="text-primary">{icon}</span>
-      <div className="min-w-0">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
-        <p className="truncate font-heading text-lg font-bold text-foreground">{value}</p>
+    <div className="flex items-center gap-2.5 rounded-lg border border-border bg-black/30 p-2.5 sm:p-3">
+      <span className="text-primary shrink-0">{icon}</span>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+        <p className="truncate font-heading text-sm sm:text-base @[480px]:text-lg font-bold text-foreground">{value}</p>
       </div>
     </div>
   );
@@ -86,7 +86,7 @@ export function FinanceCalculator({
   }, [onChange, price, effectiveDeposit, estimate.weekly, termMonths]);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
+    <div className="@container rounded-xl border border-border bg-card p-5 sm:p-6">
       <h2 className="font-heading text-lg font-bold text-foreground">Finance Calculator</h2>
 
       <div className="mt-6 space-y-6">
@@ -172,7 +172,7 @@ export function FinanceCalculator({
       </div>
 
       {/* Stat cards */}
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="mt-5 grid grid-cols-1 gap-2.5 @[480px]:grid-cols-3">
         <StatCard icon={<Car className="h-5 w-5" />} label="Vehicle Price" value={formatPrice(price)} />
         <StatCard icon={<Wallet className="h-5 w-5" />} label="Deposit" value={formatPrice(effectiveDeposit)} />
         <StatCard icon={<FileText className="h-5 w-5" />} label="Loan Amount" value={formatPrice(estimate.principal)} />
