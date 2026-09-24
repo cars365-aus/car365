@@ -119,6 +119,21 @@ const nextConfig: NextConfig = {
         source: "/vendor(.*)",
         destination: "/admin",
         permanent: true,
+      },
+      {
+        source: "/find-your-car/:path*",
+        destination: "/used-cars",
+        permanent: true,
+      },
+      {
+        source: "/product/:path*",
+        destination: "/used-cars",
+        permanent: true,
+      },
+      {
+        source: "/car-finance",
+        destination: "/finance",
+        permanent: true,
       }
     ];
   },

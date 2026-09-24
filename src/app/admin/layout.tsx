@@ -1,7 +1,16 @@
 import type { ReactNode } from "react";
+import type { Metadata } from "next";
 import { requireAdmin, getUserAdminRole } from "@/lib/security/auth";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { Toaster } from "sonner";
+
+export const metadata: Metadata = {
+  title: "Admin Panel",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export const dynamic = "force-dynamic";
 
