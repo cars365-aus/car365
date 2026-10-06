@@ -71,11 +71,7 @@ export const vehicleCreateSchema = z.object({
     .string()
     .trim()
     .optional()
-    .or(z.literal(""))
-    .refine(
-      (v) => !v || v.length === 0 || v.length === 17,
-      { message: "VIN must be exactly 17 characters" },
-    ),
+    .or(z.literal("")),
   registration: z.string().trim().max(20).optional().or(z.literal("")),
   regoExpiry: z.string().date().optional().or(z.literal("")),
   price: z.coerce.number().positive().max(100_000_000),
