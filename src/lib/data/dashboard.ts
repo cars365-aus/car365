@@ -72,7 +72,7 @@ async function _getInventoryList(filters?: { status?: string; q?: string }): Pro
       published_at, created_at,
       makes:make_id ( name ), models:model_id ( name )
     `)
-    .order("created_at", { ascending: false })
+    .order("updated_at", { ascending: false })
     .limit(200);
   if (filters?.status) q = q.eq("status", filters.status);
   if (filters?.q) q = q.ilike("stock_id", `%${filters.q}%`);
