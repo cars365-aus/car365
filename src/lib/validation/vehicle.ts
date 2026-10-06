@@ -139,6 +139,7 @@ export const vehicleCsvRowSchema = z.object({
   rego_expiry: z.string().trim().optional().or(z.literal("")),
   safety_rating: z.string().trim().optional(),
   warranty_text: z.string().trim().optional(),
+  status: lenientEnum(vehicleStatuses),
 });
 
 export type VehicleCreateInput = z.infer<typeof vehicleCreateSchema>;

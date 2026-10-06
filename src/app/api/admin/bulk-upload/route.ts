@@ -234,6 +234,7 @@ export async function POST(request: NextRequest) {
             ? String(row["warranty"] || row["warrantytext"])
             : undefined,
         description: row["description"] ? String(row["description"]) : undefined,
+        status: row["status"] ? String(row["status"]).toLowerCase().trim() : undefined,
       };
 
       const parsed = vehicleCsvRowSchema.safeParse(mapped);
@@ -330,6 +331,7 @@ export async function POST(request: NextRequest) {
         safety_rating: r.safety_rating || null,
         warranty_text: r.warranty_text || null,
         description: r.description || null,
+        ...(r.status ? { status: r.status } : {}),
       };
     });
 
