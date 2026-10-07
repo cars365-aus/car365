@@ -29,7 +29,6 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 const TARGETS = [
   { email: "infinitewithbikash@gmail.com", role: "owner" },
   { email: "ybikash919@gmail.com",         role: "owner" },
-  { email: "anandujjawal993@gmail.com",     role: "admin" },
 ];
 
 async function ensureProfile(authUser) {
