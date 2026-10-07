@@ -359,8 +359,8 @@ export async function POST(request: NextRequest) {
       })
       .then(() => {});
 
+    inserts.forEach((r) => revalidateTag(`vehicle-${r.slug}`));
     revalidateTag("vehicles");
-    revalidateTag("public");
     
     return NextResponse.json({ success: true, count: inserts.length, skipped: skippedRows.length });
   } catch (err) {

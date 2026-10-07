@@ -251,7 +251,6 @@ export function VehicleForm({
 
         <TabsPanel value="basics" data-step="basics">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <L label="Stock ID *"><input name="stockId" required defaultValue={v.stock_id} disabled={mode === "edit"} className={inputCls} placeholder="A1042" /></L>
             <L label="Year *"><input name="year" required type="number" defaultValue={v.year} className={inputCls} /></L>
             
             <L label="Make *">

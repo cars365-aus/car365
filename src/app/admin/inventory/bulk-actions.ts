@@ -249,11 +249,11 @@ export async function processBulkUpload(formData: FormData) {
       const makeId = makesMap.get(makeSlug);
       const modelSlug = slugify(r.model);
       const modelId = modelsMap.get(`${makeId}_${modelSlug}`);
-
-      const slug = uniqueSlug(`${r.year}-${makeSlug}-${modelSlug}-${r.variant || ""}-${r.stock_id}`);
+      const finalStockId = r.stock_id || `STK-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+      const slug = uniqueSlug(`${r.year}-${makeSlug}-${modelSlug}-${r.variant || ""}-${finalStockId}`);
 
       return {
-        stock_id: r.stock_id,
+        stock_id: finalStockId,
         slug,
         make_id: makeId,
         model_id: modelId,
@@ -304,8 +304,8 @@ export async function processBulkUpload(formData: FormData) {
     }
 
     const revalidate = revalidateTag as (tag: string) => void;
+    inserts.forEach((r) => revalidate(`vehicle-${r.slug}`));
     revalidate("vehicles");
-    revalidate("public");
     revalidatePath("/admin/inventory");
 
     return { 

@@ -417,7 +417,7 @@ export const getVehicleBySlug = async (slug: string): Promise<VehicleDetail | nu
       };
     },
     ["vehicle-detail", slug],
-    { revalidate: 900, tags: ["vehicles", "public"] },
+    { revalidate: 900, tags: [`vehicle-${slug}`, "public"] },
   )();
 };
 

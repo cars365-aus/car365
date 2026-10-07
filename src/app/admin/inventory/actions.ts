@@ -25,7 +25,12 @@ function logActivityBg(userId: string, action: string, entityId: string, diff: R
 const revalidate = revalidateTag as (tag: string) => void;
 function revalidatePublic() {
   revalidate("vehicles");
-  revalidate("public");
+}
+
+async function revalidateVehicle(id: string) {
+  const supabase = createAdminClient();
+  const { data } = await supabase.from("vehicles").select("slug").eq("id", id).maybeSingle();
+  if (data?.slug) revalidate(`vehicle-${data.slug}`);
 }
 
 // Coerce empty-string optionals to null before DB insert.
@@ -194,8 +199,9 @@ export async function createVehicle(_prev: unknown, formData: FormData) {
     }
 
     // ── Parallel: build slug + resolve media asset IDs ──────────────────────
+    const finalStockId = d.stockId || `STK-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
     const [slug, mediaResult] = await Promise.all([
-      buildSlug(supabase, d),
+      buildSlug(supabase, { ...d, stockId: finalStockId }),
       resolveMediaIds(supabase, images, user.id),
     ]);
 
@@ -203,7 +209,7 @@ export async function createVehicle(_prev: unknown, formData: FormData) {
 
     const { featureIds: fids, ...cols } = d;
     const row = clean({
-      stock_id: d.stockId, slug, make_id: d.makeId, model_id: d.modelId, variant: cols.variant,
+      stock_id: finalStockId, slug, make_id: d.makeId, model_id: d.modelId, variant: cols.variant,
       year: d.year, mileage_km: d.mileageKm, fuel_type: d.fuelType, transmission: d.transmission,
       body_type: d.bodyType, drive_type: cols.driveType ?? null, engine: cols.engine, power_kw: cols.powerKw ?? null,
       seats: cols.seats ?? null, doors: cols.doors ?? null, exterior_color: cols.exteriorColor, interior: cols.interior,
@@ -231,7 +237,8 @@ export async function createVehicle(_prev: unknown, formData: FormData) {
     if (imageWriteError) return { error: imageWriteError };
 
     // Fire-and-forget audit log — doesn't block the redirect
-    logActivityBg(user.id, "vehicle.created", created.id, { stock_id: d.stockId });
+    logActivityBg(user.id, "vehicle.created", created.id, { stock_id: finalStockId });
+    revalidate(`vehicle-${slug}`);
     revalidatePublic();
     redirect(`/admin/inventory/${created.id}?created=1`);
   } catch (err) {
@@ -334,6 +341,7 @@ export async function updateVehicle(_prev: unknown, formData: FormData) {
 
     // Fire-and-forget audit log
     logActivityBg(user.id, "vehicle.updated", id!);
+    await revalidateVehicle(id!);
     revalidatePublic();
     return { ok: true };
   } catch (err) {
@@ -353,6 +361,7 @@ export async function setVehicleStatus(id: string, status: string) {
   const { error } = await supabase.from("vehicles").update(patch).eq("id", id);
   if (error) return { error: error.message };
   logActivityBg(user.id, `vehicle.status.${status}`, id);
+  await revalidateVehicle(id);
   revalidatePublic();
   revalidatePath("/admin/inventory");
   return { ok: true };
@@ -362,6 +371,7 @@ export async function toggleFeatured(id: string, isFeatured: boolean) {
   await requireAdmin();
   const supabase = createAdminClient();
   await supabase.from("vehicles").update({ is_featured: isFeatured }).eq("id", id);
+  await revalidateVehicle(id);
   revalidatePublic();
   revalidatePath("/admin/inventory");
   return { ok: true };
@@ -373,6 +383,7 @@ export async function deleteVehicle(id: string, shouldRedirect: boolean = true) 
   const { error } = await supabase.from("vehicles").delete().eq("id", id);
   if (error) return { error: error.message };
   logActivityBg(user.id, "vehicle.deleted", id);
+  await revalidateVehicle(id);
   revalidatePublic();
   revalidatePath("/admin/inventory");
   if (shouldRedirect) {
