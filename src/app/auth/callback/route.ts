@@ -5,6 +5,8 @@ import { isSafeRedirectPath } from "@/lib/routing";
 import { sendWelcomeEmail } from "@/lib/email/ses";
 import { deriveProfileFromUser } from "@/lib/auth/profile";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
@@ -23,6 +25,14 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error("OAuth exchange failed:", error.message);
+      
+      // If the code was already exchanged (e.g. by an aggressive browser prefetch),
+      // the user might already have a valid session cookie. Let's check.
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        return NextResponse.redirect(new URL(destination, requestUrl.origin));
+      }
+
       return NextResponse.redirect(
         new URL("/auth/sign-in?error=auth_failed", requestUrl.origin),
       );
