@@ -79,6 +79,12 @@ function getGalleryUrls(images: RawRow[] | null | undefined, supabaseUrl: string
     .filter((url): url is string => Boolean(url));
 }
 
+function normalizeVehicleCity(city: string | null | undefined): string | null {
+  if (!city) return null;
+  if (city.toLowerCase() === "granville") return "Lansvale";
+  return city;
+}
+
 function toListItem(row: RawRow, supabaseUrl: string): VehicleListItem {
   const cover = pickCover(row.vehicle_images);
   const coverUrl = cover.key
@@ -108,7 +114,7 @@ function toListItem(row: RawRow, supabaseUrl: string): VehicleListItem {
     coverImageUrl: coverUrl,
     coverImageAlt: cover.alt,
     imageUrls: galleryUrls.length > 0 ? galleryUrls : coverUrl ? [coverUrl] : [],
-    city: row.locations?.city ?? null,
+    city: normalizeVehicleCity(row.locations?.city),
     roadworthyIncluded: !!row.roadworthy_included,
     financeAvailable: !!row.finance_available,
     tradeInWelcome: !!row.trade_in_welcome,
@@ -196,7 +202,11 @@ export async function getVehicleListing(
   // be filtered as an embedded column on the parent query).
   let locationIds: string[] | null = null;
   if (filters.city) {
-    const { data: locs } = await supabase.from("locations").select("id").eq("city", filters.city);
+    const targetCities =
+      filters.city.toLowerCase() === "lansvale"
+        ? ["Lansvale", "Granville"]
+        : [filters.city];
+    const { data: locs } = await supabase.from("locations").select("id").in("city", targetCities);
     locationIds = ((locs ?? []) as RawRow[]).map((l) => l.id);
     if (locationIds.length === 0) {
       return { items: [], total: 0, page, perPage, facets: { make: [], bodyType: [], fuelType: [], transmission: [] } };
@@ -400,16 +410,40 @@ export const getVehicleBySlug = async (slug: string): Promise<VehicleDetail | nu
         location: r.locations
           ? {
               id: r.locations.id,
-              name: r.locations.name,
-              slug: r.locations.slug,
-              address: r.locations.address,
-              city: r.locations.city,
+              name:
+                r.locations.city?.toLowerCase() === "granville" ||
+                r.locations.name?.toLowerCase().includes("granville")
+                  ? "Lansvale Branch"
+                  : r.locations.name,
+              slug:
+                r.locations.slug === "granville" || r.locations.slug === "granville-branch"
+                  ? "lansvale-branch"
+                  : r.locations.slug,
+              address:
+                r.locations.city?.toLowerCase() === "granville" ||
+                r.locations.address?.toLowerCase().includes("parramatta")
+                  ? "16 Hollywood Dr"
+                  : r.locations.address,
+              city:
+                r.locations.city?.toLowerCase() === "granville"
+                  ? "Lansvale"
+                  : r.locations.city,
               state: r.locations.state,
-              postcode: r.locations.postcode ?? null,
+              postcode:
+                r.locations.city?.toLowerCase() === "granville" ||
+                r.locations.postcode === "2142"
+                  ? "2166"
+                  : (r.locations.postcode ?? null),
               phone: r.locations.phone ?? null,
               whatsapp: r.locations.whatsapp ?? null,
-              lat: r.locations.lat ?? null,
-              lng: r.locations.lng ?? null,
+              lat:
+                r.locations.city?.toLowerCase() === "granville"
+                  ? -33.8967
+                  : (r.locations.lat ?? null),
+              lng:
+                r.locations.city?.toLowerCase() === "granville"
+                  ? 150.9634
+                  : (r.locations.lng ?? null),
               hours: r.locations.hours ?? {},
             }
           : null,

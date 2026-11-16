@@ -209,6 +209,14 @@ export async function searchVehicles(
     );
 
     const vehicles = results.hits?.map((hit) => hit.document) ?? [];
+    vehicles.forEach((v) => {
+      if (v.city?.toLowerCase() === "granville") {
+        v.city = "Lansvale";
+      }
+      if (v.branchName?.toLowerCase().includes("granville")) {
+        v.branchName = "Lansvale Branch";
+      }
+    });
 
     if (vehicles.length > 0) {
       const supabase = createAdminClient();
@@ -425,12 +433,12 @@ async function fallbackDatabaseSearch(
         transmission: v.transmission,
         category: v.category,
         price: v.price,
-        city: branch.city,
+        city: branch.city?.toLowerCase() === "granville" ? "Lansvale" : branch.city,
         state: branch.state,
         imageUrl,
         vendorName: org.name,
         vendorSlug: org.slug,
-        branchName: branch.name,
+        branchName: branch.name?.toLowerCase().includes("granville") ? "Lansvale Branch" : branch.name,
         verified,
         vendorLogoUrl: org.logo_url,
         avgRating,
@@ -540,13 +548,13 @@ export async function processSearchIndexJobs(limit = 10): Promise<{
               category: vehicle.category,
               price: vehicle.price,
               no_hidden_fees: false,
-              city: branch.city,
+              city: branch.city?.toLowerCase() === "granville" ? "Lansvale" : branch.city,
               state: branch.state,
               vendor_name: org.name,
               vendor_slug: org.slug,
               vendor_logo_url: org.logo_url,
               verified: org.verified_at != null,
-              branch_name: branch.name,
+              branch_name: branch.name?.toLowerCase().includes("granville") ? "Lansvale Branch" : branch.name,
               status: vehicle.status,
               organization_id: vehicle.organization_id,
               avg_rating: avgRating,

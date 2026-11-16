@@ -34,7 +34,7 @@ on conflict (key) do nothing;
 -- ── A starter branch/location ───────────────────────────────────────────────
 insert into public.locations (name, slug, address, city, state, postcode, hours, is_active)
 values (
-  'Main Showroom', 'main-showroom', '1 Example St', 'Sydney', 'NSW', '2000',
+  'Lansvale Branch', 'lansvale-branch', '16 Hollywood Dr', 'Lansvale', 'NSW', '2166',
   jsonb_build_object(
     'mon', '9:00-18:00', 'tue', '9:00-18:00', 'wed', '9:00-18:00',
     'thu', '9:00-18:00', 'fri', '9:00-18:00', 'sat', '9:00-17:00', 'sun', 'closed'

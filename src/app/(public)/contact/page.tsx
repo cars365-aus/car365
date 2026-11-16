@@ -68,7 +68,14 @@ export default async function ContactPage() {
                   <MapPin className="size-5 flex-none text-primary" />
                   <div>
                     <p className="font-semibold text-foreground">{branch.name}</p>
-                    <p className="text-sm text-body">{branch.address}, {branch.city} {branch.state} {branch.postcode}</p>
+                    <a
+                      href="https://maps.google.com/maps?q=16+Hollywood+Dr,+Lansvale+NSW+2166,+Australia"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-body hover:underline"
+                    >
+                      {branch.address}, {branch.city} {branch.state} {branch.postcode}{branch.address.includes("Australia") ? "" : ", Australia"}
+                    </a>
                   </div>
                 </div>
                 {Object.keys(branch.hours).length > 0 ? (
