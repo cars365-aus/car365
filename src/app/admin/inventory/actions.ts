@@ -367,8 +367,14 @@ export async function updateVehicle(_prev: unknown, formData: FormData) {
             }
           }
           if (keysToDelete.length > 0) {
-            await supabase.storage.from("media").remove(keysToDelete);
-            await supabase.from("media_assets").delete().in("storage_key", removedImages.map((i) => i.path));
+            const { error: removeError } = await supabase.storage.from("media").remove(keysToDelete);
+            if (removeError) {
+              console.error("[updateVehicle] Storage removal failed for keys:", keysToDelete, removeError.message);
+            }
+            const { error: mediaDelError } = await supabase.from("media_assets").delete().in("storage_key", removedImages.map((i) => i.path));
+            if (mediaDelError) {
+              console.error("[updateVehicle] media_assets cleanup failed:", mediaDelError.message);
+            }
           }
         } catch (cleanupErr) {
           console.warn("Non-critical: Post-save storage cleanup notice:", cleanupErr);
@@ -454,7 +460,10 @@ export async function deleteVehicle(id: string, shouldRedirect: boolean = true) 
   // 3. Clean up storage files ONLY after database deletion successfully succeeds
   if (keysToDelete.length > 0) {
     try {
-      await supabase.storage.from("media").remove(keysToDelete);
+      const { error: removeErr } = await supabase.storage.from("media").remove(keysToDelete);
+      if (removeErr) {
+        console.error("[deleteVehicle] Failed to remove storage keys for vehicle", id, keysToDelete, removeErr.message);
+      }
     } catch (cleanErr) {
       console.warn("Storage cleanup notice for deleted vehicle:", cleanErr);
     }
