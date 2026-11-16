@@ -37,7 +37,7 @@ export default async function EditVehiclePage({
     supabase.from("vehicle_features").select("feature_id").eq("vehicle_id", id),
     supabase
       .from("vehicle_images")
-      .select("is_cover, sort_order, media:media_id(storage_key)")
+      .select("is_cover, sort_order, media:media_id(storage_key, renditions)")
       .eq("vehicle_id", id)
       .order("sort_order", { ascending: true }),
     supabase.from("syndication_vehicle_extra").select("*").eq("vehicle_id", id).maybeSingle(),
@@ -73,17 +73,28 @@ export default async function EditVehiclePage({
   const storageClient = createAdminClient();
   const images = (imageRows ?? [])
     .map((row) => {
-      const rel = row.media as { storage_key?: string } | { storage_key?: string }[] | null;
+      const rel = row.media as { storage_key?: string; renditions?: Record<string, unknown> | null } | { storage_key?: string; renditions?: Record<string, unknown> | null }[] | null;
       const media = Array.isArray(rel) ? rel[0] : rel;
       const storageKey = media?.storage_key ?? "";
       if (!storageKey) return null;
       const { data: urlData } = storageClient.storage.from("media").getPublicUrl(storageKey);
+      let thumbUrl: string | undefined = undefined;
+      const renditions = media?.renditions;
+      if (renditions && typeof renditions === "object" && typeof renditions.thumb === "string" && renditions.thumb) {
+        const { data: thumbData } = storageClient.storage.from("media").getPublicUrl(renditions.thumb);
+        thumbUrl = thumbData.publicUrl;
+      } else if (storageKey.includes("_detail.webp")) {
+        const thumbKey = storageKey.replace(/_detail\.webp$/, "_thumb.webp").replace(/vehicles\/(?!thumbs\/)/, "vehicles/thumbs/");
+        const { data: thumbData } = storageClient.storage.from("media").getPublicUrl(thumbKey);
+        thumbUrl = thumbData.publicUrl;
+      }
       return {
-        media: { storage_key: storageKey, url: urlData.publicUrl },
+        media: { storage_key: storageKey, url: urlData.publicUrl, renditions },
+        thumbUrl: thumbUrl || urlData.publicUrl,
         is_cover: row.is_cover,
       };
     })
-    .filter((x): x is { media: { storage_key: string; url: string }; is_cover: boolean } => x !== null);
+    .filter((x): x is NonNullable<typeof x> => x !== null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const v = { ...(vehicle as any), images };

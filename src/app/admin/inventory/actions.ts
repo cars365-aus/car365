@@ -87,7 +87,7 @@ function mimeFor(path: string | undefined | null): string {
  */
 async function resolveMediaIds(
   supabase: any,
-  images: { path: string; url: string; isCover: boolean }[],
+  images: { path: string; url: string; thumbPath?: string; thumbUrl?: string; isCover: boolean }[],
   uploadedBy: string,
 ): Promise<{ idMap: Map<string, string>; error?: string }> {
   if (images.length === 0) return { idMap: new Map() };
@@ -101,7 +101,7 @@ async function resolveMediaIds(
   // Single round trip: fetch all existing media_assets for these paths
   const { data: existing, error: selectError } = await supabase
     .from("media_assets")
-    .select("id, storage_key")
+    .select("id, storage_key, renditions")
     .in("storage_key", paths);
 
   if (selectError) {
@@ -113,13 +113,20 @@ async function resolveMediaIds(
   );
 
   // Find which paths are new (not in DB yet)
-  const newPaths = paths.filter((p) => !idMap.has(p));
+  const newImages = validImages.filter((img) => !idMap.has(img.path));
 
-  if (newPaths.length > 0) {
-    // Single bulk INSERT for all new media_assets
+  if (newImages.length > 0) {
+    // Single bulk INSERT for all new media_assets with thumbnail renditions
     const { data: inserted, error: insertError } = await supabase
       .from("media_assets")
-      .insert(newPaths.map((p) => ({ storage_key: p, mime: mimeFor(p), uploaded_by: uploadedBy })))
+      .insert(
+        newImages.map((img) => ({
+          storage_key: img.path,
+          mime: mimeFor(img.path),
+          uploaded_by: uploadedBy,
+          renditions: img.thumbPath ? { thumb: img.thumbPath } : {},
+        })),
+      )
       .select("id, storage_key");
 
     if (insertError) {
@@ -380,6 +387,39 @@ export async function toggleFeatured(id: string, isFeatured: boolean) {
 export async function deleteVehicle(id: string, shouldRedirect: boolean = true) {
   const user = await requireAdmin();
   const supabase = createAdminClient();
+
+  // Safely collect and clean up associated storage files
+  try {
+    const { data: vImages } = await supabase
+      .from("vehicle_images")
+      .select("media:media_id ( storage_key, renditions )")
+      .eq("vehicle_id", id);
+
+    if (vImages && vImages.length > 0) {
+      const keysToDelete: string[] = [];
+      for (const row of vImages) {
+        const rel = (row as any).media;
+        const media = Array.isArray(rel) ? rel[0] : rel;
+        if (media?.storage_key) {
+          keysToDelete.push(media.storage_key);
+          if (media.renditions?.thumb) {
+            keysToDelete.push(media.renditions.thumb);
+          } else if (media.storage_key.includes("_detail.webp")) {
+            const thumbKey = media.storage_key
+              .replace(/_detail\.webp$/, "_thumb.webp")
+              .replace(/vehicles\/(?!thumbs\/)/, "vehicles/thumbs/");
+            keysToDelete.push(thumbKey);
+          }
+        }
+      }
+      if (keysToDelete.length > 0) {
+        await supabase.storage.from("media").remove(keysToDelete);
+      }
+    }
+  } catch (cleanErr) {
+    console.warn("Storage cleanup notice for deleted vehicle:", cleanErr);
+  }
+
   const { error } = await supabase.from("vehicles").delete().eq("id", id);
   if (error) return { error: error.message };
   logActivityBg(user.id, "vehicle.deleted", id);

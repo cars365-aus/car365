@@ -97,11 +97,19 @@ export function VehicleForm({
   // Transform existing images if in edit mode. Be defensive about shape: a row
   // whose media join came back null must not blow up the whole form — skip it.
   const initialImages: UploadedImage[] = (v.images || [])
-    .map((img: { media?: { storage_key?: string; url?: string } | null; url?: string; is_cover?: boolean }) => {
+    .map((img: { media?: { storage_key?: string; url?: string; renditions?: Record<string, unknown> | null } | null; url?: string; thumbUrl?: string; is_cover?: boolean }) => {
       const path = img.media?.storage_key ?? "";
       const url = img.media?.url || img.url || "";
       if (!path && !url) return null;
-      return { path, url, isCover: Boolean(img.is_cover) };
+      const renditions = img.media?.renditions;
+      const thumbPath = typeof renditions?.thumb === "string" ? renditions.thumb : undefined;
+      return {
+        path,
+        url,
+        thumbPath,
+        thumbUrl: img.thumbUrl,
+        isCover: Boolean(img.is_cover),
+      };
     })
     .filter((x: UploadedImage | null): x is UploadedImage => x !== null);
 

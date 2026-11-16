@@ -35,6 +35,35 @@ export function buildMediaUrl(supabaseUrl: string, storageKey: string): string {
   return `${baseUrl}/storage/v1/object/public/${MEDIA_BUCKET}/${encodedKey}`;
 }
 
+/**
+ * Direct public URL for a thumbnail variant of a media asset in the `media` bucket.
+ *
+ * Safe resolution strategy:
+ * 1. If explicit `renditions.thumb` is present, use it.
+ * 2. If storageKey follows the dual-variant pattern (*_detail.webp), resolve to its thumbnail counterpart (*_thumb.webp).
+ * 3. Gracefully fall back to the full-size `storageKey` URL for all historical/legacy images.
+ */
+export function buildThumbnailUrl(
+  supabaseUrl: string,
+  storageKey?: string | null,
+  renditions?: Record<string, unknown> | null,
+): string {
+  if (!storageKey) return "";
+  if (storageKey.startsWith("http://") || storageKey.startsWith("https://")) {
+    return storageKey;
+  }
+  if (renditions && typeof renditions === "object" && typeof renditions.thumb === "string" && renditions.thumb) {
+    return buildMediaUrl(supabaseUrl, renditions.thumb);
+  }
+  if (storageKey.includes("_detail.webp")) {
+    const thumbKey = storageKey
+      .replace(/_detail\.webp$/, "_thumb.webp")
+      .replace(/vehicles\/(?!thumbs\/)/, "vehicles/thumbs/");
+    return buildMediaUrl(supabaseUrl, thumbKey);
+  }
+  return buildMediaUrl(supabaseUrl, storageKey);
+}
+
 /** Body-type stock fallback (never a broken image). */
 export function getBodyTypeFallback(bodyType?: BodyType | null): string {
   return (bodyType && BODY_TYPE_FALLBACK[bodyType]) ?? GENERIC_FALLBACK;

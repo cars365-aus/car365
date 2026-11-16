@@ -1,28 +1,61 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { UploadCloud, X, Loader2, Image as ImageIcon, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export type UploadedImage = {
   path: string;
   url: string;
+  thumbPath?: string;
+  thumbUrl?: string;
   isCover: boolean;
 };
 
-// ─── Industry-standard compression targets ────────────────────────────────────
-// Matches Carsales / Drive.com.au pipeline:
-//   • Max 1920 px wide (landscape), 1080 px tall (portrait clamp)
-//   • WebP q=0.82 — good detail, ~70-80 % size reduction vs raw JPEG
-//   • Hard cap: if still >250 KB after first pass, re-encode at q=0.72
+// ─── Dual-Variant Processing Targets ─────────────────────────────────────────
+// Detail:
+//   • Max 1600 px wide, 1200 px tall (strict aspect ratio preservation)
+//   • WebP q=0.80 first pass; if >220 KB, re-encode at q=0.70 (target ~150-220 KB)
+// Thumbnail:
+//   • Max 480 px wide, 360 px tall (strict aspect ratio preservation)
+//   • WebP q=0.75 (target ~35-50 KB)
 // ─────────────────────────────────────────────────────────────────────────────
-const MAX_W = 1920;
-const MAX_H = 1080;
-const QUALITY_HIGH = 0.82;
-const QUALITY_FALLBACK = 0.72;
-const HARD_CAP_BYTES = 250 * 1024; // 250 KB
+const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB strict limit
 
-async function compressToWebP(file: File): Promise<{ blob: Blob; originalKb: number; compressedKb: number }> {
+const ALLOWED_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+]);
+
+const MAX_DETAIL_W = 1600;
+const MAX_DETAIL_H = 1200;
+const DETAIL_QUALITY_HIGH = 0.80;
+const DETAIL_QUALITY_FALLBACK = 0.70;
+const DETAIL_TARGET_BYTES = 220 * 1024; // 220 KB target cap
+
+const MAX_THUMB_W = 480;
+const MAX_THUMB_H = 360;
+const THUMB_QUALITY = 0.75;
+
+function generatePhotoId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  const rand = Math.random().toString(36).substring(2, 10);
+  return `${Date.now()}-${rand}`;
+}
+
+type ProcessedVariants = {
+  detailBlob: Blob;
+  thumbBlob: Blob;
+  originalKb: number;
+  compressedKb: number;
+  thumbKb: number;
+};
+
+async function processImageVariants(file: File): Promise<ProcessedVariants> {
   const originalKb = Math.round(file.size / 1024);
 
   return new Promise((resolve, reject) => {
@@ -32,47 +65,113 @@ async function compressToWebP(file: File): Promise<{ blob: Blob; originalKb: num
     img.onload = () => {
       URL.revokeObjectURL(objectUrl);
 
-      // Calculate target dimensions preserving aspect ratio
-      let { width, height } = img;
-      const ratio = width / height;
+      const naturalW = img.naturalWidth || img.width;
+      const naturalH = img.naturalHeight || img.height;
+      if (!naturalW || !naturalH) {
+        reject(new Error("Image has invalid dimensions"));
+        return;
+      }
+      const ratio = naturalW / naturalH;
 
-      if (width > MAX_W) { width = MAX_W; height = Math.round(MAX_W / ratio); }
-      if (height > MAX_H) { height = MAX_H; width = Math.round(MAX_H * ratio); }
+      // 1. Calculate detail dimensions preserving aspect ratio
+      let detailW = naturalW;
+      let detailH = naturalH;
+      if (detailW > MAX_DETAIL_W) {
+        detailW = MAX_DETAIL_W;
+        detailH = Math.round(MAX_DETAIL_W / ratio);
+      }
+      if (detailH > MAX_DETAIL_H) {
+        detailH = MAX_DETAIL_H;
+        detailW = Math.round(MAX_DETAIL_H * ratio);
+      }
 
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
+      // 2. Calculate thumbnail dimensions preserving aspect ratio
+      let thumbW = naturalW;
+      let thumbH = naturalH;
+      if (thumbW > MAX_THUMB_W) {
+        thumbW = MAX_THUMB_W;
+        thumbH = Math.round(MAX_THUMB_W / ratio);
+      }
+      if (thumbH > MAX_THUMB_H) {
+        thumbH = MAX_THUMB_H;
+        thumbW = Math.round(MAX_THUMB_H * ratio);
+      }
 
-      const ctx = canvas.getContext("2d");
-      if (!ctx) { reject(new Error("Canvas context unavailable")); return; }
+      // Create detail canvas
+      const detailCanvas = document.createElement("canvas");
+      detailCanvas.width = detailW;
+      detailCanvas.height = detailH;
+      const detailCtx = detailCanvas.getContext("2d");
+      if (!detailCtx) {
+        reject(new Error("Canvas context unavailable"));
+        return;
+      }
+      detailCtx.fillStyle = "#ffffff";
+      detailCtx.fillRect(0, 0, detailW, detailH);
+      detailCtx.drawImage(img, 0, 0, detailW, detailH);
 
-      // White background prevents transparency artifacts on non-PNG sources
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, width, height);
-      ctx.drawImage(img, 0, 0, width, height);
+      // Create thumbnail canvas
+      const thumbCanvas = document.createElement("canvas");
+      thumbCanvas.width = thumbW;
+      thumbCanvas.height = thumbH;
+      const thumbCtx = thumbCanvas.getContext("2d");
+      if (!thumbCtx) {
+        reject(new Error("Thumbnail canvas context unavailable"));
+        return;
+      }
+      thumbCtx.fillStyle = "#ffffff";
+      thumbCtx.fillRect(0, 0, thumbW, thumbH);
+      thumbCtx.drawImage(img, 0, 0, thumbW, thumbH);
 
-      // First pass
-      canvas.toBlob(
-        (blob1) => {
-          if (!blob1) { reject(new Error("Canvas toBlob failed")); return; }
-
-          if (blob1.size <= HARD_CAP_BYTES) {
-            resolve({ blob: blob1, originalKb, compressedKb: Math.round(blob1.size / 1024) });
+      // Render thumbnail blob
+      thumbCanvas.toBlob(
+        (thumbBlob) => {
+          if (!thumbBlob) {
+            reject(new Error("Thumbnail generation failed"));
             return;
           }
 
-          // Second pass at lower quality if still over cap
-          canvas.toBlob(
-            (blob2) => {
-              const final = blob2 ?? blob1;
-              resolve({ blob: final, originalKb, compressedKb: Math.round(final.size / 1024) });
+          // Render detail blob (first pass)
+          detailCanvas.toBlob(
+            (detailBlob1) => {
+              if (!detailBlob1) {
+                reject(new Error("Detail image compression failed"));
+                return;
+              }
+
+              if (detailBlob1.size <= DETAIL_TARGET_BYTES) {
+                resolve({
+                  detailBlob: detailBlob1,
+                  thumbBlob,
+                  originalKb,
+                  compressedKb: Math.round(detailBlob1.size / 1024),
+                  thumbKb: Math.round(thumbBlob.size / 1024),
+                });
+                return;
+              }
+
+              // Second pass at lower quality if over target goal
+              detailCanvas.toBlob(
+                (detailBlob2) => {
+                  const finalDetail = detailBlob2 ?? detailBlob1;
+                  resolve({
+                    detailBlob: finalDetail,
+                    thumbBlob,
+                    originalKb,
+                    compressedKb: Math.round(finalDetail.size / 1024),
+                    thumbKb: Math.round(thumbBlob.size / 1024),
+                  });
+                },
+                "image/webp",
+                DETAIL_QUALITY_FALLBACK,
+              );
             },
             "image/webp",
-            QUALITY_FALLBACK,
+            DETAIL_QUALITY_HIGH,
           );
         },
         "image/webp",
-        QUALITY_HIGH,
+        THUMB_QUALITY,
       );
     };
 
@@ -85,22 +184,17 @@ async function compressToWebP(file: File): Promise<{ blob: Blob; originalKb: num
   });
 }
 
-function generateStorageKey(): string {
-  // Matches the existing naming pattern in the media/vehicles/ folder
-  const rand = Math.random().toString(36).substring(2, 15);
-  return `vehicles/${rand}_${Date.now()}.webp`;
-}
-
 type UploadStats = { originalKb: number; compressedKb: number };
 
 export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedImage[] }) {
   const [images, setImages] = useState<UploadedImage[]>(initialImages);
-  
+  const [prevInitialImages, setPrevInitialImages] = useState<UploadedImage[]>(initialImages);
+
   // Sync if initialImages changes from parent (e.g. Next.js router cache reusing components)
-  const initialImagesStr = JSON.stringify(initialImages);
-  useEffect(() => {
+  if (initialImages !== prevInitialImages) {
+    setPrevInitialImages(initialImages);
     setImages(initialImages);
-  }, [initialImagesStr]);
+  }
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<UploadStats | null>(null);
@@ -119,41 +213,77 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
     let totalCompressedKb = 0;
 
     for (const file of files) {
-      if (!file.type.startsWith("image/")) continue;
-
-      let blob: Blob;
-      let originalKb: number;
-      let compressedKb: number;
-
-      try {
-        ({ blob, originalKb, compressedKb } = await compressToWebP(file));
-        totalOriginalKb += originalKb;
-        totalCompressedKb += compressedKb;
-      } catch {
-        setError(`Failed to compress ${file.name}. Uploading original.`);
-        blob = file;
-        originalKb = Math.round(file.size / 1024);
-        compressedKb = originalKb;
-        totalOriginalKb += originalKb;
-        totalCompressedKb += compressedKb;
+      // 1. Strict 10 MB limit check
+      if (file.size > MAX_FILE_BYTES) {
+        setError(`"${file.name}" exceeds the maximum 10 MB file size limit and was skipped.`);
+        continue;
       }
 
-      const filePath = generateStorageKey();
-
-      const { data, error: uploadError } = await supabase.storage
-        .from("media")
-        .upload(filePath, blob, { contentType: "image/webp", upsert: false });
-
-      if (uploadError) {
-        setError(`Failed to upload ${file.name}: ${uploadError.message}`);
+      // 2. Strict MIME type check
+      if (!ALLOWED_MIME_TYPES.has(file.type.toLowerCase())) {
+        setError(`"${file.name}" has an unsupported format (${file.type || "unknown"}). Only JPEG, PNG, and WebP images are supported.`);
         continue;
+      }
+
+      let variants: ProcessedVariants;
+      try {
+        variants = await processImageVariants(file);
+        totalOriginalKb += variants.originalKb;
+        totalCompressedKb += variants.compressedKb;
+      } catch (procErr) {
+        const msg = procErr instanceof Error ? procErr.message : "Processing failed";
+        setError(`Failed to process "${file.name}": ${msg}. Upload rejected.`);
+        continue;
+      }
+
+      const photoId = generatePhotoId();
+      const detailStorageKey = `vehicles/${photoId}_detail.webp`;
+      const thumbStorageKey = `vehicles/thumbs/${photoId}_thumb.webp`;
+
+      // 3. Upload detail variant (1-year immutable cache)
+      const { data: detailData, error: detailUploadError } = await supabase.storage
+        .from("media")
+        .upload(detailStorageKey, variants.detailBlob, {
+          contentType: "image/webp",
+          cacheControl: "31536000",
+          upsert: false,
+        });
+
+      if (detailUploadError || !detailData) {
+        setError(`Failed to upload ${file.name}: ${detailUploadError?.message ?? "Storage error"}`);
+        continue;
+      }
+
+      // 4. Upload thumbnail variant (1-year immutable cache)
+      let thumbPath: string | undefined = undefined;
+      let thumbUrl: string | undefined = undefined;
+      const { data: thumbData, error: thumbUploadError } = await supabase.storage
+        .from("media")
+        .upload(thumbStorageKey, variants.thumbBlob, {
+          contentType: "image/webp",
+          cacheControl: "31536000",
+          upsert: false,
+        });
+
+      if (thumbUploadError || !thumbData) {
+        console.warn(`Failed to upload thumbnail for ${file.name}:`, thumbUploadError?.message);
+      } else {
+        thumbPath = thumbData.path;
+        const { data: thumbUrlData } = supabase.storage.from("media").getPublicUrl(thumbData.path);
+        thumbUrl = thumbUrlData.publicUrl;
       }
 
       const { data: publicUrlData } = supabase.storage
         .from("media")
-        .getPublicUrl(data.path);
+        .getPublicUrl(detailData.path);
 
-      newImages.push({ path: data.path, url: publicUrlData.publicUrl, isCover: false });
+      newImages.push({
+        path: detailData.path,
+        url: publicUrlData.publicUrl,
+        thumbPath,
+        thumbUrl: thumbUrl || publicUrlData.publicUrl,
+        isCover: false,
+      });
     }
 
     if (totalOriginalKb > 0) {
@@ -172,13 +302,24 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
     e.target.value = "";
   };
 
-  const removeImage = (index: number) => {
+  const removeImage = async (index: number) => {
     const imgToRemove = images[index];
     const newImages = images.filter((_, i) => i !== index);
     if (imgToRemove.isCover && newImages.length > 0) {
       newImages[0] = { ...newImages[0], isCover: true };
     }
     setImages(newImages);
+
+    // Clean up associated variants from storage if path exists
+    if (imgToRemove?.path) {
+      const keysToRemove = [imgToRemove.path];
+      if (imgToRemove.thumbPath) keysToRemove.push(imgToRemove.thumbPath);
+      try {
+        await supabase.storage.from("media").remove(keysToRemove);
+      } catch (err) {
+        console.warn("Storage cleanup failed for removed image:", err);
+      }
+    }
   };
 
   const setCover = (index: number) => {
@@ -201,7 +342,7 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
             {uploading ? (
               <>
                 <Loader2 className="size-8 text-primary animate-spin mb-2" />
-                <p className="text-sm text-muted-foreground">Compressing &amp; uploading…</p>
+                <p className="text-sm text-muted-foreground">Compressing &amp; uploading dual variants…</p>
               </>
             ) : (
               <>
@@ -210,7 +351,7 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
                   <span className="font-semibold text-foreground">Click to upload</span> or drag and drop
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Any format → auto-converted to WebP (max 10 MB)
+                  JPEG, PNG, WebP → auto-compressed with thumbnails (max 10 MB)
                 </p>
               </>
             )}
@@ -219,7 +360,7 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
             type="file"
             className="hidden"
             multiple
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             onChange={handleFileChange}
             disabled={uploading}
           />
@@ -232,9 +373,9 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
           <CheckCircle2 className="size-4 text-success shrink-0" />
           <span className="text-success font-medium">
             Compressed {stats.originalKb} KB → {stats.compressedKb} KB
-            <span className="ml-1.5 font-bold">({savingsPercent}% smaller)</span>
+            <span className="ml-1.5 font-bold">({savingsPercent}% smaller + thumbnail variant generated)</span>
           </span>
-          <span className="ml-auto text-xs text-muted-foreground">WebP • industry standard</span>
+          <span className="ml-auto text-xs text-muted-foreground">WebP • 1-yr cache</span>
         </div>
       )}
 
@@ -248,7 +389,7 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
               className="relative group aspect-square rounded-xl border border-border overflow-hidden bg-muted"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img.url} alt="Upload preview" className="object-cover w-full h-full" />
+              <img src={img.thumbUrl || img.url} alt="Upload preview" className="object-cover w-full h-full" />
 
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
                 <button

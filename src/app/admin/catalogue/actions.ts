@@ -1,9 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/security/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { z } from "zod";
+
+const revalidate = revalidateTag as (tag: string) => void;
 
 function slugify(str: string) {
   return str.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -41,6 +43,7 @@ export async function createMake(_prev: unknown, formData: FormData) {
   }
 
   revalidatePath("/admin/catalogue");
+  revalidate("makes");
   return { ok: true, id: data.id };
 }
 
@@ -52,6 +55,7 @@ export async function deleteMake(_prev: unknown, formData: FormData) {
   const { error } = await supabase.from("makes").delete().eq("id", id);
   if (error) return { error: error.message };
   revalidatePath("/admin/catalogue");
+  revalidate("makes");
   return { ok: true };
 }
 
@@ -77,6 +81,7 @@ export async function createModel(_prev: unknown, formData: FormData) {
   }
 
   revalidatePath("/admin/catalogue");
+  revalidate("models");
   return { ok: true, id: data.id };
 }
 
@@ -88,5 +93,6 @@ export async function deleteModel(_prev: unknown, formData: FormData) {
   const { error } = await supabase.from("models").delete().eq("id", id);
   if (error) return { error: error.message };
   revalidatePath("/admin/catalogue");
+  revalidate("models");
   return { ok: true };
 }

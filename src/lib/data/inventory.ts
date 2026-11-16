@@ -5,7 +5,7 @@
 import { unstable_cache } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireEnv } from "@/lib/config";
-import { buildMediaUrl, getBodyTypeFallback } from "@/lib/media";
+import { buildMediaUrl, buildThumbnailUrl, getBodyTypeFallback } from "@/lib/media";
 import type {
   BodyType,
   FacetCount,
@@ -45,12 +45,12 @@ const CARD_SELECT = `
   makes:make_id!inner ( name, slug ),
   models:model_id!inner ( name, slug ),
   locations:location_id ( city ),
-  vehicle_images ( alt_text, sort_order, is_cover, media_assets:media_id ( storage_key ) )
+  vehicle_images ( alt_text, sort_order, is_cover, media_assets:media_id ( storage_key, renditions ) )
 `;
 
 type RawRow = Record<string, any>;
 
-function pickCover(images: RawRow[] | null | undefined): { key: string | null; alt: string | null } {
+function pickCover(images: RawRow[] | null | undefined): { key: string | null; alt: string | null; renditions?: any } {
   if (!images || images.length === 0) return { key: null, alt: null };
   const sorted = [...images].sort((a, b) => {
     if (a.is_cover && !b.is_cover) return -1;
@@ -60,7 +60,11 @@ function pickCover(images: RawRow[] | null | undefined): { key: string | null; a
   const cover = sorted[0];
   const rel = cover?.media_assets;
   const media = Array.isArray(rel) ? rel[0] : rel;
-  return { key: media?.storage_key ?? null, alt: cover?.alt_text ?? null };
+  return {
+    key: media?.storage_key ?? null,
+    alt: cover?.alt_text ?? null,
+    renditions: media?.renditions ?? null,
+  };
 }
 
 function getGalleryUrls(images: RawRow[] | null | undefined, supabaseUrl: string): string[] {
@@ -79,6 +83,24 @@ function getGalleryUrls(images: RawRow[] | null | undefined, supabaseUrl: string
     .filter((url): url is string => Boolean(url));
 }
 
+function getThumbnailUrls(images: RawRow[] | null | undefined, supabaseUrl: string): string[] {
+  if (!images || images.length === 0) return [];
+  const sorted = [...images].sort((a, b) => {
+    if (a.is_cover && !b.is_cover) return -1;
+    if (!a.is_cover && b.is_cover) return 1;
+    return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+  });
+  return sorted
+    .map((img) => {
+      const rel = img.media_assets;
+      const media = Array.isArray(rel) ? rel[0] : rel;
+      return media?.storage_key
+        ? buildThumbnailUrl(supabaseUrl, media.storage_key, media.renditions)
+        : null;
+    })
+    .filter((url): url is string => Boolean(url));
+}
+
 function normalizeVehicleCity(city: string | null | undefined): string | null {
   if (!city) return null;
   if (city.toLowerCase() === "granville") return "Lansvale";
@@ -90,7 +112,11 @@ function toListItem(row: RawRow, supabaseUrl: string): VehicleListItem {
   const coverUrl = cover.key
     ? buildMediaUrl(supabaseUrl, cover.key)
     : getBodyTypeFallback(row.body_type as BodyType);
+  const thumbnailUrl = cover.key
+    ? buildThumbnailUrl(supabaseUrl, cover.key, cover.renditions)
+    : coverUrl;
   const galleryUrls = getGalleryUrls(row.vehicle_images, supabaseUrl);
+  const thumbnailUrls = getThumbnailUrls(row.vehicle_images, supabaseUrl);
   return {
     id: row.id,
     stockId: row.stock_id,
@@ -112,8 +138,10 @@ function toListItem(row: RawRow, supabaseUrl: string): VehicleListItem {
     isFeatured: !!row.is_featured,
     isNewArrival: row.published_at ? Date.now() - new Date(row.published_at).getTime() < 7 * 864e5 : false,
     coverImageUrl: coverUrl,
+    thumbnailUrl: thumbnailUrl,
     coverImageAlt: cover.alt,
     imageUrls: galleryUrls.length > 0 ? galleryUrls : coverUrl ? [coverUrl] : [],
+    thumbnailUrls: thumbnailUrls.length > 0 ? thumbnailUrls : thumbnailUrl ? [thumbnailUrl] : [],
     city: normalizeVehicleCity(row.locations?.city),
     roadworthyIncluded: !!row.roadworthy_included,
     financeAvailable: !!row.finance_available,
@@ -339,7 +367,7 @@ export const getVehicleBySlug = async (slug: string): Promise<VehicleDetail | nu
           makes:make_id ( name, slug ),
           models:model_id ( name, slug ),
           locations:location_id ( id, name, slug, address, city, state, postcode, phone, whatsapp, lat, lng, hours ),
-          vehicle_images ( id, alt_text, sort_order, is_cover, media_assets:media_id ( storage_key ) ),
+          vehicle_images ( id, alt_text, sort_order, is_cover, media_assets:media_id ( storage_key, renditions ) ),
           vehicle_features ( features:feature_id ( id, name, slug, category ) )
         `)
         .eq("slug", slug)
@@ -358,9 +386,12 @@ export const getVehicleBySlug = async (slug: string): Promise<VehicleDetail | nu
         .map((img) => {
           const rel = img.media_assets;
           const media = Array.isArray(rel) ? rel[0] : rel;
+          const storageKey = media?.storage_key;
+          const renditions = media?.renditions;
           return {
             id: img.id,
-            url: media?.storage_key ? buildMediaUrl(supabaseUrl, media.storage_key) : getBodyTypeFallback(r.body_type as BodyType),
+            url: storageKey ? buildMediaUrl(supabaseUrl, storageKey) : getBodyTypeFallback(r.body_type as BodyType),
+            thumbUrl: storageKey ? buildThumbnailUrl(supabaseUrl, storageKey, renditions) : undefined,
             altText: img.alt_text ?? null,
             sortOrder: img.sort_order ?? 0,
             isCover: !!img.is_cover,
@@ -512,19 +543,27 @@ export const getMakes = unstable_cache(
   { revalidate: 3600, tags: ["makes", "public"] },
 );
 
-/** All models (for the admin cascading make→model select). */
-export async function getAllModels(): Promise<Model[]> {
-  const supabase = createAdminClient();
-  const { data } = await supabase.from("models").select("id, make_id, name, slug").order("name");
-  return ((data ?? []) as RawRow[]).map((m) => ({ id: m.id, makeId: m.make_id, name: m.name, slug: m.slug }));
-}
+/** All models (for the admin cascading make→model select and listing view). */
+export const getAllModels = unstable_cache(
+  async (): Promise<Model[]> => {
+    const supabase = createAdminClient();
+    const { data } = await supabase.from("models").select("id, make_id, name, slug").order("name");
+    return ((data ?? []) as RawRow[]).map((m) => ({ id: m.id, makeId: m.make_id, name: m.name, slug: m.slug }));
+  },
+  ["all-models"],
+  { revalidate: 86400, tags: ["models", "public"] },
+);
 
 /** All features grouped for the admin form. */
-export async function getAllFeatures(): Promise<Feature[]> {
-  const supabase = createAdminClient();
-  const { data } = await supabase.from("features").select("id, name, slug, category").order("category").order("name");
-  return ((data ?? []) as RawRow[]).map((f) => ({ id: f.id, name: f.name, slug: f.slug, category: f.category }));
-}
+export const getAllFeatures = unstable_cache(
+  async (): Promise<Feature[]> => {
+    const supabase = createAdminClient();
+    const { data } = await supabase.from("features").select("id, name, slug, category").order("category").order("name");
+    return ((data ?? []) as RawRow[]).map((f) => ({ id: f.id, name: f.name, slug: f.slug, category: f.category }));
+  },
+  ["all-features"],
+  { revalidate: 86400, tags: ["features", "public"] },
+);
 
 export const getModelsForMake = async (makeSlug: string): Promise<Model[]> => {
   return unstable_cache(

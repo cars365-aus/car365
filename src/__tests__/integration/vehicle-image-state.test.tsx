@@ -46,8 +46,8 @@ vi.mock("@/lib/supabase/client", () => ({
 
 const mockMakes = [{ id: "make-1", name: "Toyota", slug: "toyota", isPopular: true }];
 const mockModels = [{ id: "model-1", makeId: "make-1", name: "Camry", slug: "camry" }];
-const mockFeatures = [];
-const mockLocations = [];
+const mockFeatures: any[] = [];
+const mockLocations: any[] = [];
 
 const vehicleA = {
   id: "v-a",

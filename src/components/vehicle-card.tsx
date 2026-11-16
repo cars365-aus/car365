@@ -187,9 +187,11 @@ export function VehicleCard({
   className?: string;
 }) {
   const images =
-    v.imageUrls && v.imageUrls.length > 0
-      ? v.imageUrls
-      : [v.coverImageUrl || "/vehicle-placeholder.jpg"];
+    v.thumbnailUrls && v.thumbnailUrls.length > 0
+      ? v.thumbnailUrls
+      : v.imageUrls && v.imageUrls.length > 0
+        ? v.imageUrls
+        : [v.thumbnailUrl || v.coverImageUrl || "/vehicle-placeholder.jpg"];
 
   const title = `${v.year} ${v.makeName} ${v.modelName}${v.variant ? ` ${v.variant}` : ""}`;
   const priceDrop = v.previousPrice != null && v.previousPrice > v.price;

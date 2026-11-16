@@ -90,6 +90,6 @@ describe("Admin Authentication Timeout Handling", () => {
     const { user, response } = await requireApiAdmin();
     expect(user).toBeNull();
     expect(response?.status).toBe(500);
-    expect(response?.error).toBe("Internal server error during authorization");
+    expect((response as any)?.error).toBe("Internal server error during authorization");
   });
 });

@@ -11,6 +11,7 @@ import { PaginationDots } from "./pagination-dots";
 interface GalleryImage {
   id: string;
   url: string;
+  thumb_url?: string;
   alt_text: string;
 }
 
@@ -121,7 +122,7 @@ export function ImageGallery({ images }: { images: GalleryImage[] }) {
                 }`}
               >
                 <Image
-                  src={img.url}
+                  src={img.thumb_url || img.url}
                   alt={img.alt_text || "Thumbnail"}
                   fill
                   sizes="128px"

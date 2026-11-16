@@ -97,8 +97,10 @@ export type VehicleListItem = {
   isFeatured: boolean;
   isNewArrival: boolean; // published within the last 7 days (computed at fetch)
   coverImageUrl: string | null;
+  thumbnailUrl?: string | null;
   coverImageAlt: string | null;
   imageUrls?: string[];
+  thumbnailUrls?: string[];
   city: string | null;
   roadworthyIncluded: boolean;
   financeAvailable: boolean;
@@ -136,6 +138,7 @@ export type VehicleDetail = VehicleListItem & {
 export type VehicleImage = {
   id: string;
   url: string;
+  thumbUrl?: string;
   altText: string | null;
   sortOrder: number;
   isCover: boolean;
