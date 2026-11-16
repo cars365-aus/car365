@@ -264,6 +264,7 @@ export type VehicleListingResult = {
     fuelType: FacetCount[];
     transmission: FacetCount[];
   };
+  error?: string | null;
 };
 
 // ── Finance estimate (SRS FR-13) ────────────────────────────────────────────

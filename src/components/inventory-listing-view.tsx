@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, AlertCircle } from "lucide-react";
 import { VehicleCard } from "@/components/vehicle-card";
 import { UsedCarsFilters } from "@/components/used-cars-filters";
 import { getVehicleListing, getMakes, getAllModels } from "@/lib/data/inventory";
@@ -81,7 +81,16 @@ export async function InventoryListingView({
             </div>
           </div>
 
-        {listing.items.length === 0 ? (
+        {listing.error ? (
+          <div className="rounded-xl border border-red-200 bg-red-50/50 p-12 text-center dark:border-red-900/50 dark:bg-red-950/20">
+            <AlertCircle className="mx-auto size-8 text-red-500" />
+            <p className="mt-3 font-medium text-foreground">Unable to load inventory</p>
+            <p className="mt-1 text-sm text-muted-foreground">We encountered a temporary database connection error. Please refresh or try again shortly.</p>
+            <Link href={basePath || "/used-cars"} className="mt-4 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover">
+              Reload inventory
+            </Link>
+          </div>
+        ) : listing.items.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border p-12 text-center">
             <SlidersHorizontal className="mx-auto size-8 text-muted-foreground" />
             <p className="mt-3 font-medium text-foreground">No cars match right now</p>

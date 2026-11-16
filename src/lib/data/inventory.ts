@@ -42,10 +42,10 @@ const CARD_SELECT = `
   id, stock_id, slug, variant, year, mileage_km, fuel_type, transmission, body_type,
   price, previous_price, weekly_estimate, status, is_featured, published_at, sold_at,
   roadworthy_included, finance_available, trade_in_welcome,
-  makes:make_id!inner ( name, slug ),
-  models:model_id!inner ( name, slug ),
-  locations:location_id ( city ),
-  vehicle_images ( alt_text, sort_order, is_cover, media_assets:media_id ( storage_key, renditions ) )
+  makes:make_id!inner(name, slug),
+  models:model_id!inner(name, slug),
+  locations:location_id(city),
+  vehicle_images(alt_text, sort_order, is_cover, media_assets:media_id(storage_key, renditions))
 `;
 
 type RawRow = Record<string, any>;
@@ -243,13 +243,33 @@ export async function getVehicleListing(
   const withCity = <T,>(q: T): T => (locationIds ? (q as any).in("location_id", locationIds) : q);
 
   const base = supabase.from("vehicles").select(CARD_SELECT, { count: "exact" });
-  const { data, count } = await applySort(withCity(applyFilters(base, filters)), sort).range(from, to);
+  const { data, count, error } = await applySort(withCity(applyFilters(base, filters)), sort).range(from, to);
+
+  if (error) {
+    console.error("[getVehicleListing] Supabase query failed:", {
+      message: error.message,
+      details: error.details,
+      code: error.code,
+      hint: error.hint,
+    });
+    return {
+      items: [],
+      total: 0,
+      page,
+      perPage,
+      facets: { make: [], bodyType: [], fuelType: [], transmission: [] },
+      error: error.message,
+    };
+  }
 
   // Facets over the same filter set (bounded columns; fine at V1 scale).
   const facetBase = supabase
     .from("vehicles")
-    .select("body_type, fuel_type, transmission, makes:make_id!inner ( name, slug )");
-  const { data: facetRows } = await withCity(applyFilters(facetBase, filters));
+    .select("body_type, fuel_type, transmission, makes:make_id!inner(name, slug)");
+  const { data: facetRows, error: facetError } = await withCity(applyFilters(facetBase, filters));
+  if (facetError) {
+    console.warn("[getVehicleListing] Facets query notice:", facetError.message);
+  }
   const rows = (facetRows ?? []) as RawRow[];
 
   const makeTally = new Map<string, { label: string; count: number }>();
@@ -301,11 +321,14 @@ export const getVehicleCount = async (filters: Pick<VehicleFilters, "make" | "mo
       // PostgREST cannot resolve `makes.slug`.
       const base = supabase
         .from("vehicles")
-        .select("id, makes:make_id!inner ( slug ), models:model_id!inner ( slug )", {
+        .select("id, makes:make_id!inner(slug), models:model_id!inner(slug)", {
           count: "exact",
           head: true,
         });
-      const { count } = (await applyFilters(base, filters)) as { count: number | null };
+      const { count, error } = (await applyFilters(base, filters)) as { count: number | null; error?: any };
+      if (error) {
+        console.error("[getVehicleCount] Supabase count query error:", error.message);
+      }
       return count ?? 0;
     },
     ["vehicle-count", JSON.stringify(filters)],
@@ -318,7 +341,7 @@ export const getFeaturedVehicles = async (limit = 12): Promise<VehicleListItem[]
     async () => {
       const supabase = createAdminClient();
       const supabaseUrl = requireEnv("NEXT_PUBLIC_SUPABASE_URL").trim();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("vehicles")
         .select(CARD_SELECT)
         .eq("status", "available")
@@ -326,15 +349,21 @@ export const getFeaturedVehicles = async (limit = 12): Promise<VehicleListItem[]
         .order("featured_order", { ascending: true, nullsFirst: false })
         .order("published_at", { ascending: false })
         .limit(limit);
+      if (error) {
+        console.error("[getFeaturedVehicles] Featured query error:", error.message, error.details);
+      }
       const items = (data ?? []).map((r: RawRow) => toListItem(r, supabaseUrl));
       // Backfill with newest available cars if fewer than 4 featured (SRS FR-1).
       if (items.length < 4) {
-        const { data: newest } = await supabase
+        const { data: newest, error: newestError } = await supabase
           .from("vehicles")
           .select(CARD_SELECT)
           .eq("status", "available")
           .order("published_at", { ascending: false })
           .limit(limit);
+        if (newestError) {
+          console.error("[getFeaturedVehicles] Backfill query error:", newestError.message, newestError.details);
+        }
         const seen = new Set(items.map((i) => i.id));
         for (const r of (newest ?? []) as RawRow[]) {
           if (seen.has(r.id)) continue;
@@ -364,11 +393,11 @@ export const getVehicleBySlug = async (slug: string): Promise<VehicleDetail | nu
           description, safety_rating, warranty_text,
           roadworthy_included, finance_available, trade_in_welcome, inspection_available,
           seo_title, seo_description,
-          makes:make_id ( name, slug ),
-          models:model_id ( name, slug ),
-          locations:location_id ( id, name, slug, address, city, state, postcode, phone, whatsapp, lat, lng, hours ),
-          vehicle_images ( id, alt_text, sort_order, is_cover, media_assets:media_id ( storage_key, renditions ) ),
-          vehicle_features ( features:feature_id ( id, name, slug, category ) )
+          makes:make_id(name, slug),
+          models:model_id(name, slug),
+          locations:location_id(id, name, slug, address, city, state, postcode, phone, whatsapp, lat, lng, hours),
+          vehicle_images(id, alt_text, sort_order, is_cover, media_assets:media_id(storage_key, renditions)),
+          vehicle_features(features:feature_id(id, name, slug, category))
         `)
         .eq("slug", slug)
         .in("status", PUBLIC_STATUSES)
@@ -493,7 +522,7 @@ export async function getVehicleLeadContext(
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("vehicles")
-    .select("id, year, variant, price, makes:make_id ( name ), models:model_id ( name )")
+    .select("id, year, variant, price, makes:make_id(name), models:model_id(name)")
     .eq("id", id)
     .maybeSingle();
   if (!data) return null;
@@ -571,7 +600,7 @@ export const getModelsForMake = async (makeSlug: string): Promise<Model[]> => {
       const supabase = createAdminClient();
       const { data } = await supabase
         .from("models")
-        .select("id, make_id, name, slug, makes:make_id!inner ( slug )")
+        .select("id, make_id, name, slug, makes:make_id!inner(slug)")
         .eq("makes.slug", makeSlug)
         .order("name", { ascending: true });
       return ((data ?? []) as RawRow[]).map((m) => ({
