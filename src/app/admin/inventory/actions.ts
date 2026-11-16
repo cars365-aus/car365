@@ -244,7 +244,7 @@ export async function createVehicle(_prev: unknown, formData: FormData) {
 
     // Fire-and-forget audit log — doesn't block the redirect
     logActivityBg(user.id, "vehicle.created", created.id, { stock_id: finalStockId });
-    revalidate(`vehicle-${slug}`);
+    updateTag(`vehicle-${slug}`);
     revalidatePublic();
     redirect(`/admin/inventory/${created.id}?created=1`);
   } catch (err) {
