@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag, revalidatePath } from "next/cache";
+import { updateTag, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { requireAdmin } from "@/lib/security/auth";
@@ -22,15 +22,14 @@ function logActivityBg(userId: string, action: string, entityId: string, diff: R
     .then(() => { /* no-op */ });
 }
 
-const revalidate = revalidateTag as (tag: string) => void;
 function revalidatePublic() {
-  revalidate("vehicles");
+  updateTag("vehicles");
 }
 
 async function revalidateVehicle(id: string) {
   const supabase = createAdminClient();
   const { data } = await supabase.from("vehicles").select("slug").eq("id", id).maybeSingle();
-  if (data?.slug) revalidate(`vehicle-${data.slug}`);
+  if (data?.slug) updateTag(`vehicle-${data.slug}`);
 }
 
 // Coerce empty-string optionals to null before DB insert.
