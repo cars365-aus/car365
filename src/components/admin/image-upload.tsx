@@ -189,11 +189,19 @@ type UploadStats = { originalKb: number; compressedKb: number };
 export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedImage[] }) {
   const [images, setImages] = useState<UploadedImage[]>(initialImages);
   const [prevInitialImages, setPrevInitialImages] = useState<UploadedImage[]>(initialImages);
+  const [removedPersistedImages, setRemovedPersistedImages] = useState<UploadedImage[]>([]);
+
+  // Track initial image paths so we distinguish between persisted and new session uploads
+  const [persistedPathSet, setPersistedPathSet] = useState<Set<string>>(
+    () => new Set(initialImages.map((img) => img.path)),
+  );
 
   // Sync if initialImages changes from parent (e.g. Next.js router cache reusing components)
   if (initialImages !== prevInitialImages) {
     setPrevInitialImages(initialImages);
     setImages(initialImages);
+    setPersistedPathSet(new Set(initialImages.map((img) => img.path)));
+    setRemovedPersistedImages([]);
   }
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -302,7 +310,7 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
     e.target.value = "";
   };
 
-  const removeImage = async (index: number) => {
+  const removeImage = (index: number) => {
     const imgToRemove = images[index];
     const newImages = images.filter((_, i) => i !== index);
     if (imgToRemove.isCover && newImages.length > 0) {
@@ -310,15 +318,21 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
     }
     setImages(newImages);
 
-    // Clean up associated variants from storage if path exists
-    if (imgToRemove?.path) {
+    // Differentiate between persisted images and newly uploaded session images:
+    if (persistedPathSet.has(imgToRemove.path)) {
+      // 1. Existing persisted image:
+      // Do NOT delete from storage now! Record it for deferred cleanup that only executes
+      // after the database update successfully completes. If the user cancels the form
+      // or the database save fails, the persisted image remains safely in storage.
+      setRemovedPersistedImages((prev) => [...prev, imgToRemove]);
+    } else if (imgToRemove?.path) {
+      // 2. Newly uploaded uncommitted image from the current browser session:
+      // Safe to delete immediately from storage since it was never referenced in the database.
       const keysToRemove = [imgToRemove.path];
       if (imgToRemove.thumbPath) keysToRemove.push(imgToRemove.thumbPath);
-      try {
-        await supabase.storage.from("media").remove(keysToRemove);
-      } catch (err) {
-        console.warn("Storage cleanup failed for removed image:", err);
-      }
+      supabase.storage.from("media").remove(keysToRemove).catch((err) => {
+        console.warn("Storage cleanup notice for unsaved image:", err);
+      });
     }
   };
 
@@ -333,8 +347,9 @@ export function ImageUpload({ initialImages = [] }: { initialImages?: UploadedIm
 
   return (
     <div className="space-y-4">
-      {/* Hidden input to pass to Server Action */}
+      {/* Hidden inputs to pass to Server Action */}
       <input type="hidden" name="imageKeys" value={JSON.stringify(images)} />
+      <input type="hidden" name="removedPersistedImages" value={JSON.stringify(removedPersistedImages)} />
 
       <div className="flex items-center justify-center w-full">
         <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 border-border bg-card transition-colors">

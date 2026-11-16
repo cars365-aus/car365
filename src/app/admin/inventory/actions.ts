@@ -344,6 +344,37 @@ export async function updateVehicle(_prev: unknown, formData: FormData) {
 
       const imageWriteError = await writeVehicleImages(supabase, id!, images, mediaResult.idMap);
       if (imageWriteError) return { error: imageWriteError };
+
+      // ── Step 5: Post-Save Deferred Cleanup of Removed Persisted Images ─────────
+      // ONLY executes after writeVehicleImages completely succeeds!
+      // If writeVehicleImages fails, the transaction aborts and returns an error,
+      // ensuring existing persisted files remain completely safe in storage.
+      const removedPersistedJson = formData.get("removedPersistedImages") as string | null;
+      if (removedPersistedJson) {
+        try {
+          const removedImages: { path: string; thumbPath?: string }[] = JSON.parse(removedPersistedJson);
+          const keysToDelete: string[] = [];
+          for (const img of removedImages) {
+            if (img.path) {
+              keysToDelete.push(img.path);
+              if (img.thumbPath) {
+                keysToDelete.push(img.thumbPath);
+              } else if (img.path.includes("_detail.webp")) {
+                const derivedThumb = img.path
+                  .replace(/_detail\.webp$/, "_thumb.webp")
+                  .replace(/vehicles\/(?!thumbs\/)/, "vehicles/thumbs/");
+                keysToDelete.push(derivedThumb);
+              }
+            }
+          }
+          if (keysToDelete.length > 0) {
+            await supabase.storage.from("media").remove(keysToDelete);
+            await supabase.from("media_assets").delete().in("storage_key", removedImages.map((i) => i.path));
+          }
+        } catch (cleanupErr) {
+          console.warn("Non-critical: Post-save storage cleanup notice:", cleanupErr);
+        }
+      }
     }
 
     // Fire-and-forget audit log
@@ -388,7 +419,8 @@ export async function deleteVehicle(id: string, shouldRedirect: boolean = true) 
   const user = await requireAdmin();
   const supabase = createAdminClient();
 
-  // Safely collect and clean up associated storage files
+  // 1. Collect media keys before deleting vehicle record
+  const keysToDelete: string[] = [];
   try {
     const { data: vImages } = await supabase
       .from("vehicle_images")
@@ -396,7 +428,6 @@ export async function deleteVehicle(id: string, shouldRedirect: boolean = true) 
       .eq("vehicle_id", id);
 
     if (vImages && vImages.length > 0) {
-      const keysToDelete: string[] = [];
       for (const row of vImages) {
         const rel = (row as any).media;
         const media = Array.isArray(rel) ? rel[0] : rel;
@@ -412,16 +443,24 @@ export async function deleteVehicle(id: string, shouldRedirect: boolean = true) 
           }
         }
       }
-      if (keysToDelete.length > 0) {
-        await supabase.storage.from("media").remove(keysToDelete);
-      }
     }
-  } catch (cleanErr) {
-    console.warn("Storage cleanup notice for deleted vehicle:", cleanErr);
+  } catch (lookupErr) {
+    console.warn("Storage lookup notice for deleted vehicle:", lookupErr);
   }
 
+  // 2. Perform database vehicle deletion (cascades to vehicle_images)
   const { error } = await supabase.from("vehicles").delete().eq("id", id);
   if (error) return { error: error.message };
+
+  // 3. Clean up storage files ONLY after database deletion successfully succeeds
+  if (keysToDelete.length > 0) {
+    try {
+      await supabase.storage.from("media").remove(keysToDelete);
+    } catch (cleanErr) {
+      console.warn("Storage cleanup notice for deleted vehicle:", cleanErr);
+    }
+  }
+
   logActivityBg(user.id, "vehicle.deleted", id);
   await revalidateVehicle(id);
   revalidatePublic();
